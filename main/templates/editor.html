@@ -54,13 +54,13 @@ $(document).ready(
 			{{ form.body }}
 			<div class="editorButtons">
 				{% if not posted %}
-					<input id="post_btn" class="btn btn-primary" name="post_article" type="submit" value="Post" />
-					<input id="draft_btn" class="btn btn-info" name="save_draft" type="submit" value="Save as Draft" />
+					<button id="post_btn" class="btn btn-primary" name="post_article" type="submit" value="Post"><i class="icon-ok-sign"></i> Post</button>
+					<button id="draft_btn" class="btn btn-info" name="save_draft" type="submit" value="Save as Draft"><i class="icon-save"></i> Save as Draft</button>
 				{% else %}
-					<input id="save_btn" class="btn btn-primary" name="save_article" type="submit" value="Save" />
-					<input id="draft_btn" class="btn btn-warning" name="unpost_article" type="submit" value="Un-Publish" />
+					<button id="save_btn" class="btn btn-primary" name="save_article" type="submit" value="Save"><i class="icon-save"></i> Save Changes</button>
+					<button id="draft_btn" class="btn btn-warning" name="unpost_article" type="submit" value="Un-Publish"><i class="icon-remove-sign"></i> Un-Publish</button>
 				{% endif %}
-				<input id="discard_btn" class="btn btn-danger" name="discard_article" type="submit" value="Discard Changes" />
+				<button id="discard_btn" class="btn btn-danger" name="discard_article" type="submit" value="Discard Changes"><i class="icon-trash"></i> Discard Changes</button>
 			</div>
 		</div>
 	</div>

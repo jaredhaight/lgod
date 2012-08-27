@@ -43,6 +43,25 @@ def category(request, jslug):
     d = dict(articles=articles)
     return render_to_response("home.html", d)
     
+def authorPage(request, jslug):
+    staff = get_object_or_404(User, username=str(jslug))
+    articles = get_list_or_404(Article.objects.filter(author=jslug, is_posted=True).order_by("-date_posted"))
+    
+    try: staffProfile = StaffProfile.objects.get(user=User.objects.get(username=jslug))
+    except: staffProfile = None
+
+    paginator = Paginator(articles, 10)
+
+    try: page = int(request.GET.get("page", '1'))
+    except ValueError: page = 1
+
+    try: articles = paginator.page(page)
+    except (InvalidPage, EmptyPage):
+        articles = paginator.page(paginator.num_pages)
+
+    d = dict(articles=articles, staff=staff, staffProfile=staffProfile)
+    return render_to_response("authorPage.html", d)
+    
 def article(request, jslug):
     user = request.user
     posted = None
@@ -112,6 +131,7 @@ def articleEditor(request, jslug):
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
                 article.title_slug = slugify(article.title)
+                article.edit_user = request.user.first_name
                 article.save()
                 form.save_m2m()
                 return HttpResponseRedirect('/article/'+article.title_slug)

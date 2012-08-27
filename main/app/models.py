@@ -24,6 +24,7 @@ class Article(models.Model):
     title_slug = models.SlugField(null=True, blank=True, unique=True)
     categories = models.ManyToManyField(Category)
     author = models.CharField(max_length=30)
+    edit_user = models.CharField(max_length=30)
     last_edited = models.DateTimeField(auto_now=True)
     is_posted = models.BooleanField()
 
@@ -33,7 +34,7 @@ class Article(models.Model):
 class ArticleForm(ModelForm):
     class Meta:
         model = Article
-        exclude = ('title_slug','is_posted','author','date_posted','last_edited')
+        exclude = ('title_slug','is_posted','author','date_posted','last_edited','edit_user')
         widgets = {
             'title': TextInput(attrs={'class':'input-xlarge'}),
             'body': Textarea(attrs={'id':'editorBody'}),
@@ -56,15 +57,19 @@ class FileUpload(models.Model):
 
 class StaffProfile(models.Model):
     user = models.OneToOneField(User)
-    twitter = models.CharField(max_length=30)
-    facebook = models.URLField()
-    gplus = models.URLField()
+    twitter = models.CharField(max_length=30, null=True)
+    facebook = models.URLField(null=True)
+    gplus = models.URLField(null=True)
+    purl_name = models.CharField(max_length=30, null=True)
+    purl = models.URLField(null=True)
     bio = models.TextField(null=True, blank=True)
 
 class ProfileForm(ModelForm):
     twitter = forms.CharField(label='Twitter Username')
     facebook = forms.URLField(label='Facebook URL')
     gplus = forms.URLField(label='Google+ URL')
+    purl_name = forms.CharField(label='Website Name')
+    purl = forms.URLField(label='Website URL')
     
     class Meta:
         model = StaffProfile
