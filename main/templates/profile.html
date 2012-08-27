@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load bootstrap %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/redactor.css" />
+<script src="/static/js/redactor.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(
+        function()
+        {
+                $('#bioBody').redactor({
+					buttons: ['html', '|', 'formatting', '|', 'bold', 'italic', 'deleted', '|','unorderedlist', 'orderedlist', 'outdent', 'indent', '|','link']
+				});
+        }
+);
+</script>
+{% endblock %}
+
+{% block content %}
+{% if form.errors %}
+<p>There were errors with your submission</p>
+{% endif %}
+
+<div class="row-fluid">
+	<div class="span12 profile">
+			<center>Hi {{ user.first_name }}, please fill out anything below that you would like associated with your account on the site.</center>
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span7 offset2 profileForm">
+		<form class="form-horizontal" method="post" action=".">
+			{% csrf_token %}
+			{{ form.twitter|bootstrap }}
+			{{ form.facebook|bootstrap }}
+			{{ form.gplus|bootstrap }}
+			{{ form.bio|bootstrap }}
+		<div class="control-group">
+			<div class="controls">
+				<button type="submit" class="btn">Submit</button>
+			</div>
+		</div>
+		</form>
+	</div>
+</div>
+
+{% endblock %}	

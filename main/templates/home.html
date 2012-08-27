@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}<title>Live Geek or Die </title>{% endblock %}
+
+{% block content %}
+	{% for article in articles %}
+         <div class="row-fluid homePad">
+            <div class="span10">
+				<a href="/article/{{ article.title_slug }}">{{ article.title }}</a> (Posted: {{ article.date_posted }})
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span10">
+				<p>{{ article.summary }}</p>
+			</div>
+		</div>
+	{% endfor %}
+{% endblock %}
+{% block footer %}
+<div class="paginationWrap">
+	<div class="pagination">
+	  <ul>
+		<li><a href="?page={{ articles.previous_page_number }}">Prev</a></li>
+		<li><a href="#">1</a></li>
+		<li><a href="#">2</a></li>
+		<li><a href="#">3</a></li>
+		<li><a href="#">4</a></li>
+		<li><a href="?page={{ articles.next_page_number }}">Next</a></li>
+	  </ul>
+	</div>
+</div>
+{% endblock %}
