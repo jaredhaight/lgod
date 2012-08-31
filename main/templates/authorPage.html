@@ -2,14 +2,21 @@
 {% block title %}<title>Live Geek or Die </title>{% endblock %}
 
 {% block content %}
+{% include "staffButton.html" %}
 		<div class="row-fluid">
 			<div class="span12 well margintop1">
 				<div class="row-fluid">
 					<div class="span6">
 						{{ staffProfile.bio|safe }}
 					</div>
-					<div class="span6">
-						You can follow {{ staff.first_name }} on:
+					<div class="span5 offset1">
+						{% if social %}
+						You can follow 
+						{% if staffProfile.gender == 'M' %} 
+							him
+						{% else %}
+							her
+						{% endif %}	on:
 						<div class="socialLinks">
 						{%if staffProfile.twitter %}
 						<a href="http://www.twitter.com/{{ staffProfile.twitter }}"><i class="icon-twitter"></i></a>
@@ -17,12 +24,17 @@
 						{% if staffProfile.facebook %}
 						<a href="{{ staffProfile.facebook }}"><i class="icon-facebook"></i></a>
 						{% endif %}
-						{% if staffProfile.twitter %}
+						{% if staffProfile.gplus %}
 						<a href="{{ staffProfile.gplus }}"><i class="icon-google-plus-sign"></i></a>
 						{% endif %}<p>
 						</div>
+						{% endif %}
 						{% if staffProfile.purl %}
-						or on their own site <a href="{{ staffProfile.purl }}">
+						{% if staffProfile.gender == 'M' %} 
+							He
+						{% else %}
+							She
+						{% endif %}	can also be found at <a href="{{ staffProfile.purl }}">
 							{% if staffProfile.purl_name %}
 								{{ staffProfile.purl_name }}
 							{% else %}

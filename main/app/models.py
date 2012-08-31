@@ -1,27 +1,41 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
 from django.forms import ModelForm, Textarea
-from django.template.defaultfilters import slugify
 from django import forms
-from django.forms.widgets import CheckboxSelectMultiple, TextInput
-from django.forms.models import ModelMultipleChoiceField
+from django.forms.widgets import  TextInput
 import cloudfiles
+from django.forms.models import modelformset_factory
 from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER
 
+GENDER_CHOICES = (
+        ('M', 'Male'),
+        ('F', 'Female'),
+    )
+    
 # Create your models here.
+def CDNUpload(file):
+    conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
+    cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
+    obj = cont.create_object(file.name)
+    obj.load_from_filename(file.path)
+    cdn_url = obj.public_uri()
+    return cdn_url
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    slug = models.CharField(max_length=20)
     def __unicode__(self):
         return self.name
 
 class Article(models.Model):
     title = models.CharField(max_length=150)
     date_posted = models.DateTimeField(null=True, blank=True)
+    is_featured = models.BooleanField()
     summary = models.TextField(null=True, blank=True)
     body = models.TextField(null=True, blank=True)
     title_slug = models.SlugField(null=True, blank=True, unique=True)
+    header_image = models.ImageField(upload_to="header_imgs/")
+    header_url = models.URLField()
     categories = models.ManyToManyField(Category)
     author = models.CharField(max_length=30)
     edit_user = models.CharField(max_length=30)
@@ -30,11 +44,12 @@ class Article(models.Model):
 
     def __unicode__(self):
         return self.title
-        
+
+
 class ArticleForm(ModelForm):
     class Meta:
         model = Article
-        exclude = ('title_slug','is_posted','author','date_posted','last_edited','edit_user')
+        fields = ('title','summary','categories','header_image','is_featured', 'body')
         widgets = {
             'title': TextInput(attrs={'class':'input-xlarge'}),
             'body': Textarea(attrs={'id':'editorBody'}),
@@ -43,33 +58,37 @@ class ArticleForm(ModelForm):
 
 class FileUpload(models.Model):
     file = models.FileField(upload_to="img/")
+    title = models.CharField(max_length=50, null=True, blank=True)
+    folder = models.CharField(max_length=50, null=True, blank=True)
     cdn_url = models.URLField()
     uploaded = models.DateTimeField(auto_now_add=True)
     
     def save(self, *args, **kwargs):
         super(FileUpload, self).save(*args, **kwargs)
-        conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
-        cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
-        obj = cont.create_object(self.file.name)
-        obj.load_from_filename(self.file.path)
-        self.cdn_url = obj.public_uri()
+        self.cdn_url = CDNUpload(self.file)
         self.save_base()
 
 class StaffProfile(models.Model):
     user = models.OneToOneField(User)
-    twitter = models.CharField(max_length=30, null=True)
-    facebook = models.URLField(null=True)
-    gplus = models.URLField(null=True)
-    purl_name = models.CharField(max_length=30, null=True)
-    purl = models.URLField(null=True)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    twitter = models.CharField(max_length=30, null=True,  blank=True)
+    facebook = models.URLField(null=True,  blank=True)
+    gplus = models.URLField(null=True,  blank=True)
+    purl_name = models.CharField(max_length=30, null=True,  blank=True)
+    purl = models.URLField(null=True,  blank=True)
     bio = models.TextField(null=True, blank=True)
 
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('first_name', 'email')
+        
 class ProfileForm(ModelForm):
-    twitter = forms.CharField(label='Twitter Username')
-    facebook = forms.URLField(label='Facebook URL')
-    gplus = forms.URLField(label='Google+ URL')
-    purl_name = forms.CharField(label='Website Name')
-    purl = forms.URLField(label='Website URL')
+    twitter = forms.CharField(label='Twitter Username', required=False)
+    facebook = forms.URLField(label='Facebook URL', required=False)
+    gplus = forms.URLField(label='Google+ URL', required=False)
+    purl_name = forms.CharField(label='Website Name', required=False)
+    purl = forms.URLField(label='Website URL', required=False)
     
     class Meta:
         model = StaffProfile

@@ -1,0 +1,21 @@
+		{% if user.is_authenticated %}
+		<div class="row-fluid">
+			<div class="staffButton">
+				<div class="btn-group">
+					<a class="btn btn-info dropdown-toggle" data-toggle="dropdown" href="#">
+						<i class="icon-user"></i> Hello {{ user.first_name }}
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu pull-right">
+						<li><a href="/article/new/">Create a new article</a></li>
+						{% if pagetype == 'article' %}
+						<li><a href="edit">Edit this article</a></li>
+						{% endif %}
+						<li><a href="/staff/profile/">Edit your Profile</a></li>
+                        <li><a href="/staff/filemanager">File Manager</a></li>
+						<li><a href="/staff/">Staff Dashboard</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		{% endif %}

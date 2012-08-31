@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}<title>Live Geek or Die </title>{% endblock %}
+{% block javascript %}
+<script src="/static/js/jqueryForm.js" type="text/javascript"></script>
+<script>
+$(document).ready(function(){
+    $("#form").ajaxForm(function() {
+        alert("Success!");
+        });
+    });
+
+</script>
+{% endblock %}
+{% block content %}
+{% include "staffButton.html" %}
+            <div class="row-fluid">
+            {% for file in filelist %}
+                <div id="{{ file.id }}" class="span3">
+                <img src="{{ file.cdn_url }}">
+                    <form id="form" action="/staff/fileupdate/" method="post">
+                        <input type="hidden" name="id" value="{{ file.id }}">
+                        <div class="control-group">
+                            <label class="control-label" for="inputTitle">Title</label>
+                            <div class="controls">
+                                <input type="text" id="inputTitle" name="title" value={{ file.title }}>
+                            </div>
+                        </div>
+                    <div class="control-group">
+                    <label class="control-label" for="inputFolder">Folder</label>
+                        <div class="controls">
+                            <input type="text" id="inputFolder" name="folder" value={{ file.folder }}>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn margintop1">Submit</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            {%  endfor %}
+            </div>
+{% endblock %}

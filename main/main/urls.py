@@ -3,6 +3,8 @@ from django.conf.urls import patterns, include, url
 # Uncomment the next two lines to enable the admin:
 # test comment
 from django.contrib import admin
+from main.settings import ENVIRONMENT
+
 admin.autodiscover()
 
 urlpatterns = patterns('',
@@ -17,6 +19,8 @@ urlpatterns = patterns('',
     url(r"^author/(?P<jslug>[\-\d\w]+)/$", "app.views.authorPage"),
     url(r"^staff/$", "app.views.staffHome"),
     url(r"^staff/profile/$", "app.views.profilePage"),
+    url(r"^staff/filemanager/$", "app.views.staffFileManager"),
+    url(r"^staff/fileupdate/", "app.views.fileUpdate"),
     url(r"^login/$", 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
@@ -24,3 +28,6 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
+if ENVIRONMENT == 'DEV':
+    from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+    urlpatterns += staticfiles_urlpatterns()
