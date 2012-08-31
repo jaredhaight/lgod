@@ -3,8 +3,10 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm, Textarea
 from django import forms
 from django.forms.widgets import  TextInput
+from django.template.defaultfilters import slugify
+from django.forms import CheckboxSelectMultiple
+from django.db.models import get_model
 import cloudfiles
-from django.forms.models import modelformset_factory
 from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER
 
 GENDER_CHOICES = (
@@ -20,6 +22,17 @@ def CDNUpload(file):
     obj.load_from_filename(file.path)
     cdn_url = obj.public_uri()
     return cdn_url
+
+def uniqueSlug(model, slug_field, title):
+        slug = slugify(title)
+        model = get_model('app',model)
+        query = (slug_field, slug)
+        count = str(model.objects.filter(query).count())
+        if count == 0:
+            return slug
+        else:
+            slug = slug+'-'+count
+            return slug
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -45,6 +58,13 @@ class Article(models.Model):
     def __unicode__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        super(Article, self).save(*args, **kwargs)
+        if not self.header_url:
+            self.header_url = CDNUpload(self.header_image)
+        if not self.title_slug:
+            self.title_slug = uniqueSlug(Article,'title_slug',self.title)
+        self.save_base()
 
 class ArticleForm(ModelForm):
     class Meta:
@@ -54,6 +74,7 @@ class ArticleForm(ModelForm):
             'title': TextInput(attrs={'class':'input-xlarge'}),
             'body': Textarea(attrs={'id':'editorBody'}),
             'summary':  Textarea(attrs={'id':'editorSummary'}),
+            'categories': CheckboxSelectMultiple(),
         }
 
 class FileUpload(models.Model):

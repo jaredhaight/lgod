@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response, get_object_or_404, get_list_or_
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template import RequestContext
-from django.template.defaultfilters import slugify
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -14,11 +14,10 @@ from app.models import *
 
 logger = logging.getLogger(__name__)
 
-
 def home(request):
     user = request.user
     articles = get_list_or_404(Article.objects.filter(is_posted=True).order_by("-date_posted"))
-    features = get_list_or_404(Article.objects.filter(is_posted=True,is_featured=True).order_by("-date_posted")[:10])
+    features = Article.objects.filter(is_posted=True,is_featured=True).order_by("-date_posted")[:10]
     paginator = Paginator(articles, 10)
 
     try: page = int(request.GET.get("page", '1'))
@@ -47,10 +46,10 @@ def category(request, jslug):
     return render_to_response("home.html", d)
     
 def authorPage(request, jslug):
-    global social
+    social = None
     user = request.user
-    staff = get_object_or_404(User, username=str(jslug))
-    articles = get_list_or_404(Article.objects.filter(author=jslug, is_posted=True).order_by("-date_posted"))
+    staff = get_object_or_404(User, username__iexact=str(jslug))
+    articles = get_list_or_404(Article.objects.filter(author__iexact=jslug, is_posted=True).order_by("-date_posted"))
     
     try: staffProfile = StaffProfile.objects.get(user=User.objects.get(username=jslug))
     except: staffProfile = None
@@ -106,7 +105,6 @@ def newArticle(request):
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
                 article.author = request.user.first_name
-                article.title_slug = slugify(article.title)
                 article.save()
                 form.save_m2m()
                 return HttpResponseRedirect('/article/'+article.title_slug)  

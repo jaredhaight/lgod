@@ -3,6 +3,7 @@
 
 {% block content %}
 {% include "staffButton.html" %}
+    {% if staffProfile.bio %}
 		<div class="row-fluid">
 			<div class="span12 well margintop1">
 				<div class="row-fluid">
@@ -46,6 +47,7 @@
 				</div>
 			</div>
 		</div>
+    {% endif %}
 	<div class="row-fluid">
 		<div class="span12">
 			{{ staff.first_name }} has written the following articles for Live Geek or Die:<p>
