@@ -104,7 +104,7 @@ def newArticle(request):
                     article.is_posted = True
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
-                article.author = request.user.first_name
+                article.author = user
                 article.save()
                 form.save_m2m()
                 return HttpResponseRedirect('/article/'+article.title_slug)  
@@ -138,11 +138,10 @@ def articleEditor(request, jslug):
                     now = datetime.datetime.now()
                     article.date_posted = now.strftime("%Y-%m-%dT%H:%M:%S")
                     article.is_posted = True
-                    article.author = request.user.first_name                    
+                    article.author = user
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
-                article.title_slug = slugify(article.title)
-                article.edit_user = request.user.first_name
+                article.edit_user = user
                 article.save()
                 form.save_m2m()
                 return HttpResponseRedirect('/article/'+article.title_slug)

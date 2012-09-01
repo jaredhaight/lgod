@@ -34,45 +34,33 @@ $(document).ready(
 	</div>
 </div>
 {% endif %}
-	<div class="row-fluid">
-        <div class="span6">
-            Title: {{ form.title }}
+	<div class="row-fluid margintop1">
+        <div class="span7">
+            Title: {{ form.title }}<br>
+            Summary: {{ form.summary }}<br>
+            Header Image: {{ form.header_image }}
         </div>
-        <div class="span6">
-            Summary: {{ form.summary }}
+        <div class="span5">
+            Categories:<br>
+            {{ form.categories  }}
         </div>
     </div>
     <div class="row-fluid">
-        <div class="span12">
-            Categories<br>
-            {{ form.categories }}
-        </div>
-    </div>
-    <div class="row-fluid"
-        <div class="span3">
-            Header Image
-            {{ form.header_image }}
-        </div>
-        <div class="span3">
-            Featured?
-            {{ form.is_featured }}
-        </div>
-    </div>
-	<div class="row-fluid">
 		<div class="span12">
-			{{ form.body }}
-			<div class="editorButtons">
-				{% if not posted %}
-					<button id="post_btn" class="btn btn-primary" name="post_article" type="submit" value="Post"><i class="icon-ok-sign"></i> Post</button>
-					<button id="draft_btn" class="btn btn-info" name="save_draft" type="submit" value="Save as Draft"><i class="icon-save"></i> Save as Draft</button>
-				{% else %}
-					<button id="save_btn" class="btn btn-primary" name="save_article" type="submit" value="Save"><i class="icon-save"></i> Save Changes</button>
-					<button id="draft_btn" class="btn btn-warning" name="unpost_article" type="submit" value="Un-Publish"><i class="icon-remove-sign"></i> Un-Publish</button>
-				{% endif %}
-				<button id="discard_btn" class="btn btn-danger" name="discard_article" type="submit" value="Discard Changes"><i class="icon-trash"></i> Discard Changes</button>
-			</div>
-		</div>
-	</div>
+       {{ form.body }}
+            <div class="editorButtons">
+                {{ form.is_featured }} Featured?
+                {% if not posted %}
+                    <button id="post_btn" class="btn btn-primary" name="post_article" type="submit" value="Post"><i class="icon-ok-sign"></i> Post</button>
+                    <button id="draft_btn" class="btn btn-info" name="save_draft" type="submit" value="Save as Draft"><i class="icon-save"></i> Save as Draft</button>
+                {% else %}
+                    <button id="save_btn" class="btn btn-primary" name="save_article" type="submit" value="Save"><i class="icon-save"></i> Save Changes</button>
+                    <button id="draft_btn" class="btn btn-warning" name="unpost_article" type="submit" value="Un-Publish"><i class="icon-remove-sign"></i> Un-Publish</button>
+                {% endif %}
+                <button id="discard_btn" class="btn btn-danger" name="discard_article" type="submit" value="Discard Changes"><i class="icon-trash"></i> Discard Changes</button>
+            </div>
+        </div>
+    </div>
 </form>
 </fieldset>
 

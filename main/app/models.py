@@ -2,18 +2,19 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Textarea
 from django import forms
-from django.forms.widgets import  TextInput
+from django.forms.widgets import  TextInput, SelectMultiple
 from django.template.defaultfilters import slugify
 from django.forms import CheckboxSelectMultiple
 from django.db.models import get_model
 import cloudfiles
 from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER
 
+
 GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
     )
-    
+
 # Create your models here.
 def CDNUpload(file):
     conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
@@ -24,11 +25,12 @@ def CDNUpload(file):
     return cdn_url
 
 def uniqueSlug(model, slug_field, title):
+        kwargs={}
         slug = slugify(title)
         model = get_model('app',model)
-        query = (slug_field, slug)
-        count = str(model.objects.filter(query).count())
-        if count == 0:
+        kwargs[slug_field] = slug
+        count = str(model.objects.filter(**kwargs).count())
+        if count == '0':
             return slug
         else:
             slug = slug+'-'+count
@@ -50,7 +52,7 @@ class Article(models.Model):
     header_image = models.ImageField(upload_to="header_imgs/")
     header_url = models.URLField()
     categories = models.ManyToManyField(Category)
-    author = models.CharField(max_length=30)
+    author = models.ForeignKey(User)
     edit_user = models.CharField(max_length=30)
     last_edited = models.DateTimeField(auto_now=True)
     is_posted = models.BooleanField()
@@ -63,8 +65,8 @@ class Article(models.Model):
         if not self.header_url:
             self.header_url = CDNUpload(self.header_image)
         if not self.title_slug:
-            self.title_slug = uniqueSlug(Article,'title_slug',self.title)
-        self.save_base()
+            self.title_slug = uniqueSlug('Article','title_slug',self.title)
+        super(Article, self).save(*args, **kwargs)
 
 class ArticleForm(ModelForm):
     class Meta:
@@ -74,7 +76,7 @@ class ArticleForm(ModelForm):
             'title': TextInput(attrs={'class':'input-xlarge'}),
             'body': Textarea(attrs={'id':'editorBody'}),
             'summary':  Textarea(attrs={'id':'editorSummary'}),
-            'categories': CheckboxSelectMultiple(),
+            'categories': SelectMultiple(attrs={'id':'editorCategories'})
         }
 
 class FileUpload(models.Model):
