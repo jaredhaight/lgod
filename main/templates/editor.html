@@ -38,7 +38,8 @@ $(document).ready(
         <div class="span7">
             Title: {{ form.title }}<br>
             Summary: {{ form.summary }}<br>
-            Header Image: {{ form.header_image }}
+            Type: {{ form.type }}<br>
+            Image {{ form.image }}
         </div>
         <div class="span5">
             Categories:<br>
@@ -49,7 +50,6 @@ $(document).ready(
 		<div class="span12">
        {{ form.body }}
             <div class="editorButtons">
-                {{ form.is_featured }} Featured?
                 {% if not posted %}
                     <button id="post_btn" class="btn btn-primary" name="post_article" type="submit" value="Post"><i class="icon-ok-sign"></i> Post</button>
                     <button id="draft_btn" class="btn btn-info" name="save_draft" type="submit" value="Save as Draft"><i class="icon-save"></i> Save as Draft</button>

@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block head %}
+    <script src="/static/js/jquery.Jcrop.min.js"></script>
+    <link rel="stylesheet" href="/static/css/jquery.Jcrop.css" type="text/css" />
+
+    <script language="Javascript">
+    $(document).ready(
+        function() {
+            $('#fimage').Jcrop({
+                onSelect: featCoords,
+                onChange: featCoords,
+                minSize:['500','500'],
+                aspectRatio:1
+            });
+            $('#himage').Jcrop({
+                onSelect: headerCoords,
+                onChange: headerCoords,
+                minSize:['500','250'],
+                aspectRatio:2/1
+            });
+            $('#timage').Jcrop({
+                onSelect: thumbCoords,
+                onChange: thumbCoords,
+                minSize:['250','250'],
+                aspectRatio:1
+            });
+        });
+    function featCoords(c)
+    {
+        jQuery('#featuredform input#X').val(c.x);
+        jQuery('#featuredform #Y').val(c.y);
+        jQuery('#featuredform #X2').val(c.x2);
+        jQuery('#featuredform #Y2').val(c.y2);
+    };
+
+    function headerCoords(c)
+    {
+        jQuery("#headerform #X").val(c.x);
+        jQuery("#headerform #Y").val(c.y);
+        jQuery("#headerform #X2").val(c.x2);
+        jQuery("#headerform #Y2").val(c.y2);
+    };
+
+    function thumbCoords(c)
+    {
+        jQuery('#thumbnailform #X').val(c.x);
+        jQuery('#thumbnailform #Y').val(c.y);
+        jQuery('#thumbnailform #X2').val(c.x2);
+        jQuery('#thumbnailform #Y2').val(c.y2);
+    };
+
+    </script>
+{% endblock %}
+{% block title %}<title> {{ article.title }} - Live Geek or Die </title>{% endblock %}
+
+{% block content %}
+    {% if form.errors %}
+        <div class="row-fluid">
+            <div class="span12">
+                {% for field in form %}
+                    {% if field.errors %}
+                        {{ field.name }}-{{ field.errors }}<p>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+    {% include "staffButton.html" %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#featured" data-toggle="tab">Featured</a></li>
+                    <li><a href="#header" data-toggle="tab">Header</a></li>
+                    <li><a href="#thumbnail" data-toggle="tab">Thumbnail</a></li>
+                </ul>
+                <form action="." method="post">
+                    {% csrf_token %}
+                <div class="tab-content">
+                    <div class="tab-pane active" id="featured">
+                        <div class="row-fluid">
+                            <div class="span12 editorCrop">
+                                <img id="fimage" src="{{ article.image.url }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="header">
+                        <div class="row-fluid">
+                            <div class="span12 editorCrop">
+                                <img id="himage" src="{{ article.image.url }}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="thumbnail">
+                        <div class="row-fluid">
+                            <div class="span12 editorCrop">
+                                <img id="timage" src="{{ article.image.url }}">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                {{ formset.management_form }}
+            {% for form in formset %}
+                <div id="{{ form.type.value }}form" class="span2">
+                    {{ form }}
+                </div>
+            {% endfor %}
+            </div>
+            <button class="btn btn-primary"type="submit" value="Save"><i class="icon-ok-sign"></i> Save</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+

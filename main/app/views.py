@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 def home(request):
     user = request.user
     articles = get_list_or_404(Article.objects.filter(is_posted=True).order_by("-date_posted"))
-    features = Article.objects.filter(is_posted=True,is_featured=True).order_by("-date_posted")[:10]
+    features = Article.objects.filter(is_posted=True,type='featured').order_by("-date_posted")[:10]
     paginator = Paginator(articles, 10)
 
     try: page = int(request.GET.get("page", '1'))
@@ -69,15 +69,15 @@ def authorPage(request, jslug):
     d = dict(articles=articles, staff=staff, staffProfile=staffProfile, social=social, user=user)
     return render_to_response("authorPage.html", d)
     
-def article(request, jslug):
+def article(request, article_id, type):
     user = request.user
     posted = None
     pagetype = 'article'
     
-    if request.user.is_authenticated():
-        article = get_object_or_404(Article, title_slug=str(jslug))
+    if type=='editorPreview' and request.user.is_authenticated():
+        article = get_object_or_404(Article, id=article_id)
     else:
-        article = get_object_or_404(Article, title_slug=str(jslug), is_posted=True)
+        article = get_object_or_404(Article, title_slug=str(article_id), is_posted=True)
     
     if article.is_posted:
         posted = 'posted'
@@ -86,46 +86,14 @@ def article(request, jslug):
     return render_to_response("article.html", d)
 
 @login_required
-def newArticle(request):
+def articleEditor(request, article_id):
     user = request.user
     posted = None
     article = None
-    
-    if request.method == 'POST':
-        if "discard_article" in request.POST:
-            return HttpResponseRedirect('/staff')
-        else:
-            form = ArticleForm(request.POST, request.FILES, instance=article)
-            if form.is_valid():
-                article = form.save(commit=False)
-                if "post_article" in request.POST:
-                    now = datetime.datetime.now()
-                    article.date_posted = now.strftime("%Y-%m-%dT%H:%M:%S")
-                    article.is_posted = True
-                elif "unpost_article" in request.POST:
-                    article.is_posted = False
-                article.author = user
-                article.save()
-                form.save_m2m()
-                return HttpResponseRedirect('/article/'+article.title_slug)  
-                
-    elif article is not None:
-        form = ArticleForm(instance=article)
+    if article_id is not None:
+        article = get_object_or_404(Article, pk=article_id)
         if article.is_posted:
             posted = 'posted'
-    else:
-        form = ArticleForm()
-        
-    return render_to_response("editor.html", {
-        'form': form,
-        'user': user},
-        context_instance=RequestContext(request))
-        
-@login_required
-def articleEditor(request, jslug):
-    user = request.user
-    posted = None
-    article = get_object_or_404(Article, title_slug=str(jslug))
 
     if request.method == 'POST':
         if "discard_article" in request.POST:
@@ -148,14 +116,30 @@ def articleEditor(request, jslug):
             
     else:
         form = ArticleForm(instance=article)
-        if article.is_posted:
-            posted = 'posted'
-            
+
     return render_to_response("editor.html", {
         'form': form,
         'article' : article,
         'posted' : posted,
         'user' : user},
+        context_instance=RequestContext(request))
+
+@login_required
+def imageEditor(request,article_id):
+    article = get_object_or_404(Article, id=article_id)
+    header, created = ArticleImage.objects.get_or_create(article = article, type='header')
+    featured, created = ArticleImage.objects.get_or_create(article = article, type='featured')
+    thumbnail, created = ArticleImage.objects.get_or_create(article = article, type='thumbnail')
+    formset = imageFormset(queryset=ArticleImage.objects.filter(article=article.id))
+
+    if request.method == "POST":
+        formset = imageFormset(request.POST)
+        if formset.is_valid():
+            formset.save()
+
+    return render_to_response("imageEditor.html", {
+        'formset': formset,
+        'article': article},
         context_instance=RequestContext(request))
 
 @csrf_exempt

@@ -7,9 +7,10 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu pull-right">
-						<li><a href="/article/new/">Create a new article</a></li>
+						<li><a href="/editor/">Create a new article</a></li>
 						{% if pagetype == 'article' %}
-						<li><a href="edit">Edit this article</a></li>
+						<li><a href="/editor/{{ article.id }}">Edit this article</a></li>
+                        <li><a href="/editor/{{ article.id }}/image/">Edit article images</a></li>
 						{% endif %}
 						<li><a href="/staff/profile/">Edit your Profile</a></li>
                         <li><a href="/staff/filemanager">File Manager</a></li>

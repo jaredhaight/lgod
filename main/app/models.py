@@ -1,13 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.forms import ModelForm, Textarea
+from django.forms import ModelForm, Textarea, HiddenInput
+from django.forms.models import modelformset_factory
 from django import forms
 from django.forms.widgets import  TextInput, SelectMultiple
 from django.template.defaultfilters import slugify
-from django.forms import CheckboxSelectMultiple
 from django.db.models import get_model
 import cloudfiles
-from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER
+from PIL import Image
+from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER, MEDIA_ROOT
 
 
 GENDER_CHOICES = (
@@ -15,7 +16,21 @@ GENDER_CHOICES = (
         ('F', 'Female'),
     )
 
-# Create your models here.
+ARTICLE_TYPE = (
+        ('featured','Featured'),
+        ('standard','Standard'),
+        ('sidebar','Sidebar')
+)
+# This is a function for testing. It creates thirty categories.
+def testcats():
+    i = 0
+    while i < 30:
+        cat = Category.objects.create()
+        cat.name = 'test-'+str(i)
+        cat.slug = cat.name
+        cat.save()
+        i = i+1
+
 def CDNUpload(file):
     conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
     cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
@@ -25,16 +40,30 @@ def CDNUpload(file):
     return cdn_url
 
 def uniqueSlug(model, slug_field, title):
-        kwargs={}
-        slug = slugify(title)
-        model = get_model('app',model)
-        kwargs[slug_field] = slug
-        count = str(model.objects.filter(**kwargs).count())
-        if count == '0':
-            return slug
-        else:
-            slug = slug+'-'+count
-            return slug
+    kwargs={}
+    slug = slugify(title)
+    model = get_model('app',model)
+    kwargs[slug_field] = slug
+    count = model.objects.filter(**kwargs).count()
+    if count == 0:
+        return slug
+    else:
+        i = 1
+        while count > 0:
+            newslug = slug+'-'+str(i)
+            kwargs[slug_field] = newslug
+            count = model.objects.filter(**kwargs).count()
+            i = i+1
+        return newslug
+
+def resizeImage(image,):
+    workimage = Image.open(image.article.image)
+    box = (image.X, image.Y, image.X2, image.Y2)
+    savestr = 'articles/'+str(image.article.id)+image.type+'.jpg'
+    crop = workimage.crop(box)
+    crop.save(MEDIA_ROOT+savestr, "JPEG")
+    return savestr
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -43,35 +72,26 @@ class Category(models.Model):
         return self.name
 
 class Article(models.Model):
+    type = models.CharField(max_length=20, choices=ARTICLE_TYPE, default='standard')
     title = models.CharField(max_length=150)
-    date_posted = models.DateTimeField(null=True, blank=True)
-    is_featured = models.BooleanField()
+    title_slug = models.SlugField(null=True, blank=True, unique=True)
+    image = models.ImageField(upload_to="full_img")
     summary = models.TextField(null=True, blank=True)
     body = models.TextField(null=True, blank=True)
-    title_slug = models.SlugField(null=True, blank=True, unique=True)
-    header_image = models.ImageField(upload_to="header_imgs/")
-    header_url = models.URLField()
     categories = models.ManyToManyField(Category)
     author = models.ForeignKey(User)
     edit_user = models.CharField(max_length=30)
     last_edited = models.DateTimeField(auto_now=True)
     is_posted = models.BooleanField()
+    date_posted = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return self.title
 
-    def save(self, *args, **kwargs):
-        super(Article, self).save(*args, **kwargs)
-        if not self.header_url:
-            self.header_url = CDNUpload(self.header_image)
-        if not self.title_slug:
-            self.title_slug = uniqueSlug('Article','title_slug',self.title)
-        super(Article, self).save(*args, **kwargs)
-
 class ArticleForm(ModelForm):
     class Meta:
         model = Article
-        fields = ('title','summary','categories','header_image','is_featured', 'body')
+        fields = ('title','summary','categories','type', 'body', 'image')
         widgets = {
             'title': TextInput(attrs={'class':'input-xlarge'}),
             'body': Textarea(attrs={'id':'editorBody'}),
@@ -79,8 +99,39 @@ class ArticleForm(ModelForm):
             'categories': SelectMultiple(attrs={'id':'editorCategories'})
         }
 
+class ArticleImage(models.Model):
+    article = models.ForeignKey('Article')
+    type = models.CharField(max_length=20, null=True, blank=True)
+    X = models.DecimalField(max_digits=60, decimal_places=30, null=True, blank=True)
+    Y = models.DecimalField(max_digits=60, decimal_places=30, null=True, blank=True)
+    X2 = models.DecimalField(max_digits=60, decimal_places=30, null=True, blank=True)
+    Y2 = models.DecimalField(max_digits=60, decimal_places=30, null=True, blank=True)
+    cropped_file = models.FileField(upload_to='img/articles', null=True, blank=True)
+    URL = models.URLField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        super(ArticleImage, self).save(*args, **kwargs)
+        if self.X:
+            self.cropped_file = resizeImage(self)
+            self.URL = CDNUpload(self.cropped_file)
+            super(ArticleImage, self).save(*args, **kwargs)
+
+class ArticleImageForm(ModelForm):
+    class Meta:
+        model= ArticleImage
+        fields = ('type','X','Y','X2','Y2')
+        widgets = {
+            'type': HiddenInput(),
+            'X': HiddenInput(attrs={'id':'X'}),
+            'Y': HiddenInput(attrs={'id':'Y'}),
+            'X2':  HiddenInput(attrs={'id':'X2'}),
+            'Y2': HiddenInput(attrs={'id':'Y2'}),
+        }
+
+imageFormset = modelformset_factory(ArticleImage, form=ArticleImageForm, extra=0)
+
 class FileUpload(models.Model):
-    file = models.FileField(upload_to="img/")
+    file = models.FileField(upload_to="img/articles")
     title = models.CharField(max_length=50, null=True, blank=True)
     folder = models.CharField(max_length=50, null=True, blank=True)
     cdn_url = models.URLField()
