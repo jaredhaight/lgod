@@ -2,6 +2,34 @@
 {% block title %}<title>Live Geek or Die </title>{% endblock %}
 {% block content %}
 	{% include "staffButton.html" %}
+    <div class="row-fluid">
+        <div class="span12 well">
+            <div id="myCarousel" class="carousel slide">
+                <!-- Carousel items -->
+                <div class="carousel-inner">
+                    {% for feature in features %}
+                    {% if forloop.first %}
+                    <div class="item active">
+                    {% else %}
+                    <div class="item">
+                    {% endif %}
+                        <div class="row-fluid">
+                            <div class="span6 offset1">
+                                <a href="/article/{{ feature.title_slug }}"><img src={{ feature.featured_image.URL }}></a>
+                            </div>
+                            <div class="span4">
+                                <p><b>{{ feature.title }}</b></p>
+                                <p>{{ feature.summary }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+                <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+            </div>
+        </div>
+    </div>
 	{% include "articleList.html" %}
 {% endblock %}
 {% block footer %}

@@ -16,7 +16,10 @@
 {% block content %}
 {% include "staffButton.html" %}
 <div class="row-fluid">
-		<div class="span12 articleHeader">
+        <div class="span4">
+            <img src="{{ article.header_image.URL }}">
+        </div>
+		<div class="span8 articleHeader">
 			<div class="articleTitle">
 				<h1>{{ article.title }}</h1>
 				<div class="articleData">

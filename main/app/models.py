@@ -76,6 +76,9 @@ class Article(models.Model):
     title = models.CharField(max_length=150)
     title_slug = models.SlugField(null=True, blank=True, unique=True)
     image = models.ImageField(upload_to="full_img")
+    featured_image=models.ForeignKey('ArticleImage',related_name='featured_image', null=True, blank=True)
+    header_image=models.ForeignKey('ArticleImage', related_name='header_image', null=True, blank=True)
+    thumbnail=models.ForeignKey('ArticleImage', related_name='thumbnail', null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
     body = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category)
@@ -87,6 +90,16 @@ class Article(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    def save(self, *args, **kwargs):
+        super(Article, self).save(*args, **kwargs)
+        if not self.title_slug:
+            self.title_slug = uniqueSlug('Article','title_slug',self.title)
+        if self.image and not self.thumbnail:
+            self.header_image= ArticleImage.objects.create(article = self, type='header')
+            self.featured_image = ArticleImage.objects.create(article = self, type='featured')
+            self.thumbnail = ArticleImage.objects.create(article = self, type='thumbnail')
+        super(Article, self).save(*args, **kwargs)
 
 class ArticleForm(ModelForm):
     class Meta:
@@ -108,6 +121,9 @@ class ArticleImage(models.Model):
     Y2 = models.DecimalField(max_digits=60, decimal_places=30, null=True, blank=True)
     cropped_file = models.FileField(upload_to='img/articles', null=True, blank=True)
     URL = models.URLField(null=True, blank=True)
+
+    def __unicode__(self):
+        return str(self.id)
 
     def save(self, *args, **kwargs):
         super(ArticleImage, self).save(*args, **kwargs)

@@ -27,7 +27,7 @@ def home(request):
     except (InvalidPage, EmptyPage):
         articles = paginator.page(paginator.num_pages)
 
-    d = dict(articles=articles, user=user)
+    d = dict(articles=articles, features=features, user=user)
     return render_to_response("home.html", d)
 
 def category(request, jslug):
@@ -106,9 +106,9 @@ def articleEditor(request, article_id):
                     now = datetime.datetime.now()
                     article.date_posted = now.strftime("%Y-%m-%dT%H:%M:%S")
                     article.is_posted = True
-                    article.author = user
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
+                article.author = user
                 article.edit_user = user
                 article.save()
                 form.save_m2m()
@@ -127,9 +127,7 @@ def articleEditor(request, article_id):
 @login_required
 def imageEditor(request,article_id):
     article = get_object_or_404(Article, id=article_id)
-    header, created = ArticleImage.objects.get_or_create(article = article, type='header')
-    featured, created = ArticleImage.objects.get_or_create(article = article, type='featured')
-    thumbnail, created = ArticleImage.objects.get_or_create(article = article, type='thumbnail')
+
     formset = imageFormset(queryset=ArticleImage.objects.filter(article=article.id))
 
     if request.method == "POST":
