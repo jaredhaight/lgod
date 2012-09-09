@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block head %}
+<link rel="stylesheet" href="/static/css/redactor.css" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"/>
+<script src="/static/js/redactor.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(
+        function()
+        {
+                $('#editorBody').redactor({
+					fixed: true,
+					imageUpload: '{% url fileUpload %}',
+					imageGetJson: '{% url recentFiles %}'
+				});
+        }
+);
+</script>
+{% endblock %}
+{% block title %}<title> {% if status  == "new" %}New Article{% else %}{{ article.title }}{% endif %} - Live Geek or Die </title>{% endblock %}
+{% block notice %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="alert {% if status == 'not_ready' %}alert-warning {% else %} alert-info {% endif %}editorStatus">
+                <p><strong>Article Status: {% if status == 'posted' %} Posted {% elif status == 'not_ready' %} Not ready to Post {% elif status == 'ready_to_post' %} Ready to Post {% elif status == 'new' %} New {% endif %}</p></strong>
+                {% if errors %}
+                    <ul>
+                        {% for error in errors %}
+                            <li>{{ error }}<br>
+                        {% endfor %}
+                    </ul>
+
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block content %}
+{% include "staffButton.html" %}
+<form class="form" action="." enctype="multipart/form-data" method="post">
+{% csrf_token %}
+<fieldset>
+	<div class="row-fluid editorText">
+        <div class="span8">
+            {{ form.title_slug }}
+            Title{% if form.title.errors %}
+                {%  for error in form.title.errors %}
+                    <div class="editorErrors">{{ error }}</div>
+                {% endfor %}
+            {% endif %} <br>
+            {{ form.title }}<p>
+            Summary
+            {% if form.summary.errors %}
+                {%  for error in form.summary.errors %}
+                    <div class="editorErrors">{{ error }}</div>
+                {% endfor %}
+            {% endif %} <br>
+            {{ form.summary}}<p>
+            Article Type
+            {% if form.type.errors %}
+                {%  for error in form.type.errors %}
+                    <div class="editorErrors">{{ error }}</div>
+                {% endfor %}
+            {% endif %}<br>
+            {{ form.type }}<p>
+        </div>
+        <div class="span4">
+            Categories
+            {% if form.categories.errors %}
+                {%  for error in form.categories.errors %}
+                    <div class="editorErrors">{{ error }}</div>
+                {% endfor %}
+            {% endif %}<br>
+            {{ form.categories  }}
+
+        </div>
+    </div>
+    <div class="row-fluid editorText">
+        <div id="editorImage" class="span8">
+            {% if article.image and article.image.height %}
+                <div id="editorImgTxt">Image Currently: <a href="{{ article.image.url }}">{{ article.image.name }}</a></div><br>
+                Change Image: {{ form.image }}
+                {% if form.image.errors %}
+                    {%  for error in form.image.errors %}
+                            <div class="editorErrors">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% else %}
+                <div id="editorImgTxt" class="editorErrors">This article does not have an image.</div><br>
+                Choose Image: {{ form.image }}
+                {% if form.image.errors %}
+                    {%  for error in form.image.errors %}
+                        <div class="editorErrors">{{ error }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="span4">
+            <button id="photoEdit_btn" class="btn btn-info" name="edit_photos" type="submit" value="Edit Photos"><i class="icon-picture"></i> Edit Photos</button>
+        </div>
+    </div>
+    <div class="row-fluid">
+		<div class="span12 margintop1">
+       {{ form.body }}
+        </div>
+    <div class="row-fluid">
+        <div class="span12 margintop1">
+            <div class="control-group well">
+                <div class="controls">
+                {% if status == 'ready_to_post' %}
+                    <button id="post_btn" class="btn btn-primary" name="post_article" type="submit" value="Post"><i class="icon-ok-sign"></i> Post</button>
+                    <button id="preview_btn" class="btn btn-info" name="preview_article" type="submit" value="Preview"><i class="icon-globe"></i> Preview</button>
+                    <button id="draft_btn" class="btn btn-info" name="save_draft" type="submit" value="Save as Draft"><i class="icon-save"></i> Save as Draft</button>
+                {% endif %}
+                {% if status == 'not_ready' or status == 'new' %}
+                    <button id="update_status" class="btn btn-primary" name="update_article" type="submit" value="Update Status"><i class="icon-refresh"></i> Update Article Status</button>
+                    <button id="preview_btn" class="btn btn-info" name="preview_article" type="submit" value="Preview"><i class="icon-globe"></i> Preview</button>
+                    <button id="draft_btn" class="btn btn-info" name="save_draft" type="submit" value="Save as Draft"><i class="icon-save"></i> Save as Draft</button>
+                {% endif %}
+                {% if status == 'posted' %}
+                    <button id="unpublish_btn" class="btn btn-warning" name="unpost_article" type="submit" value="Un-Publish"><i class="icon-remove-sign"></i> Un-Publish</button>
+                    <button id="save_btn" class="btn btn-primary" name="save_article" type="submit" value="Save"><i class="icon-save"></i> Save Changes</button>
+                {% endif %}
+                <button id="discard_btn" class="btn btn-danger" name="discard_article" type="submit" value="Discard Changes"><i class="icon-trash"></i> Discard Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+</fieldset>
+
+{% endblock %}
+{% block javascript %}
+<script>
+    $(function(){
+        $(document).ready(function() {
+            if ($("#editorImage:contains('Image Currently')").length ) {
+                $("#photoEdit_btn").show();
+            }
+        });
+
+        $("#id_image").change(function(){
+            if ($("#id_image").val() != ""){
+                $("#photoEdit_btn").show();
+                $("#editorImgTxt").addClass("editorErrors").html("Choose Save or Edit Photos to upload your image");
+            }
+        });
+    });
+</script>
+{% endblock %}

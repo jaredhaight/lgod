@@ -10,8 +10,8 @@
 
 .readableText {
 	font-family: serif;
-	font-size: 1.4em;
-	line-height: 1.2em;
+	font-size: 1.6em;
+	line-height: 1.25em;
 }
 
 .accentText {
@@ -24,7 +24,6 @@
 	-moz-box-shadow: @arguments;
 	-webkit-box-shadow: @arguments;
 }
-
 
 .container-fluid {
 	margin-right: 1%;
@@ -48,6 +47,7 @@ blockquote {
 
 .fright {
 	float: right;
+    text-align: right;
 }
 
 .fleft {
@@ -119,6 +119,18 @@ blockquote {
 	margin-top: 1%;
 }
 
+.homePad img{
+    border:1px solid #;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.homeListBorder{
+    border-bottom: 1px solid;
+    border-bottom-color: oldlace;
+    padding-bottom: 1%;
+}
 .staffButton{
 	margin-top:  1%;
 	.accentText;
@@ -147,6 +159,14 @@ blockquote {
 	color: gray;
 }
 
+.shareLinks {
+  text-align: right;
+  width: 212px;
+}
+
+.fb-like {
+  top: -5px;
+}
 .articleCategories {
 	margin-bottom: 2%;
 	padding-bottom: 1%;
@@ -160,6 +180,10 @@ blockquote {
 	width: 60%;
 	margin: 0 auto;
 }
+.editorText {
+  font-family: sans-serif;
+  font-size: .7em;
+}
 
 #editorSummary {
 	width: 80%;
@@ -168,12 +192,35 @@ blockquote {
 }
 
 #editorCategories {
-    height: 105px;
+    height: 205px;
 }
 
-.editorButtons {
-	float: right;
-	margin-top: 1%;
+.editorStatus {
+  font-family: sans-serif;
+  font-size: .8em;
+}
+
+.editorErrors{
+  display: inline;
+  color: red;
+  font-weight: bold;
+}
+
+#editorImgTxt {
+  display: inline;
+}
+.redactor_editor{
+  font-family: serif;
+}
+
+#photoEdit_btn{
+  display: none;
+}
+
+.jcrop-holder{
+  margin-bottom:3px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .titleField {
@@ -222,6 +269,20 @@ blockquote {
 }
 
 @media (max-width: 767px) {
+    .listBody{
+      width:78%;
+      float:right;
+    }
+
+    .listImage{
+      float:left;
+    }
+
+    .homeListBorder{
+      margin-top: 2%;
+      padding-bottom: 2%;
+    }
+
     .sidebar-nav-fixed {
         position:static;
 		float: none;

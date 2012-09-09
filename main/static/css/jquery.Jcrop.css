@@ -12,6 +12,9 @@
 .jcrop-holder {
   direction: ltr;
   text-align: left;
+  margin-bottom:3px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* These styles define the border lines */

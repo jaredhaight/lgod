@@ -49,7 +49,7 @@ def authorPage(request, jslug):
     social = None
     user = request.user
     staff = get_object_or_404(User, username__iexact=str(jslug))
-    articles = get_list_or_404(Article.objects.filter(author__iexact=jslug, is_posted=True).order_by("-date_posted"))
+    articles = get_list_or_404(Article.objects.filter(author__username=jslug, is_posted=True).order_by("-date_posted"))
     
     try: staffProfile = StaffProfile.objects.get(user=User.objects.get(username=jslug))
     except: staffProfile = None
@@ -73,7 +73,7 @@ def article(request, article_id, type):
     user = request.user
     posted = None
     pagetype = 'article'
-    
+
     if type=='editorPreview' and request.user.is_authenticated():
         article = get_object_or_404(Article, id=article_id)
     else:
@@ -81,63 +81,95 @@ def article(request, article_id, type):
     
     if article.is_posted:
         posted = 'posted'
-    
+
     d = dict(user=user,article=article, posted=posted, pagetype=pagetype)
-    return render_to_response("article.html", d)
+    return render_to_response("articleView.html", d)
 
 @login_required
 def articleEditor(request, article_id):
     user = request.user
     posted = None
-    article = None
-    if article_id is not None:
+    errors = None
+    status = "new"
+    if article_id:
         article = get_object_or_404(Article, pk=article_id)
-        if article.is_posted:
-            posted = 'posted'
+        status, errors = article.post_status()
+
+    else:
+        article = None
 
     if request.method == 'POST':
         if "discard_article" in request.POST:
             return HttpResponseRedirect('/staff')
         else:
+            slug = request.POST['title_slug']
+            try: article = Article.objects.get(title_slug=slug)
+            except:
+                article = None
             form = ArticleForm(request.POST, request.FILES, instance=article)
             if form.is_valid():
                 article = form.save(commit=False)
                 if "post_article" in request.POST:
                     now = datetime.datetime.now()
                     article.date_posted = now.strftime("%Y-%m-%dT%H:%M:%S")
+                    article.author = user
                     article.is_posted = True
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
-                article.author = user
                 article.edit_user = user
                 article.save()
                 form.save_m2m()
-                return HttpResponseRedirect('/article/'+article.title_slug)
+                if "update_article" in request.POST:
+                    return HttpResponseRedirect('/editor/'+str(article.id))
+                if "preview_article" in request.POST:
+                    return HttpResponseRedirect('/editor/'+str(article.id)+'/preview')
+                if "edit_photos" in request.POST:
+                    return HttpResponseRedirect('/editor/'+str(article.id)+'/image')
+                elif article.is_posted:
+                    return HttpResponseRedirect('/article/'+article.title_slug)
+                else:
+                    return HttpResponseRedirect('/editor/'+str(article.id)+'/preview')
             
     else:
         form = ArticleForm(instance=article)
 
-    return render_to_response("editor.html", {
+    return render_to_response("articleEditor.html", {
         'form': form,
         'article' : article,
         'posted' : posted,
-        'user' : user},
+        'user' : user,
+        'status':status,
+        'errors':errors},
         context_instance=RequestContext(request))
 
 @login_required
 def imageEditor(request,article_id):
+    pagetype = 'article'
     article = get_object_or_404(Article, id=article_id)
-
+    featuredid = ArticleImageType.objects.get(name='featured').id
+    headerid = ArticleImageType.objects.get(name='header').id
+    thumbid = ArticleImageType.objects.get(name='thumbnail').id
+    featured = ArticleImage.objects.get(type=featuredid, article=article.id)
+    header = ArticleImage.objects.get(type=headerid, article=article.id)
+    thumb = ArticleImage.objects.get(type=thumbid, article=article.id)
     formset = imageFormset(queryset=ArticleImage.objects.filter(article=article.id))
 
     if request.method == "POST":
         formset = imageFormset(request.POST)
         if formset.is_valid():
             formset.save()
+            return HttpResponseRedirect('/editor/'+str(article.id))
 
     return render_to_response("imageEditor.html", {
         'formset': formset,
-        'article': article},
+        'article': article,
+        'featuredid': featuredid,
+        'headerid': headerid,
+        'thumbid': thumbid,
+        'featured':featured,
+        'header': header,
+        'thumb':thumb,
+        'pagetype':pagetype},
         context_instance=RequestContext(request))
 
 @csrf_exempt
@@ -146,7 +178,7 @@ def imageEditor(request,article_id):
 def fileUpload(request):
     files = []
     for f in request.FILES.getlist("file"):
-        obj = FileUpload.objects.create(file=f)
+        obj = ArticleImageUpload.objects.create(image=f)
         obj.folder = 'Article Uploads'
         obj.save()
         files.append({"filelink": obj.cdn_url})
@@ -158,7 +190,7 @@ def fileUpload(request):
 @login_required
 def fileUpdate(request):
     status = []
-    file = FileUpload.objects.get(pk=request.POST['id'])
+    file = ArticleImageUpload.objects.get(pk=request.POST['id'])
     file.title = request.POST['title']
     file.folder = request.POST['folder']
     file.save()
@@ -170,29 +202,30 @@ def fileUpdate(request):
 def recentFiles(request):
     files = [
         {"thumb": obj.cdn_url, "image": obj.cdn_url, "folder": obj.folder}
-        for obj in FileUpload.objects.all().order_by("-uploaded")[:20]
+        for obj in ArticleImageUpload.objects.all().order_by("-uploaded")[:20]
         ]
     return HttpResponse(json.dumps(files), mimetype="application/json")    
         
 @login_required
 def staffHome(request):
     user = request.user
-    articles = get_list_or_404(Article.objects.all().order_by("-date_posted"))
-    paginator = Paginator(articles, 30)
+    posted = Article.objects.filter(is_posted=True).order_by("-date_posted")
+    unposted = Article.objects.filter(is_posted=False).order_by("-date_posted")
+    paginator = Paginator(posted, 30)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
 
-    try: articles = paginator.page(page)
+    try: posted = paginator.page(page)
     except (InvalidPage, EmptyPage):
-        articles = paginator.page(paginator.num_pages)
+        posted = paginator.page(paginator.num_pages)
 
-    d = dict(articles=articles, user=user)
+    d = dict(posted=posted, unposted=unposted, user=user)
     return render_to_response("staffHome.html", d)
 
 @login_required
 def staffFileManager(request):
-    filelist = FileUpload.objects.all()
+    filelist = ArticleImageUpload.objects.all()
 
     d = dict(filelist=filelist)
     return render_to_response("staffFileManager.html", d)
@@ -217,7 +250,7 @@ def profilePage(request):
         form = ProfileForm(instance=profile)
         uform = UserForm(instance=request.user)
         
-    return render_to_response("profile.html", {
+    return render_to_response("staffProfile.html", {
         'form': form,
         'uform': uform,
         'notice': notice,

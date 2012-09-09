@@ -4,31 +4,62 @@
 {% include "staffButton.html" %}
          <div class="row-fluid staffHome">
 			<div class="span12">
-				<table class="table table-hover" id="articleList">
-				<thead>
-					<tr>
-						<th>Title</th>
-						<th>Author</th>
-						<th>Lasted Edited</th>
-						<th>Posted</th>
-						<th>Posted Date</th>
-						<th>Comment Count</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for article in articles %}
-					<tr>
-						<td><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></td>
-						<td>{{ article.author }}</td>
-						<td>{{ article.last_edited }} by {{ article.edit_user }}</td>
-						<td>{{ article.is_posted }}</td>
-						<td>{{ article.date_posted }}</td>
-						<td><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></td>
-					</tr>
-					{% endfor %}
-				</tbody>
-				</table>
-			</div>
+                <div class="tabbable">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#posted" data-toggle="tab">Posted</a></li>
+                        <li><a href="#unposted" data-toggle="tab">Not Posted</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="posted">
+                            <table class="table table-hover" id="articleList">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Lasted Edited</th>
+                                    <th>Posted</th>
+                                    <th>Posted Date</th>
+                                    <th>Comment Count</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for article in posted %}
+                                <tr>
+                                    <td><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></td>
+                                    <td>{{ article.author }}</td>
+                                    <td>{{ article.last_edited }} by {{ article.edit_user }}</td>
+                                    <td>{{ article.is_posted }}</td>
+                                    <td>{{ article.date_posted }}</td>
+                                    <td><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane" id="unposted">
+                            <table class="table table-hover" id="articleList">
+                                <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Lasted Edited</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for article in unposted %}
+                                    <tr>
+                                        <td><a href="/editor/{{ article.id }}">{{ article.title }}</a></td>
+                                        <td>{{ article.edit_user.username }}</td>
+                                        <td>{{ article.last_edited }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </div>
 {% endblock %}
 {% block javascript %}
         <script type="text/javascript">
