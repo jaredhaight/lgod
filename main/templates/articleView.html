@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block title %}<title xmlns="http://www.w3.org/1999/html"> {{ article.title }} - Live Geek or Die </title>{% endblock %}
 {% block meta %}
-        <meta name="og:url" content=
-                <meta name="title" content="Live Geek or Die" />
-        <meta property="og:site_name" content="Live Geek or Die" />
-        <meta property="og:title" content="Live Geek or Die" />
-        <meta name="description" content="A site for New England geeks and gamers" />
-        <meta name="og:description" content="A site for New England geeks and gamers" />
-        <meta property="og:type" content="website" />
+    <meta name="og:url" content=
+    <meta name="title" content="{{ article.title }}" />
+    <meta property="og:site_name" content="Live Geek or Die" />
+    <meta property="og:title" content="{{ article.title }}" />
+    <meta name="description" content="{{ article.summary|safe }}" />
+    <meta name="og:description" content="{{ article.summary|safe }}" />
+    <meta property="og:type" content="website" />
 
-        <link rel="image_src" href="{{ article.thumbnail.url }}" />
-        <meta property="og:image" content="{{ article.thumbnail.url }}" />
+    <link rel="image_src" href="{{ article.thumbnail.URL }}" />
+    <meta property="og:image" content="{{ article.thumbnail.URL }}" />
 {% endblock %}
 {% block notice %}
 	{% if not posted %}
@@ -26,7 +26,6 @@
 {% endblock %}
 
 {% block content %}
-{% include "staffButton.html" %}
 <div class="row-fluid">
     <div class="span4 articleHeader">
         <div class="articleTitle">

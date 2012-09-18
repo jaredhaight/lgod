@@ -1,9 +1,8 @@
 {% extends "base.html" %}
 {% block title %}<title>Live Geek or Die </title>{% endblock %}
 {% block content %}
-	{% include "staffButton.html" %}
     <div class="row-fluid">
-        <div class="span12 well">
+        <div class="span12">
             <div id="featuredArticles" class="carousel slide">
                 <!-- Carousel items -->
                 <div class="carousel-inner">
@@ -14,13 +13,16 @@
                     <div class="item">
                     {% endif %}
                         <div class="row-fluid">
-                            <div class="span6 offset1">
+                            <div id="carouselImg" class="span12">
                                 <a href="/article/{{ feature.title_slug }}"><img src={{ feature.featured_image.URL }}></a>
+                                <div id="carouselDescTransbox"></div>
+                                    <div id="carouselDesc" class="span3">
+                                        <p><b>{{ feature.title }}</b></p>
+                                        <p>{{ feature.summary }}</p>
+
+                                </div>
                             </div>
-                            <div class="span4">
-                                <p><b>{{ feature.title }}</b></p>
-                                <p>{{ feature.summary }}</p>
-                            </div>
+
                         </div>
                     </div>
                     {% endfor %}

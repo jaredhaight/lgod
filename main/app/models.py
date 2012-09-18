@@ -32,7 +32,7 @@ def setupcats():
         cat.save()
         i = i+1
 
-    featured = ArticleImageType.objects.create(name='featured', width=400, height=400)
+    featured = ArticleImageType.objects.create(name='featured', width=1500, height=400)
     featured.save()
 
     header = ArticleImageType.objects.create(name='header', width=1000, height=250)
@@ -79,17 +79,25 @@ def resizeImage(image, width, height):
     return savestr
 
 def cropImage(image):
-    workimage = Image.open(image.article.image)
+    workimage = Image.open(image.src.image)
     width = image.type.width
     height = image.type.height
     box = (image.X, image.Y, image.X2, image.Y2)
     timestamp = time.strftime('%m%d%y%H%M%S')
-    savestr = 'articles/'+timestamp+str(image.article.id)+image.type.name+'.jpg'
+    savestr = 'images/'+timestamp+str(image.src.id)+image.type.name+'.jpg'
     crop = workimage.crop(box)
     resize = crop.resize((width,height), Image.ANTIALIAS)
     resize.save(MEDIA_ROOT+savestr, "JPEG", quality=95)
     return savestr
 
+def connectCrops(article_id,image_id):
+    article = Article.objects.get(pk=article_id)
+    image = ArticleImage.objects.get(pk=image_id)
+
+    article.featured_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='featured')), src=image)
+    article.header_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='header')), src=image)
+    article.thumbnail = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='thumbnail')), src=image)
+    article.save()
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -101,10 +109,9 @@ class Article(models.Model):
     type = models.CharField(max_length=20, choices=ARTICLE_TYPE, default='standard')
     title = models.CharField(max_length=150)
     title_slug = models.SlugField(null=True, blank=True, unique=True)
-    image = models.ImageField(upload_to="full_img", null=True, blank=True)
-    featured_image=models.ForeignKey('ArticleImage',related_name='featured_image', null=True, blank=True)
-    header_image=models.ForeignKey('ArticleImage', related_name='header_image', null=True, blank=True)
-    thumbnail=models.ForeignKey('ArticleImage', related_name='thumbnail', null=True, blank=True)
+    featured_image=models.ForeignKey('ArticleImageCrop',related_name='featured_image', null=True, blank=True)
+    header_image=models.ForeignKey('ArticleImageCrop', related_name='header_image', null=True, blank=True)
+    thumbnail=models.ForeignKey('ArticleImageCrop', related_name='thumbnail', null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
     body = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category, null=True, blank=True)
@@ -121,29 +128,19 @@ class Article(models.Model):
         errors = []
         status = 'not_ready'
 
-        if not self.summary:
-            errors.append('Article has no summary')
-
         if not self.body:
             errors.append('Article has no content')
+
+        if self.type != 'sidebar' and not self.summary:
+            errors.append('Article has no summary')
+
+        if self.type != 'sidebar' and not self.thumbnail:
+            errors.append('Article does not have an image')
 
         if self.type != 'sidebar' and self.categories.count() < 1:
             errors.append('Article is not categorized')
 
-        if self.type != 'sidebar' and not self.image:
-            errors.append("Article does not have an image")
-            return status, errors
-
-        if self.type != 'sidebar' and not self.thumbnail.URL:
-            errors.append("Article does not have a thumbnail")
-
-        if self.type != 'sidebar' and not self.header_image.URL:
-            errors.append('Article does not have a header image.')
-
-        if self.type == 'featured' and not self.featured_image.URL:
-            errors.append('Article is Featured, but does not have a featured image')
-
-        if self.is_posted == True:
+        if self.is_posted:
             status = 'posted'
         elif not errors:
             status = 'ready_to_post'
@@ -154,22 +151,15 @@ class Article(models.Model):
         super(Article, self).save(*args, **kwargs)
         if not self.title_slug:
             self.title_slug = uniqueSlug('Article','title_slug',self.title)
-        if self.image and not self.thumbnail:
-            if self.image.width > 1000:
-                self.image  = resizeImage(self.image.path, 1000, 0)
-            self.header_image= ArticleImage.objects.create(article = self, type=(ArticleImageType.objects.get(name='header')))
-            self.featured_image = ArticleImage.objects.create(article = self, type=(ArticleImageType.objects.get(name='featured')))
-            self.thumbnail = ArticleImage.objects.create(article = self, type=(ArticleImageType.objects.get(name='thumbnail')))
         super(Article, self).save(*args, **kwargs)
 
 class ArticleForm(ModelForm):
     class Meta:
         model = Article
-        fields = ('title','title_slug','summary','categories','type', 'body', 'image')
+        fields = ('title','title_slug','summary','categories','type', 'body')
         widgets = {
             'title_slug': HiddenInput(),
             'title': TextInput(attrs={'class':'input-xlarge'}),
-            'image': FileInput(),
             'body': Textarea(attrs={'id':'editorBody'}),
             'summary':  Textarea(attrs={'id':'editorSummary'}),
             'categories': SelectMultiple(attrs={'id':'editorCategories'})
@@ -184,7 +174,15 @@ class ArticleImageType(models.Model):
         return self.name
 
 class ArticleImage(models.Model):
-    article = models.ForeignKey('Article')
+    image = models.ImageField(upload_to="full_img", null=True, blank=True)
+    uploaded_by = models.ForeignKey(User, null=True, blank=True)
+    date = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        return str(self.id)
+
+class ArticleImageCrop(models.Model):
+    src = models.ForeignKey('ArticleImage')
     type = models.ForeignKey('ArticleImageType')
     X = models.DecimalField(max_digits=60, decimal_places=30, null=True, blank=True)
     Y = models.DecimalField(max_digits=60, decimal_places=30, null=True, blank=True)
@@ -197,16 +195,16 @@ class ArticleImage(models.Model):
         return str(self.id)
 
     def save(self, *args, **kwargs):
-        super(ArticleImage, self).save(*args, **kwargs)
+        super(ArticleImageCrop, self).save(*args, **kwargs)
         if self.X2:
             self.cropped_file = cropImage(self)
             self.URL = CDNUpload(self.cropped_file)
-            super(ArticleImage, self).save(*args, **kwargs)
+            super(ArticleImageCrop, self).save(*args, **kwargs)
 
 
-class ArticleImageForm(ModelForm):
+class ArticleImageCropForm(ModelForm):
     class Meta:
-        model= ArticleImage
+        model= ArticleImageCrop
         fields = ('type','X','Y','X2','Y2')
         widgets = {
             'type': HiddenInput(),
@@ -216,17 +214,17 @@ class ArticleImageForm(ModelForm):
             'Y2': HiddenInput(attrs={'id':'Y2'}),
         }
 
-imageFormset = modelformset_factory(ArticleImage, form=ArticleImageForm, extra=0)
+imageFormset = modelformset_factory(ArticleImageCrop, form=ArticleImageCropForm, extra=0)
 
-class ArticleImageUpload(models.Model):
-    image = models.ImageField(upload_to="img/articles")
+class ContentImage(models.Model):
+    image = models.ImageField(upload_to="img/content")
     title = models.CharField(max_length=50, null=True, blank=True)
     folder = models.CharField(max_length=50, null=True, blank=True)
     cdn_url = models.URLField()
     uploaded = models.DateTimeField(auto_now_add=True)
     
     def save(self, *args, **kwargs):
-        super(ArticleImageUpload, self).save(*args, **kwargs)
+        super(ContentImage, self).save(*args, **kwargs)
         if self.image.width > 400:
             self.image = resizeImage(self.image.path, 400, 0)
         if self.image.height > 400:

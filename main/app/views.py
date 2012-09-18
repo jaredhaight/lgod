@@ -1,4 +1,5 @@
 # Create your views here.
+from django.contrib.auth import logout
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -18,7 +19,7 @@ def home(request):
     user = request.user
     articles = get_list_or_404(Article.objects.filter(is_posted=True).order_by("-date_posted"))
     features = Article.objects.filter(is_posted=True,type='featured').order_by("-date_posted")[:10]
-    paginator = Paginator(articles, 10)
+    paginator = Paginator(articles, 9)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
@@ -33,7 +34,7 @@ def home(request):
 def category(request, jslug):
     user = request.user
     articles = get_list_or_404(Article.objects.filter(categories__slug=jslug, is_posted=True).order_by("-date_posted"))
-    paginator = Paginator(articles, 10)
+    paginator = Paginator(articles, 9)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
@@ -57,7 +58,7 @@ def authorPage(request, jslug):
     if staffProfile.twitter or staffProfile.facebook or staffProfile.gplus:
         social = 'social'
 
-    paginator = Paginator(articles, 10)
+    paginator = Paginator(articles, 9)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
@@ -85,6 +86,7 @@ def article(request, article_id, type):
     d = dict(user=user,article=article, posted=posted, pagetype=pagetype)
     return render_to_response("articleView.html", d)
 
+@csrf_exempt
 @login_required
 def articleEditor(request, article_id):
     user = request.user
@@ -102,8 +104,7 @@ def articleEditor(request, article_id):
         if "discard_article" in request.POST:
             return HttpResponseRedirect('/staff')
         else:
-            slug = request.POST['title_slug']
-            try: article = Article.objects.get(title_slug=slug)
+            try: article = Article.objects.get(pk=article_id)
             except:
                 article = None
             form = ArticleForm(request.POST, request.FILES, instance=article)
@@ -119,6 +120,8 @@ def articleEditor(request, article_id):
                 article.edit_user = user
                 article.save()
                 form.save_m2m()
+                if "pick_photo" in request.POST:
+                    return HttpResponseRedirect('/editor/'+str(article.id)+'/picker')
                 if "update_article" in request.POST:
                     return HttpResponseRedirect('/editor/'+str(article.id))
                 if "preview_article" in request.POST:
@@ -143,34 +146,80 @@ def articleEditor(request, article_id):
         context_instance=RequestContext(request))
 
 @login_required
-def imageEditor(request,article_id):
+def imageEditor(request,image_id):
     pagetype = 'article'
-    article = get_object_or_404(Article, id=article_id)
-    featuredid = ArticleImageType.objects.get(name='featured').id
-    headerid = ArticleImageType.objects.get(name='header').id
-    thumbid = ArticleImageType.objects.get(name='thumbnail').id
-    featured = ArticleImage.objects.get(type=featuredid, article=article.id)
-    header = ArticleImage.objects.get(type=headerid, article=article.id)
-    thumb = ArticleImage.objects.get(type=thumbid, article=article.id)
-    formset = imageFormset(queryset=ArticleImage.objects.filter(article=article.id))
+    articleImage = get_object_or_404(ArticleImage, id=image_id)
+    featuredType = ArticleImageType.objects.get(name='featured')
+    headerType = ArticleImageType.objects.get(name='header')
+    thumbType = ArticleImageType.objects.get(name='thumbnail')
+    featured = ArticleImageCrop.objects.get(type=featuredType.id, src=articleImage.id)
+    header = ArticleImageCrop.objects.get(type=headerType.id, src=articleImage.id)
+    thumb = ArticleImageCrop.objects.get(type=thumbType.id, src=articleImage.id)
+    formset = imageFormset(queryset=ArticleImageCrop.objects.filter(src=articleImage.id))
+
+    try:
+        article_id = request.GET['article']
+    except:
+        article_id = None
 
     if request.method == "POST":
+        try:
+            article_id = request.GET['article']
+        except:
+            article_id = None
+
         formset = imageFormset(request.POST)
         if formset.is_valid():
             formset.save()
-            return HttpResponseRedirect('/editor/'+str(article.id))
+
+        if article_id:
+            return HttpResponseRedirect('/editor/'+str(article_id))
+        else:
+            return HttpResponseRedirect('/staff/images')
+
+    #Get width for image display
+    ratio = articleImage.image.width/float(articleImage.image.height)
+    imgheight = 1140/ratio
 
     return render_to_response("imageEditor.html", {
         'formset': formset,
-        'article': article,
-        'featuredid': featuredid,
-        'headerid': headerid,
-        'thumbid': thumbid,
+        'articleImage': articleImage,
+        'featuredType': featuredType,
+        'headerType': headerType,
+        'thumbType': thumbType,
         'featured':featured,
         'header': header,
         'thumb':thumb,
-        'pagetype':pagetype},
+        'pagetype':pagetype,
+        'imgheight':imgheight,
+        'article_id':article_id},
         context_instance=RequestContext(request))
+
+@csrf_exempt
+@require_POST
+@login_required
+def imageUpload(request):
+    try:
+        article_id = request.GET['article']
+    except:
+        article_id = None
+
+    for f in request.FILES.getlist("file"):
+        obj = ArticleImage.objects.create(image=f)
+        obj.uploaded_by = request.user
+        obj.save()
+        if obj.image.width > 1600:
+            obj.image  = resizeImage(obj.image.path, 1600, 0)
+            obj.save()
+        header = ArticleImageCrop.objects.create(src = obj, type=(ArticleImageType.objects.get(name='header')))
+        featured = ArticleImageCrop.objects.create(src = obj, type=(ArticleImageType.objects.get(name='featured')))
+        thumb = ArticleImageCrop.objects.create(src = obj, type=(ArticleImageType.objects.get(name='thumbnail')))
+
+        if article_id:
+            article = get_object_or_404(Article, id=article_id)
+            connectCrops(article.id,obj.id)
+            return HttpResponseRedirect('/staff/image/'+str(obj.id)+'/?article='+str(article_id))
+        return HttpResponseRedirect('/staff/image/'+str(obj.id))
 
 @csrf_exempt
 @require_POST
@@ -178,7 +227,7 @@ def imageEditor(request,article_id):
 def fileUpload(request):
     files = []
     for f in request.FILES.getlist("file"):
-        obj = ArticleImageUpload.objects.create(image=f)
+        obj = ContentImage.objects.create(image=f)
         obj.folder = 'Article Uploads'
         obj.save()
         files.append({"filelink": obj.cdn_url})
@@ -190,7 +239,7 @@ def fileUpload(request):
 @login_required
 def fileUpdate(request):
     status = []
-    file = ArticleImageUpload.objects.get(pk=request.POST['id'])
+    file = ContentImage.objects.get(pk=request.POST['id'])
     file.title = request.POST['title']
     file.folder = request.POST['folder']
     file.save()
@@ -202,7 +251,7 @@ def fileUpdate(request):
 def recentFiles(request):
     files = [
         {"thumb": obj.cdn_url, "image": obj.cdn_url, "folder": obj.folder}
-        for obj in ArticleImageUpload.objects.all().order_by("-uploaded")[:20]
+        for obj in ContentImage.objects.all().order_by("-uploaded")[:20]
         ]
     return HttpResponse(json.dumps(files), mimetype="application/json")    
         
@@ -224,8 +273,30 @@ def staffHome(request):
     return render_to_response("staffHome.html", d)
 
 @login_required
+def imagePicker(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='header')), URL__isnull=False)
+
+    paginator = Paginator(imagelist, 8)
+
+    try: page = int(request.GET.get("page", '1'))
+    except ValueError: page = 1
+
+    try: imagelist = paginator.page(page)
+    except (InvalidPage, EmptyPage):
+        imagelist = paginator.page(paginator.num_pages)
+
+    if request.method == "POST":
+            image = ArticleImage.objects.get(pk=request.POST['image'])
+            connectCrops(article_id,image.id)
+            return HttpResponseRedirect('/editor/'+str(article_id))
+
+    d = dict(imagelist=imagelist, article=article)
+    return render_to_response("imagePicker.html", d, context_instance=RequestContext(request))
+
+@login_required
 def staffFileManager(request):
-    filelist = ArticleImageUpload.objects.all()
+    filelist = ContentImage.objects.all()
 
     d = dict(filelist=filelist)
     return render_to_response("staffFileManager.html", d)
@@ -256,3 +327,7 @@ def profilePage(request):
         'notice': notice,
         'user': user},
         context_instance=RequestContext(request))
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')

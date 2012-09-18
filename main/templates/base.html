@@ -18,15 +18,16 @@
         {% block head %}{% endblock %}
 </head>
 <body>
+{% include "staffBar.html" %}
 <div class="container-fluid">
-	<div class="row-fluid">
-		<div class="span2">
+	<div class="row-fluid {% if user.is_authenticated %}staffMargin{% endif %}">
+		<div id="sidebar" class="span2">
 			<div class="sidebar-nav-fixed">
 				{% include "sidebar.html" %}
 			</div>
 		</div>
-		<div class="span10">
-			<div class="contentWrap">
+		<div id="content" class="span10">
+			<div class="contentWrap margintop1">
 				{% block notice %}{% endblock %}
 				{% block content %}{% endblock %}
 				<div class="row">

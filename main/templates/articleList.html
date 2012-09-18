@@ -1,59 +1,45 @@
+<div class="row-fluid homePad">
 {% for article in articles %}
-    <div class="row-fluid homePad">
-        {% if forloop.counter|divisibleby:2 %}
-            <div class="span12">
-                <div class="row-fluid homeListBorder">
-                    <div class="listImage">
-                        <div class="span2">
-                           <img src={{ article.thumbnail.URL }}></a>
-                        </div>
-                    </div>
-                    <div class="listBody">
-                        <div class="span10">
-                            <a href="/article/{{ article.title_slug }}">{{ article.title }}</a>
-                            <div class="articleData">
-                                {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
-                            </div>
-                            <p>{{ article.summary }}</p>
-                        </div>
-                    </div>
+    <div class="span4 articleListBorder">
+        <div class="articleListBody">
+            <p class="articleListImage">
+                <img src={{ article.thumbnail.URL }}>
+            </p>
+            <p>
+                <a href="/article/{{ article.title_slug }}">{{ article.title }}</a>
+                <div class="articleData">
+                    {{ article.date_posted|date:"F jS" }} at {{ article.date_posted|date:"P" }}
                 </div>
+                    {{ article.summary }}
+            </p>
+        </div>
+        <div class="articleListMetaData">
+            {% for category in article.categories.all %}
+                <span class="label label-info">{{ category.name }}</span>
+            {% endfor %}
+            <div class="pull-right">
+                <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a>
             </div>
-        {% else %}
-            <div class="span12">
-                <div class="row-fluid homeListBorder">
-                    <div class="listBody">
-                        <div class="span10 ">
-                            <a href="/article/{{ article.title_slug }}">{{ article.title }}</a>
-                            <div class="articleData">
-                                {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
-                            </div>
-                            <p>{{ article.summary }}</p>
-                        </div>
-                        </div>
-                    <div class="listImage">
-                        <div class="span2">
-                            <a href="/article/{{ article.title_slug }}"><img src={{ article.thumbnail.URL }}></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {% block javascript %}
-                <script type="text/javascript">
-                    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-                    var disqus_shortname = 'livegeekortest'; // required: replace example with your forum shortname
-
-                    /* * * DON'T EDIT BELOW THIS LINE * * */
-                    (function () {
-                        var s = document.createElement('script'); s.async = true;
-                        s.type = 'text/javascript';
-                        s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
-                        (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
-                    }());
-                </script>
-            {% endblock %}
-
-        {% endif %}
+        </div>
     </div>
-{% endfor %}
+   {% if forloop.counter|divisibleby:3 %}
+    </div>
+    <div class="row-fluid homePad">
+    {% endif %}
+ {% endfor %}
+</div>
+{% block javascript %}
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'livegeekortest'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
+{% endblock %}

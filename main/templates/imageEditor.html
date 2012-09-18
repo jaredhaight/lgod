@@ -9,58 +9,94 @@
             $('#fimage').Jcrop({
                 onSelect: featCoords,
                 onChange: featCoords,
-                minSize:['400','400'],
+                minSize:['{{ featuredType.width }}','{{ featuredType.height }}'],
             {% if featured.X2 %}
                 setSelect:   [ {{ featured.X }}, {{ featured.Y }}, {{ featured.X2 }}, {{ featured.Y2 }} ],
             {% endif %}
-                aspectRatio:1
+                aspectRatio:3.75/1,
+                trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
             });
             $('#himage').Jcrop({
                 onSelect: headerCoords,
                 onChange: headerCoords,
-                minSize:['1000','250'],
+                minSize:['{{ headerType.width }}','{{ headerType.height }}'],
             {% if header.X2 %}
                 setSelect:   [ {{ header.X }}, {{ header.Y }}, {{ header.X2 }}, {{ header.Y2 }} ],
             {% endif %}
-                aspectRatio:4/1
+                aspectRatio:4/1,
+                trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
             });
             $('#timage').Jcrop({
                 onSelect: thumbCoords,
                 onChange: thumbCoords,
-                minSize:['125','125'],
+                minSize:['{{ thumbType.width }}','{{ thumbType.height }}'],
             {% if thumb.X2 %}
                 setSelect:   [ {{ thumb.X }}, {{ thumb.Y }}, {{ thumb.X2 }}, {{ thumb.Y2 }} ],
             {% endif %}
-                aspectRatio:1
+                aspectRatio:1,
+                trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
             });
         });
     function featCoords(c)
     {
-        jQuery('#{{ featuredid }}form').find('#X').val(c.x);
-        jQuery('#{{ featuredid }}form').find('#Y').val(c.y);
-        jQuery('#{{ featuredid }}form').find('#X2').val(c.x2);
-        jQuery('#{{ featuredid }}form').find('#Y2').val(c.y2);
+        jQuery('#{{ featuredType.id }}form').find('#X').val(c.x);
+        jQuery('#{{ featuredType.id }}form').find('#Y').val(c.y);
+        jQuery('#{{ featuredType.id }}form').find('#X2').val(c.x2);
+        jQuery('#{{ featuredType.id }}form').find('#Y2').val(c.y2);
     };
 
     function headerCoords(c)
     {
-        jQuery("#{{ headerid }}form").find("#X").val(c.x);
-        jQuery("#{{ headerid }}form").find("#Y").val(c.y);
-        jQuery("#{{ headerid }}form").find("#X2").val(c.x2);
-        jQuery("#{{ headerid }}form").find("#Y2").val(c.y2);
+        jQuery("#{{ headerType.id }}form").find("#X").val(c.x);
+        jQuery("#{{ headerType.id }}form").find("#Y").val(c.y);
+        jQuery("#{{ headerType.id }}form").find("#X2").val(c.x2);
+        jQuery("#{{ headerType.id }}form").find("#Y2").val(c.y2);
     };
 
     function thumbCoords(c)
     {
-        jQuery("#{{ thumbid }}form").find("> #X").val(c.x);
-        jQuery("#{{ thumbid }}form").find("> #Y").val(c.y);
-        jQuery("#{{ thumbid }}form").find("> #X2").val(c.x2);
-        jQuery("#{{ thumbid }}form").find("> #Y2").val(c.y2);
+        jQuery("#{{ thumbType.id }}form").find("> #X").val(c.x);
+        jQuery("#{{ thumbType.id }}form").find("> #Y").val(c.y);
+        jQuery("#{{ thumbType.id }}form").find("> #X2").val(c.x2);
+        jQuery("#{{ thumbType.id }}form").find("> #Y2").val(c.y2);
     };
 
+    $(document).ready(function() {
+        $('body').mouseup(function(){
+            if ($("#{{ thumbType.id }}form").find("> #X2").val() - $("#{{ thumbType.id }}form").find("> #X").val() != 0){
+                $("#thumbtab").addClass('imgEditorGood');
+                var thumbgood = true
+            } else {
+                $("#thumbtab").removeClass('imgEditorGood');
+                var thumbgood = false
+            }
+
+            if ($("#{{ headerType.id }}form").find("> #X2").val() - $("#{{ headerType.id }}form").find("> #X").val() != 0){
+                $("#headertab").addClass('imgEditorGood');
+                var headergood = true
+            } else {
+                $("#headertab").removeClass('imgEditorGood');
+                var headergood = false
+            }
+
+            if ($("#{{ featuredType.id }}form").find("> #X2").val() - $("#{{ featuredType.id }}form").find("> #X").val() != 0){
+                $("#featuredtab").addClass('imgEditorGood');
+                var featuredgood = true
+            } else {
+                $("#featuredtab").removeClass('imgEditorGood');
+                var featuredgood = false
+            }
+
+            if (thumbgood && headergood && featuredgood){
+                $('#saveButton').show();
+            } else {
+                $('#saveButton').hide();
+            }
+        });
+    });
     </script>
 {% endblock %}
-{% block title %}<title> {{ article.title }} - Live Geek or Die </title>{% endblock %}
+{% block title %}<title> Image Editor - Live Geek or Die </title>{% endblock %}
 
 {% block content %}
     {% if form.errors %}
@@ -74,36 +110,36 @@
             </div>
         </div>
     {% endif %}
-    {% include "staffButton.html" %}
     <div class="row-fluid">
         <div class="span12 margintop1">
             <div class="tabbable">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#featured" data-toggle="tab">Featured</a></li>
-                    <li><a href="#header" data-toggle="tab">Header</a></li>
-                    <li><a href="#thumbnail" data-toggle="tab">Thumbnail</a></li>
-                </ul>
-                <form action="." method="post">
+                <form action="/staff/image/{{ articleImage.id }}/{% if article_id %}?article={{ article_id }}{% endif %}" method="post">
                     {% csrf_token %}
+                <ul class="nav nav-tabs">
+                    <li id="featuredtab" class="active"><a href="#featured" data-toggle="tab">Featured</a></li>
+                    <li id="headertab"><a href="#header" data-toggle="tab">Header</a></li>
+                    <li id="thumbtab"><a href="#thumbnail" data-toggle="tab">Thumbnail</a></li>
+                    <button id="saveButton" type="submit" name="submit" class="btn btn-primary pull-right">Save Image Selection</button>
+                </ul>
                 <div class="tab-content">
                     <div class="tab-pane active" id="featured">
-                        <div class="row-fluid editorCrop">
+                        <div class="row-fluid imageEditorCrop">
                             <div class="span12">
-                                <img id="fimage" src="{{ article.image.url }}">
+                                <img id="fimage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane" id="header">
                         <div class="row-fluid">
-                            <div class="span12 editorCrop">
-                                <img id="himage" src="{{ article.image.url }}">
+                            <div class="span12 imageEditorCrop">
+                                <img id="himage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
                             </div>
                         </div>
                     </div>
                     <div class="tab-pane" id="thumbnail">
                         <div class="row-fluid">
-                            <div class="span12 editorCrop">
-                                <img id="timage" src="{{ article.image.url }}">
+                            <div class="span12 imageEditorCrop">
+                                <img id="timage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
                             </div>
                         </div>
                     </div>
@@ -116,15 +152,6 @@
                     {{ form }}
                 </div>
             {% endfor %}
-            </div>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span12 margintop1">
-            <div class="control-group well">
-                <div class="controls">
-                    <button class="btn btn-primary"type="submit" value="Save"><i class="icon-ok-sign"></i> Save</button>
-                </div>
             </div>
         </div>
     </div>

@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/static/css/redactor.css" xmlns="http://www.w3.org/1999/html"
       xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"/>
 <script src="/static/js/redactor.min.js"></script>
-
+<script src="/static/js/simplyCountable.js"></script>
 <script type="text/javascript">
 $(document).ready(
         function()
@@ -11,8 +11,27 @@ $(document).ready(
                 $('#editorBody').redactor({
 					fixed: true,
 					imageUpload: '{% url fileUpload %}',
-					imageGetJson: '{% url recentFiles %}'
+					imageGetJson: '{% url recentFiles %}',
+                    {%  if not article.is_posted %}
+                    autosave: '/editor/{{ article.id }}/',
+                    interval: 15, // seconds
+                    {% endif %}
 				});
+
+                $('#editorSummary').simplyCountable({
+                counter:            '#counter',
+                countType:          'characters',
+                wordSeparator:      ' ',
+                maxCount:           200,
+                strictMax:          true,
+                countDirection:     'down',
+                safeClass:          'safe',
+                overClass:          'over',
+                thousandSeparator:  ',',
+                onOverCount:        function(count, countable, counter){},
+                onSafeCount:        function(count, countable, counter){},
+                onMaxCount:         function(count, countable, counter){}
+                });
         }
 );
 </script>
@@ -36,9 +55,7 @@ $(document).ready(
     </div>
 {% endblock %}
 {% block content %}
-{% include "staffButton.html" %}
 <form class="form" action="." enctype="multipart/form-data" method="post">
-{% csrf_token %}
 <fieldset>
 	<div class="row-fluid editorText">
         <div class="span8">
@@ -49,7 +66,7 @@ $(document).ready(
                 {% endfor %}
             {% endif %} <br>
             {{ form.title }}<p>
-            Summary
+            Summary <span id="summaryCounter" class="pull-right"><span id="counter">200</span> Characters Remaining</span>
             {% if form.summary.errors %}
                 {%  for error in form.summary.errors %}
                     <div class="editorErrors">{{ error }}</div>
@@ -77,23 +94,19 @@ $(document).ready(
     </div>
     <div class="row-fluid editorText">
         <div id="editorImage" class="span8">
-            {% if article.image and article.image.height %}
-                <div id="editorImgTxt">Image Currently: <a href="{{ article.image.url }}">{{ article.image.name }}</a></div><br>
-                Change Image: {{ form.image }}
-                {% if form.image.errors %}
-                    {%  for error in form.image.errors %}
-                            <div class="editorErrors">{{ error }}</div>
-                    {% endfor %}
+            <div class="span2">
+                {% if article.thumbnail.URL %}
+                <img src="{{ article.thumbnail.URL }}">
+                {% else %}
+                <div class="nothumb">
+                    <p>No Image Selected</p>
+                </div>
                 {% endif %}
-            {% else %}
-                <div id="editorImgTxt" class="editorErrors">This article does not have an image.</div><br>
-                Choose Image: {{ form.image }}
-                {% if form.image.errors %}
-                    {%  for error in form.image.errors %}
-                        <div class="editorErrors">{{ error }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endif %}
+            </div>
+            <div class="span10">
+                <p><button name="pick_photo" type="submit" class="btn">Choose an existing Image</button><br></p>
+                <p><a href="#imgUploadModal" role="button" class="btn" data-toggle="modal" data-target="#imgUploadModal">Upload a New Image</a></p>
+            </div>
         </div>
         <div class="span4">
             <button id="photoEdit_btn" class="btn btn-info" name="edit_photos" type="submit" value="Edit Photos"><i class="icon-picture"></i> Edit Photos</button>
@@ -130,16 +143,35 @@ $(document).ready(
 </form>
 </fieldset>
 
+    <!-- Modal Window for Upload -->
+    <div class="modal editorText" id="imgUploadModal" tabindex="-1" role="dialog" aria-labelledby="imgUploadLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="ImageUpload">Upload an Image</h3>
+        </div>
+        <div class="modal-body">
+            <form class="form" action="/staff/image/upload/?article={{ article.id }}" method="post" enctype="multipart/form-data">
+                <input type="file" name="file" id="file" />
+                <br />
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            <button type="submit" name="submit" class="btn btn-primary">Save changes</button>
+        </div>
+        </form>
+    </div>
+
 {% endblock %}
 {% block javascript %}
 <script>
     $(function(){
         $(document).ready(function() {
-            if ($("#editorImage:contains('Image Currently')").length ) {
-                $("#photoEdit_btn").show();
+        $('#id_title').keyup(function(){
+            if ($("#id_title").val() != ""){
+                $("#editorImage").slideDown(500);
             }
+            });
         });
-
         $("#id_image").change(function(){
             if ($("#id_image").val() != ""){
                 $("#photoEdit_btn").show();
