@@ -1,115 +1,129 @@
 @base: #fff;
 @sidebarTextColor: #919191;
-@baseFontSize: 18px;
 
+body {
+  font-size: 125%;
+}
 .rounded-corners (@radius: 5px) {
   border-radius: @radius;
   -webkit-border-radius: @radius;
   -moz-border-radius: @radius;
 }
 
-.readableText {
-	font-family: serif;
-	font-size: 1.6em;
-	line-height: 1.25em;
+.readableText (@size: 1em, @height: 1.2em) {
+  font-family: serif;
+  font-size: @size;
+  line-height: @height;
+  text-rendering: optimizelegibility;
 }
 
-.accentText (@size: .9em){
-	font-family: sans-serif;
-	font-size: @arguments;
+.accentText (@size: .7em, @height:.9em){
+  font-family: sans-serif;
+  font-size: @size;
+  line-height: @height;
 }
 
 .box-shadow (@x: 0, @y: 0, @blur: 10px, @rgba: rgba(50, 50, 50, 0.75)) {
-	box-shadow: @arguments;
-	-moz-box-shadow: @arguments;
-	-webkit-box-shadow: @arguments;
+  box-shadow: @arguments;
+  -moz-box-shadow: @arguments;
+  -webkit-box-shadow: @arguments;
 }
 
 .container-fluid {
-	margin-right: 1%;
-	margin-left: 1%;
+  margin-right: 1%;
+  margin-left: 1%;
 }
 
 a:hover {
-	text-decoration: none;
+  text-decoration: none;
 }
 
 blockquote {
-        font-size: .9em;
-        font-style: italic;
-        color: #888;
-        margin-top: 1%;
-        margin-bottom: 1%;
-        margin-left: 3%;
-        padding-left: 1%;
-        border-left: 3px solid #ccc;
+  font-size: .9em;
+  font-style: italic;
+  color: #888;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  margin-left: 3%;
+  padding-left: 1%;
+  border-left: 3px solid #ccc;
 }
 
 .fright {
-	float: right;
-    text-align: right;
+  float: right;
+  text-align: right;
 }
 
 .fleft {
-	float: left;
+  float: left;
+}
+
+.center {
+  text-align: center;
 }
 
 .margintop1 {
-	margin-top: 1%;
+  margin-top: 1%;
 }
 
 .margintop5 {
-	margin-top: 5%;
+  margin-top: 5%;
+}
+
+.navbar{
+  .accentText();
 }
 
 .header {
-	margin-bottom:1%;
+  margin-bottom:1%;
 }
 
 .alert {
-	margin-top: 1%;
+  margin-top: 1%;
 }
 
 .contentWrap {
-	.readableText;
+  .readableText();
+  max-width: 1500px;
 
 }
 
 .siteLinks {
-	position: absolute; 
-	bottom: 0;
-	margin-bottom: 2%;
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 2%;
 }
 
 .sidebar-nav-fixed {
-    position:fixed;
-	float: left;
-    width:13%;
-	height: 100%;
-	border-right-style: solid;
-	border-right-width: 1px;
+  position:fixed;
+  float: left;
+  width:13%;
+  height: 100%;
+  border-right-style: solid;
+  border-right-width: 1px;
 }
 
 .sidebarBG {
-	background: #222;
-	margin-left: -25%;
-	height: 100%;
-	overflow: hidden;
-	.box-shadow(3px,0px)
+  background: #222;
+  margin-left: -25%;
+  height: 100%;
+  overflow: hidden;
+  .box-shadow(3px,0px)
 }
 
 
 .sidebarWrapper {
-	margin-left: 10%;
-	margin-right: 2%;
+  margin-left: 10%;
+  margin-right: 2%;
+  .accentText();
 }
 
 .sidebarWrapper a {
-	color: @sidebarTextColor;
+  color: @sidebarTextColor;
 }
 
 .sidebarWrapper a:hover {
-	color: lighten(@sidebarTextColor, 10%);
+  color: lighten(@sidebarTextColor, 10%);
 }
 
 .staffMargin{
@@ -117,27 +131,32 @@ blockquote {
 }
 
 .homePad {
-	margin-top: 1%;
+  margin-top: 1%;
 }
 
 .homePad img{
-    border:1px solid #;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+  border:1px solid #;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.carouselTitle{
+  .readableText(1.75em, 1.1em)
 }
 
 #carouselDesc {
-    position: absolute;
-    top: 0;
-    height: 450px;
-    margin-top: 5%;
-    margin-left: 6%;
-  }
+  position: absolute;
+  top: 0;
+  min-height: 450px;
+  margin-top: 5%;
+  margin-left: 6%;
+  .readableText(1.1em);
+}
 
 #carouselDescTransbox {
   background: #ffffff;
-  height: 105%;
+  min-height: 105%;
   width: 33%;
   opacity:0.4;
   filter:alpha(opacity=40); /* For IE8 and earlier */
@@ -150,82 +169,117 @@ blockquote {
   border-color: oldLace;
   padding: 1%;
   margin-bottom: 1%;
-  line-height: 24px;
-  height: 350px;
+  min-height: 285px;
 }
 
 .articleListImage{
   float: left;
   margin-right: 10px;
   margin-bottom: 0;
+  width: 30%;
+}
+
+.articleListTitle{
+  .readableText(1.2em, .9em);
+}
+.articleListDate {
+  .accentText(.65em, 1em);
+  color: gray;
+  margin-bottom: 4%;
 }
 
 .articleListBody{
-  height: 300px;
+  .readableText();
+  min-height: 220px;
   word-wrap: break-word;
 }
 
 .articleListMetaData{
-  .accentText(.6em);
- }
+  .accentText(.7em);
+  color: gray;
+}
 
-.navbar{
-  .accentText;
+.sidebarArticleListTitle{
+  .readableText(1.2em, .9em);
+  margin-top: 5%;
+  margin-bottom: 1%;
+}
+.sidebarArticleListBody{
+  margin-bottom: 5%;
+}
+
+.sidebarArticleListBorder {
+  border: 1px solid;
+  border-color: oldLace;
+  width: 80;
+  text-align: center;
 }
 .articleHeader {
-	margin-bottom: 1%;
-	height: 75px;
+  margin-bottom: 1%;
+  min-height: 75px;
 }
 
-.articleTitle {
-	width: 75%;
-	float: left;
+#articleTitle {
+  width: 75%;
+  float: left;
 }
 
-.articleTitle h1 {
-	margin-bottom: 0;
+#articleTitle h1 {
+  margin-bottom: 0;
 }
 
-.articleData {
-	font-size: .8em;
-	color: gray;
+#articleDate {
+  .accentText();
+  color: gray;
+}
+#articleBody  {
+  .readableText(1.15em, 1.33em);
+}
+
+#articleBody p {
+  margin-bottom: 1.5%;
+}
+
+#articleAuthorBox{
+  .readableText();
+}
+
+.articleAuthorCredit{
+  text-align: right;
+  float: right;
 }
 
 .shareLinks {
-  text-align: right;
-  width: 212px;
+  float: left;
+  width: 250px;
 }
 
 .fb-like {
   top: -5px;
 }
+
 .articleCategories {
-	margin-bottom: 2%;
-	padding-bottom: 1%;
+  margin-bottom: 2%;
+  padding-bottom: 1%;
 }
 
 .paginationWrap {
-	text-align: center;
+  text-align: center;
 }
 
 #disqus_thread {
-	width: 60%;
-	margin: 0 auto;
+  width: 60%;
+  margin: 0 auto;
 }
 .editorText {
   font-family: sans-serif;
   font-size: .7em;
 }
 
-.imageEditorCrop{
-  overflow: auto;
-}
-
-
 #editorSummary {
-	width: 80%;
-	height: 50px;
-	margin-bottom: 1%;
+  width: 80%;
+  height: 50px;
+  margin-bottom: 1%;
 }
 
 #summaryCounter{
@@ -234,7 +288,14 @@ blockquote {
   color: gray;
 }
 #editorCategories {
-    height: 205px;
+  min-height: 280px;
+}
+
+.categoryHelpText {
+  width: 60%;
+  line-height: 1.3em;
+  color: gray;
+  font-size: .9em;
 }
 
 .editorStatus {
@@ -248,13 +309,23 @@ blockquote {
   font-weight: bold;
 }
 
+#editorSaved {
+  display: none;
+  font-size: 1.1em;
+  width: 79%;
+  position: fixed;
+  top: 42px;
+  right: 10px;
+  text-align: right;
+  color: #8b0000;
+}
 #editorImgTxt {
   display: inline;
 }
 
 .nothumb {
   width: 125px;
-  height: 125px;
+  min-height: 125px;
   background: grey;
   text-align: center;
   font-size: 20px;
@@ -262,6 +333,20 @@ blockquote {
 
 .nothumb p {
   padding-top: 25px;
+}
+
+.imageEditorCrop{
+  overflow: auto;
+}
+
+#imageUploadForm {
+  .accentText();
+
+}
+
+#id_description {
+  width: 70%;
+  height: 100px
 }
 
 #createArticle {
@@ -306,38 +391,38 @@ blockquote {
 }
 
 .titleField {
-	margin-right: 1%;
+  margin-right: 1%;
 }
 
 .staffHome {
-	margin-top: 3%;
+  margin-top: 3%;
 }
 
 .login{
-	.accentText;
-	margin-top: 15%;
+  .accentText;
+  margin-top: 15%;
 }
 
 .profile {
-	margin-top: 5%;
-	margin-bottom: 1%;
+  margin-top: 5%;
+  margin-bottom: 1%;
 }
 
 .profileForm{
-	.accentText;
+  .accentText;
 }
 
 .socialLinks {
-	font-size: 24pt;
-	padding-top: 1%;
+  font-size: 24pt;
+  padding-top: 1%;
 }
 
 .socialLinks a {
-	color: #212121;
+  color: #212121;
 }
 
 .socialLinks a:hover {
-	color: lighten(#212121, 20%);
+  color: lighten(#212121, 20%);
 }
 
 .loginbox{
@@ -345,68 +430,216 @@ blockquote {
   font-size: 14pt;
 }
 #bioBody {
-	height: 45%;
+  min-height: 45%;
 }
 @media (max-width: 640px) {
-	.articleStaff {
-		text-align: left;
-		float: left;
-	}
+  .header {
+    text-align: center;
+  }
+  .articleStaff {
+    text-align: left;
+    float: left;
+  }
 
-    .carousel-inner {
-      height: 300px !important;
-    }
+  .item .row-fluid #carouselImg {
+    width: 100%;
+  }
 
-    .articleListBorder {
-      margin-bottom: 30px;
-    }
+  .item .row-fluid #carouselImg img {
+   width: 100%;
+  }
 
-    .articleListBody{
-      height: 200px;
-    }
+  .item .row-fluid #carouselImg #carouselDescTransbox {
+    width: 100%;
+  }
+  .item .row-fluid #carouselImg #carouselDesc {
+    top: auto;
+    width: 60%;
+    min-height: auto;
+    margin-top: 10%;
+    margin-left: 19%;
+    text-align: center;
+  }
+
+  .span9 .row-fluid .articleListBorder {
+    min-height: 255px;
+  }
+
+  .homePad  .articleListBorder .articleListBody {
+    min-height: 178px;
+  }
+
+  .span8 #editorImage .span3 {
+    width: 40%;
+    float: left;
+  }
+
+  .span8 #editorImage .span9 {
+    width: 60%;
+    height: 150px;
+  }
+
+  .row-fluid #articleAuthorBox {
+    height: 100px;
+  }
+
+  .shareLinks {
+    float: none;
+  }
+
+  .articleAuthorCredit{
+    float: none;
+    text-align: left;
+    margin-bottom: 2%;
+  }
 }
 
-@media (max-width: 767px) {
-	.articleStaff{
-		margin-bottom: 2%;
-	}
+@media (max-width: 764px) {
+  .span8 #id_title {
+    width: 100%;
+  }
 
-    #featuredArticles {
-      margin-top: 0 !important;
-    }
+  .span4 #editorCategories {
+    width: 100%;
+    min-height: 220px;
+  }
 
-    .carousel-inner {
-      height: 340px;
-    }
+  .imagePicker {
+    margin-bottom: 3%;
+  }
 
-    #carouselDesc {
-      top: auto;
-      width: 90%;
-      height: auto;
-      margin-top: 10%;
-      margin-left: 5% !important;
-    }
-
-    #carouselDescTransbox {
-      top: auto;
-      bottom: auto;
-      background: #d3d3d3;
-      width: 100% !important;
-      height: 100%;
-    }
-
-    .articleListBorder{
-      height: 265px !important;
-      line-height: 28px;
-    }
-
-    .articleListBody{
-      height:200px !important;
-    }
+  #articleAuthorBox {
+    height: 65px;
+  }
 
 }
 
-@media (max-width: 1184px) {
+@media (max-width: 800px) {
+  #sidebar {
+    float: none;
+  }
+  #content .contentWrap {
+    margin-top: 120px;
+  }
+  .articleStaff{
+    margin-bottom: 2%;
+  }
+
+  .carousel-inner {
+    min-height: 340px;
+  }
+
+  #carouselImg img {
+    width: 50%;
+    float: right;
+  }
+
+  .row-fluid #carouselImg #carouselDesc {
+    top: auto;
+    width: 38%;
+    min-height: 250px;
+    max-height: 350px;
+    margin-top: 10%;
+    margin-left: 10%;
+  }
+
+  .row-fluid #carouselImg #carouselDescTransbox {
+    top: auto;
+    bottom: auto;
+    background: #d3d3d3;
+    width: 50%;
+    min-height: 100%;
+  }
+
+  #carouselDesc .carouselTitle {
+    font-size: 1.4em;
+  }
+
+  #id_title {
+    width: 98%;
+  }
+
+  #editorSummary {
+    width: 98%;
+  }
+
+  #summaryCounter {
+    margin-right: 0;
+  }
+
+  #id_type {
+    width: 100%;
+  }
+
+  #editorCategories {
+    width: 100%;
+    min-height: 345px;
+  }
+
+  .categoryHelpText {
+    display: none;
+  }
+
+  #editorImage .span3 {
+    width: 30%;
+    float: left
+  }
+
+  #editorImage .span9 {
+    width: 65%;
+    float: right;
+    height: 150px;
+  }
+
+  .editorControls .btn {
+    width: 100%;
+    margin-bottom: 2%;
+    height: 50px;
+  }
+}
+
+@media (max-width: 978px) {
+  .row-fluid .span6 {
+    width: 100%;
+    margin-left: 0
+  }
+
+  .carousel {
+    margin-bottom: 0;
+  }
+
+  #carouselImg #carouselDescTransbox {
+    width: 55%;
+  }
+
+  #carouselImg #carouselDesc {
+    width: 45%;
+  }
+
+  .carouselTitle {
+    font-size: 1.2em;
+  }
+
+  .row-fluid .articleListBorder{
+    min-height: 220px;
+    line-height: 28px;
+  }
+
+  .articleListBorder .articleListBody{
+    min-height: 145px;
+  }
+
+  .articleListBody .articleListDate{
+    margin-bottom: 1%;
+  }
+
+}
+
+@media (max-width: 1270px) {
+  .navbar{
+    position: static;
+  }
+
   #sidebar{
     width: 0;
   }
@@ -464,20 +697,18 @@ blockquote {
     margin-top: 150px;
   }
 
-  #featuredArticles {
-    margin-top: 20px;
-  }
-
   #carouselDescTransbox {
     width: 40%;
   }
+
   #carouselDesc {
+    width: 30%;
     margin-left: 8%;
   }
   .articleListBorder {
     margin-top: 2%;
     padding-bottom: 2%;
-    height: 438px;
+    min-height: 300px;
     line-height: 26px;
     padding: 10px;
   }
@@ -487,11 +718,19 @@ blockquote {
   }
 
   .articleListBody {
-    height: 355px;
+    min-height: 240px;
     text-overflow: ellipsis;
   }
 
-	#disqus_thread {
-		width: 100%;
-	}
+  .sidebarArticleList {
+    margin-top: 10%;
+  }
+
+  #disqus_thread {
+    width: 100%;
+  }
+
+  #editorSaved {
+    top: 8px;
+  }
 }

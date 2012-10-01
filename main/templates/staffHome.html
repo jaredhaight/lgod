@@ -14,10 +14,11 @@
                             <thead>
                                 <tr>
                                     <th>Title</th>
+                                    {% if editor %}
                                     <th>Author</th>
-                                    <th>Lasted Edited</th>
-                                    <th>Posted</th>
+                                    {% endif %}
                                     <th>Posted Date</th>
+                                    <th>Lasted Edited</th>
                                     <th>Comment Count</th>
                                 </tr>
                             </thead>
@@ -25,10 +26,11 @@
                                 {% for article in posted %}
                                 <tr>
                                     <td><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></td>
+                                    {% if editor %}
                                     <td>{{ article.author }}</td>
-                                    <td>{{ article.last_edited }} by {{ article.edit_user }}</td>
-                                    <td>{{ article.is_posted }}</td>
+                                    {% endif %}
                                     <td>{{ article.date_posted }}</td>
+                                    <td>{{ article.last_edited }} by {{ article.edit_user }}</td>
                                     <td><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></td>
                                 </tr>
                                 {% endfor %}
@@ -40,7 +42,9 @@
                                 <thead>
                                 <tr>
                                     <th>Title</th>
-                                    <th>Author</th>
+                                    {% if editor %}
+                                     <th>Author</th>
+                                    {% endif %}
                                     <th>Lasted Edited</th>
                                 </tr>
                                 </thead>
@@ -48,7 +52,9 @@
                                 {% for article in unposted %}
                                     <tr>
                                         <td><a href="/editor/{{ article.id }}">{{ article.title }}</a></td>
-                                        <td>{{ article.edit_user.username }}</td>
+                                        {% if editor %}
+                                            <td>{{ article.author }}</td>
+                                        {% endif %}
                                         <td>{{ article.last_edited }}</td>
                                     </tr>
                                 {% endfor %}

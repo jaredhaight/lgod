@@ -1,3 +1,4 @@
+from django.core.files.images import get_image_dimensions
 from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Textarea, HiddenInput, FileInput
@@ -32,14 +33,22 @@ def setupcats():
         cat.save()
         i = i+1
 
-    featured = ArticleImageType.objects.create(name='featured', width=1500, height=400)
-    featured.save()
-
-    header = ArticleImageType.objects.create(name='header', width=1000, height=250)
+    header = ArticleImageType.objects.create(name='header', editable=False, width=1000, height=300)
+    header.related = None
     header.save()
 
-    thumb = ArticleImageType.objects.create(name='thumbnail', width=125, height=125)
+    thumb = ArticleImageType.objects.create(name='thumbnail', editable=False, width=200, height=200)
+    thumb.related = None
     thumb.save()
+
+    featured = ArticleImageType.objects.create(name='featured', editable=True, width=1500, height=400)
+    featured.related = ArticleImageType.objects.get(name='header')
+    featured.save()
+
+    smallFeatured = ArticleImageType.objects.create(name='smallFeatured', editable=True, width=500, height=500)
+    smallFeatured.related = ArticleImageType.objects.get(name='thumbnail')
+    smallFeatured.save()
+
 
 def CDNUpload(file):
     conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
@@ -96,6 +105,7 @@ def connectCrops(article_id,image_id):
 
     article.featured_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='featured')), src=image)
     article.header_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='header')), src=image)
+    article.small_featured_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='smallFeatured')), src=image)
     article.thumbnail = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='thumbnail')), src=image)
     article.save()
 
@@ -111,6 +121,7 @@ class Article(models.Model):
     title_slug = models.SlugField(null=True, blank=True, unique=True)
     featured_image=models.ForeignKey('ArticleImageCrop',related_name='featured_image', null=True, blank=True)
     header_image=models.ForeignKey('ArticleImageCrop', related_name='header_image', null=True, blank=True)
+    small_featured_image = models.ForeignKey('ArticleImageCrop', related_name='small_featured_image', null=True, blank=True)
     thumbnail=models.ForeignKey('ArticleImageCrop', related_name='thumbnail', null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
     body = models.TextField(null=True, blank=True)
@@ -167,6 +178,8 @@ class ArticleForm(ModelForm):
 
 class ArticleImageType(models.Model):
     name = models.CharField(max_length=20, null=True, blank=True)
+    editable = models.BooleanField()
+    related = models.ForeignKey('ArticleImageType', related_name='related_crop', null=True, blank=True)
     width = models.IntegerField(max_length=5)
     height = models.IntegerField(max_length=5)
 
@@ -175,11 +188,28 @@ class ArticleImageType(models.Model):
 
 class ArticleImage(models.Model):
     image = models.ImageField(upload_to="full_img", null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
     uploaded_by = models.ForeignKey(User, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return str(self.id)
+
+class ArticleImageForm(ModelForm):
+    class Meta:
+        model = ArticleImage
+        fields = ('image','description')
+    def clean_image(self):
+        image = self.cleaned_data.get("image")
+        if not image:
+            raise forms.ValidationError("No image!")
+        else:
+            w, h = get_image_dimensions(image)
+            if w < 1500:
+                raise forms.ValidationError("The image is %i pixel wide. It's supposed to be 1500px" % w)
+            if h < 600:
+                raise forms.ValidationError("The image is %i pixel high. It's supposed to be 600px" % h)
+        return image
 
 class ArticleImageCrop(models.Model):
     src = models.ForeignKey('ArticleImage')
@@ -196,9 +226,17 @@ class ArticleImageCrop(models.Model):
 
     def save(self, *args, **kwargs):
         super(ArticleImageCrop, self).save(*args, **kwargs)
-        if self.X2:
+        if self.X2 and self.type.editable:
             self.cropped_file = cropImage(self)
             self.URL = CDNUpload(self.cropped_file)
+            if self.type.related:
+                image = resizeImage(self.cropped_file, self.type.related.width, self.type.related.height)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=self.type.related)
+                crop.cropped_file = image
+                crop.save()
+                url = CDNUpload(crop.cropped_file)
+                crop.URL = url
+                crop.save()
             super(ArticleImageCrop, self).save(*args, **kwargs)
 
 

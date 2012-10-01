@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{%  block head %}
+    <script src="/static/js/response.min.js"></script>
+{% endblock %}
 {% block title %}<title>Live Geek or Die </title>{% endblock %}
 {% block content %}
     <div class="row-fluid">
@@ -14,10 +17,14 @@
                     {% endif %}
                         <div class="row-fluid">
                             <div id="carouselImg" class="span12">
-                                <a href="/article/{{ feature.title_slug }}"><img src={{ feature.featured_image.URL }}></a>
+                                <a
+                                    href="/article/{{ feature.title_slug }}"
+                                    data-r0='<img src="{{ feature.small_featured_image.URL }}">'
+                                    data-r801='<img src="{{ feature.featured_image.URL }}">'
+                                ></a>
                                 <div id="carouselDescTransbox"></div>
                                     <div id="carouselDesc" class="span3">
-                                        <p><b>{{ feature.title }}</b></p>
+                                        <span class="carouselTitle"><b>{{ feature.title }}</b></span>
                                         <p>{{ feature.summary }}</p>
 
                                 </div>
@@ -32,7 +39,25 @@
             </div>
         </div>
     </div>
-	{% include "articleList.html" %}
+    <div class="row-fluid">
+        <div class="span9">
+            {% include "articleList.html" %}
+        </div>
+        <div class="span3">
+            <div class="sidebarArticleList">
+            {% for article in sidebar %}
+                <div class="sidebarArticleListTitle">
+                    <a href="/article/{{ article.title_slug }}">{{ article.title }}</a>
+                </div>
+                <div class="sidebarArticleListBody">
+                    {{ article.body|safe }}
+                </div>
+                <div class="sidebarArticleListBorder"></div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block footer %}
 <div class="paginationWrap">

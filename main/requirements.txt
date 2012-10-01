@@ -1,5 +1,4 @@
 Django==1.4.1
-MySQL-python==1.2.3
 django-bootstrap-form==2.0.5
 docutils==0.9.1
 python-cloudfiles==1.7.11

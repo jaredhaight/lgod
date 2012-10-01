@@ -16,24 +16,14 @@
                 aspectRatio:3.75/1,
                 trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
             });
-            $('#himage').Jcrop({
-                onSelect: headerCoords,
-                onChange: headerCoords,
-                minSize:['{{ headerType.width }}','{{ headerType.height }}'],
-            {% if header.X2 %}
-                setSelect:   [ {{ header.X }}, {{ header.Y }}, {{ header.X2 }}, {{ header.Y2 }} ],
+            $('#sfimage').Jcrop({
+                onSelect: smallFeatCoords,
+                onChange: smallFeatCoords,
+                minSize:['{{ smallFeaturedType.width }}','{{ smallFeaturedType.height }}'],
+            {% if smallFeatured.X2 %}
+                setSelect:   [ {{ smallFeatured.X }}, {{ smallFeatured.Y }}, {{ smallFeatured.X2 }}, {{ smallFeatured.Y2 }} ],
             {% endif %}
-                aspectRatio:4/1,
-                trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
-            });
-            $('#timage').Jcrop({
-                onSelect: thumbCoords,
-                onChange: thumbCoords,
-                minSize:['{{ thumbType.width }}','{{ thumbType.height }}'],
-            {% if thumb.X2 %}
-                setSelect:   [ {{ thumb.X }}, {{ thumb.Y }}, {{ thumb.X2 }}, {{ thumb.Y2 }} ],
-            {% endif %}
-                aspectRatio:1,
+                aspectRatio:1/1,
                 trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
             });
         });
@@ -45,38 +35,22 @@
         jQuery('#{{ featuredType.id }}form').find('#Y2').val(c.y2);
     };
 
-    function headerCoords(c)
+    function smallFeatCoords(c)
     {
-        jQuery("#{{ headerType.id }}form").find("#X").val(c.x);
-        jQuery("#{{ headerType.id }}form").find("#Y").val(c.y);
-        jQuery("#{{ headerType.id }}form").find("#X2").val(c.x2);
-        jQuery("#{{ headerType.id }}form").find("#Y2").val(c.y2);
-    };
-
-    function thumbCoords(c)
-    {
-        jQuery("#{{ thumbType.id }}form").find("> #X").val(c.x);
-        jQuery("#{{ thumbType.id }}form").find("> #Y").val(c.y);
-        jQuery("#{{ thumbType.id }}form").find("> #X2").val(c.x2);
-        jQuery("#{{ thumbType.id }}form").find("> #Y2").val(c.y2);
+        jQuery("#{{ smallFeaturedType.id }}form").find("#X").val(c.x);
+        jQuery("#{{ smallFeaturedType.id }}form").find("#Y").val(c.y);
+        jQuery("#{{ smallFeaturedType.id }}form").find("#X2").val(c.x2);
+        jQuery("#{{ smallFeaturedType.id }}form").find("#Y2").val(c.y2);
     };
 
     $(document).ready(function() {
         $('body').mouseup(function(){
-            if ($("#{{ thumbType.id }}form").find("> #X2").val() - $("#{{ thumbType.id }}form").find("> #X").val() != 0){
-                $("#thumbtab").addClass('imgEditorGood');
-                var thumbgood = true
+            if ($("#{{ smallFeaturedType.id }}form").find("> #X2").val() - $("#{{ smallFeaturedType.id }}form").find("> #X").val() != 0){
+                $("#smalltab").addClass('imgEditorGood');
+                var smallgood = true
             } else {
-                $("#thumbtab").removeClass('imgEditorGood');
-                var thumbgood = false
-            }
-
-            if ($("#{{ headerType.id }}form").find("> #X2").val() - $("#{{ headerType.id }}form").find("> #X").val() != 0){
-                $("#headertab").addClass('imgEditorGood');
-                var headergood = true
-            } else {
-                $("#headertab").removeClass('imgEditorGood');
-                var headergood = false
+                $("#smalltab").removeClass('imgEditorGood');
+                var smallgood = false
             }
 
             if ($("#{{ featuredType.id }}form").find("> #X2").val() - $("#{{ featuredType.id }}form").find("> #X").val() != 0){
@@ -87,7 +61,7 @@
                 var featuredgood = false
             }
 
-            if (thumbgood && headergood && featuredgood){
+            if (smallgood && featuredgood){
                 $('#saveButton').show();
             } else {
                 $('#saveButton').hide();
@@ -117,8 +91,7 @@
                     {% csrf_token %}
                 <ul class="nav nav-tabs">
                     <li id="featuredtab" class="active"><a href="#featured" data-toggle="tab">Featured</a></li>
-                    <li id="headertab"><a href="#header" data-toggle="tab">Header</a></li>
-                    <li id="thumbtab"><a href="#thumbnail" data-toggle="tab">Thumbnail</a></li>
+                    <li id="smalltab"><a href="#smallFeatured" data-toggle="tab">Square Crop</a></li>
                     <button id="saveButton" type="submit" name="submit" class="btn btn-primary pull-right">Save Image Selection</button>
                 </ul>
                 <div class="tab-content">
@@ -129,17 +102,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" id="header">
+                    <div class="tab-pane" id="smallFeatured">
                         <div class="row-fluid">
                             <div class="span12 imageEditorCrop">
-                                <img id="himage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="thumbnail">
-                        <div class="row-fluid">
-                            <div class="span12 imageEditorCrop">
-                                <img id="timage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
+                                <img id="sfimage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
                             </div>
                         </div>
                     </div>

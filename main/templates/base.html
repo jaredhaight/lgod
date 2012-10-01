@@ -17,7 +17,12 @@
         {% block meta %}{% endblock %}
         {% block head %}{% endblock %}
 </head>
-<body>
+<body data-responsejs='{
+    "create": [
+    { "breakpoints": [0,320,481,641,801,1025,1281], "mode": "src", "prefix": "src" },
+    { "breakpoints": [0,320,481,641,801,1025,1281], "mode": "markup", "prefix": "r" }
+    ]}'
+>
 {% include "staffBar.html" %}
 <div class="container-fluid">
 	<div class="row-fluid {% if user.is_authenticated %}staffMargin{% endif %}">
@@ -41,6 +46,22 @@
 		</div>
 	</div>
 </div>
-	{% block javascript %}{% endblock %}
+    <script>
+        $(document).ready(function(){
+            $("body").keydown(
+                function(event){
+                    if (event.which == 27){
+                        url = '/login';
+                    };
+                    {% block keyboardnav %}{% endblock %}
+                    if (url) {
+                        window.location = url;
+                    }
+                });
+        });
+    </script>
+	{% block javascript %}
+
+	{% endblock %}
 </body>
 </html>
