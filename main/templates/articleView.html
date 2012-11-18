@@ -27,50 +27,50 @@
 
 {% block content %}
 <div class="row-fluid">
-    <div class="span4 articleHeader">
+    <div id="articleImage" class="span12">
+        <img src="{{ article.featured_image.URL }}">
+        <div id="articleMetaBox"></div>
         <div id="articleTitle">
             <h1>{{ article.title }}</h1>
             <div id="articleDate">
-                {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
+            {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
+             {% if article.type == 'featured' %}<br><span class="label label-important">Featured Article</span>{% endif %}
             </div>
         </div>
     </div>
-        <div class="span8">
-            <img src="{{ article.header_image.URL }}">
+</div>
+<div class="row-fluid margintop1">
+    <div id="articleBody" class="span10 offset1">
+    {{ article.body|safe }}
+    </div>
+</div>
+<div class="row-fluid">
+    <div id="articleAuthorBox" class="span10 offset1 well">
+        <div class="articleAuthorCredit">
+            This article was written by <a href="/author/{{ article.author.first_name|lower }}">{{ article.author.first_name }}</a>
         </div>
-	</div>
-	<div class="row-fluid margintop1">
-		<div id="articleBody" class="span12">
-		{{ article.body|safe }}
-		</div>
-	</div>
-	<div class="row-fluid">
-        <div id="articleAuthorBox" class="span12 well">
-            <div class="articleAuthorCredit">
-                This article was written by <a href="/author/{{ article.author.first_name|lower }}">{{ article.author.first_name }}</a>
-            </div>
-            <div class="shareLinks">
-                <div class="fb-like" data-send="false" data-layout="button_count" data-width="250" data-show-faces="false"></div>
-                <div class="g-plus" data-action="share" data-annotation="none"></div>
-                <a href="https://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a>
-            </div>
+        <div class="shareLinks">
+            <div class="fb-like" data-send="false" data-layout="button_count" data-width="250" data-show-faces="false"></div>
+            <div class="g-plus" data-action="share" data-annotation="none"></div>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a>
         </div>
     </div>
-	<div class="row-fluid">
-		<div class="span12">
-			<div id="disqus_thread"></div>
-			<script type="text/javascript">
-				var disqus_shortname = 'livegeekortest';
-				/* * * DON'T EDIT BELOW THIS LINE * * */
-				(function() {
-					var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-					dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-					(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-				})();
-			</script>
-			<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-			<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-	
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <div id="disqus_thread"></div>
+        <script type="text/javascript">
+            var disqus_shortname = 'livegeekortest';
+            /* * * DON'T EDIT BELOW THIS LINE * * */
+            (function() {
+                var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+
 
 
 {% endblock %}

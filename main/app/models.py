@@ -160,7 +160,7 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         super(Article, self).save(*args, **kwargs)
-        if not self.title_slug:
+        if self.is_posted and not self.title_slug:
             self.title_slug = uniqueSlug('Article','title_slug',self.title)
         super(Article, self).save(*args, **kwargs)
 

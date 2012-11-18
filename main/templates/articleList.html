@@ -1,34 +1,267 @@
-<div class="row-fluid homePad">
-{% for article in articles %}
-    <div class="span6 articleListBorder">
-        <div class="articleListBody">
-            <p class="articleListImage">
-                <img src={{ article.thumbnail.URL }}>
-            </p>
-            <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
-            <div class="articleListDate">
-                {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+<div class="row-fluid">
+    <div class="span12">
+        <div class="featuredArticles">
+            <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="span12 featuredListImg">
+                <a
+                        href="/article/{{ features.0.title_slug }}"
+                        data-r0='<img src="{{ features.0.featured_image.URL }}">'
+                        data-r641='<img src="{{ features.0.featured_image.URL }}">'
+                        ></a>
             </div>
-            <p>
-                    {{ article.summary }}
-            </p>
-        </div>
-        <div class="articleListMetaData fright">
-            <a href="/article/{{ article.title_slug }}">Read More..</a> |
-            <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
-            <div class="articleListTags margintop1" >Tagged:
-                {% for category in article.categories.all %}
-                <span class="label label-info">{{ category.name }}</span>
-                {% endfor %}
+            <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListDescTransbox"></div>
+            <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListDesc">
+                <span class="featuredListTitle"><b>{{ features.0.title }}</b></span>
+                <p>{{ features.0.summary }}</p>
             </div>
         </div>
     </div>
-   {% if forloop.counter|divisibleby:2 %}
-    </div>
-    <div class="row-fluid homePad">
-    {% endif %}
- {% endfor %}
 </div>
+<div class="row-fluid homePad">
+    {% for article in row1 %}
+        {% if article.type = 'standard' %}
+            <div class="span6 articleListBorder">
+                <div class="articleListImage">
+                    <img src={{ article.featured_image.URL }}>
+                </div>
+                <div class="articleListBody">
+                    <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                    <div class="articleListDate">
+                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                    </div>
+                    <p>
+                        {{ article.summary }}
+                    </p>
+                </div>
+                <div class="articleListMetaData fright">
+                    <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                    <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                    <div class="articleListTags margintop1" >Tagged:
+                        {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                        {% for category in article.categories.all %}
+                            <span class="label label-info">{{ category.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if article.type = 'sidebar' %}
+            <div class="span6 sidebarArticleListBorder">
+                <div class="sidebarArticleListBody">
+                    <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                    <div class="articleListDate">
+                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                    </div>
+                    <p>
+                        {{ article.body|safe }}
+                    </p>
+                </div>
+                <div class="articleListMetaData fright">
+                    <div class="articleListTags margintop1" >
+                        <span class="label label-info">Side Notes</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if forloop.counter|divisibleby:2 %}
+            </div>
+            <div class="row-fluid homePad">
+        {% endif %}
+    {% endfor %}
+    </div>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="promotedArticles">
+            <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListImg" class="span12">
+                <a
+                        href="/article/{{ features.1.title_slug }}"
+                        data-r0='<img src="{{ features.1.small_featured_image.URL }}">'
+                        data-r641='<img src="{{ features.1.featured_image.URL }}">'
+                        ></a>
+            </div>
+            <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDescTransbox"></div>
+            <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDesc">
+                <span class="promotedListTitle"><b>{{ features.1.title }}</b></span>
+                <p>{{ features.1.summary }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row-fluid homePad">
+    {% for article in row2 %}
+        {% if article.type = 'standard' %}
+            <div class="span6 articleListBorder">
+                <div class="articleListImage">
+                    <img src={{ article.featured_image.URL }}>
+                </div>
+                <div class="articleListBody">
+                    <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                    <div class="articleListDate">
+                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                    </div>
+                    <p>
+                        {{ article.summary }}
+                    </p>
+                </div>
+                <div class="articleListMetaData fright">
+                    <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                    <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                    <div class="articleListTags margintop1" >Tagged:
+                        {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                        {% for category in article.categories.all %}
+                            <span class="label label-info">{{ category.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if article.type = 'sidebar' %}
+            <div class="span6 sidebarArticleListBorder">
+                <div class="sidebarArticleListBody">
+                    <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                    <div class="articleListDate">
+                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                    </div>
+                    <p>
+                        {{ article.body|safe }}
+                    </p>
+                </div>
+                <div class="articleListMetaData fright">
+                    <div class="articleListTags margintop1" >
+                        <span class="label label-info">Side Notes</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if forloop.counter|divisibleby:2 %}
+            </div>
+            <div class="row-fluid homePad">
+        {% endif %}
+    {% endfor %}
+    </div>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="promotedArticles">
+            <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListImg span12">
+                <a
+                        href="/article/{{ features.2.title_slug }}"
+                        data-r0='<img src="{{ features.2.small_featured_image.URL }}">'
+                        data-r641='<img src="{{ features.2.featured_image.URL }}">'
+                        ></a>
+                <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDescTransbox"></div>
+                <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDesc">
+                    <span class="promotedListTitle"><b>{{ features.2.title }}</b></span>
+                    <p>{{ features.2.summary }}</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row-fluid homePad">
+{% for article in row3 %}
+    {% if article.type = 'standard' %}
+        <div class="span6 articleListBorder">
+            <div class="articleListImage">
+                <img src={{ article.featured_image.URL }}>
+            </div>
+            <div class="articleListBody">
+                <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                <div class="articleListDate">
+                    {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                </div>
+                <p>
+                    {{ article.summary }}
+                </p>
+            </div>
+            <div class="articleListMetaData fright">
+                <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                <div class="articleListTags margintop1" >Tagged:
+                    {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                    {% for category in article.categories.all %}
+                        <span class="label label-info">{{ category.name }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if article.type = 'sidebar' %}
+        <div class="span6 sidebarArticleListBorder">
+            <div class="sidebarArticleListBody">
+                <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                <div class="articleListDate">
+                    {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                </div>
+                <p>
+                    {{ article.body|safe }}
+                </p>
+            </div>
+            <div class="articleListMetaData fright">
+                <div class="articleListTags margintop1" >
+                    <span class="label label-info">Side Notes</span>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% if forloop.counter|divisibleby:2 %}
+        </div>
+        <div class="row-fluid homePad">
+    {% endif %}
+{% endfor %}
+</div>
+<div class="row-fluid homePad">
+    {% for article in row4 %}
+        {% if article.type = 'standard' %}
+            <div class="span6 articleListBorder">
+                <div class="articleListImage">
+                    <img src={{ article.featured_image.URL }}>
+                </div>
+                <div class="articleListBody">
+                    <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                    <div class="articleListDate">
+                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                    </div>
+                    <p>
+                        {{ article.summary }}
+                    </p>
+                </div>
+                <div class="articleListMetaData fright">
+                    <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                    <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                    <div class="articleListTags margintop1" >Tagged:
+                        {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                        {% for category in article.categories.all %}
+                            <span class="label label-info">{{ category.name }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if article.type = 'sidebar' %}
+            <div class="span6 sidebarArticleListBorder">
+                <div class="sidebarArticleListBody">
+                    <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                    <div class="articleListDate">
+                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                    </div>
+                    <p>
+                        {{ article.body|safe }}
+                    </p>
+                </div>
+                <div class="articleListMetaData fright">
+                    <div class="articleListTags margintop1" >
+                        <span class="label label-info">Side Notes</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        {% if forloop.counter|divisibleby:2 %}
+            </div>
+            <div class="row-fluid homePad">
+        {% endif %}
+    {% endfor %}
+    </div>
+
 {% block javascript %}
     <script type="text/javascript">
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */

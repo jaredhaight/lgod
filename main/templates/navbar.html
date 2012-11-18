@@ -1,0 +1,227 @@
+{% block javascript %}
+<script src="/static/js/waypoints.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".navSection").hover(
+                function() {
+                    $(this).addClass("navSectionHighlight")
+                },
+                function(){
+                    $(this).removeClass("navSectionHighlight")
+                }
+        );
+        $("#topics").hover(
+            function () {
+                $("#topicsMenu").show();
+            },
+            function () {
+                $("#topicsMenu").hide();
+            }
+        );
+
+        $("#shareNav").hover(
+            function () {
+                $("#shareMenu").show();
+            },
+            function () {
+                $("#shareMenu").hide();
+            }
+        );
+        $("#userNav").hover(
+                function () {
+                    $("#userMenu").show();
+                },
+                function () {
+                    $("#userMenu").hide();
+                }
+        );
+        $(".menuItem").hover(
+            function () {
+                $(this).addClass("menuItemHighlight")
+                $(".subMenu", this).show();
+            },
+            function () {
+                $(this).removeClass("menuItemHighlight")
+                $(".subMenu", this).hide();
+            }
+        )
+    });
+    </script>
+
+    <script type="text/javascript">
+            (function() {
+                var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+                po.src = 'https://apis.google.com/js/plusone.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+            })();
+    </script>
+    <script type="text/javascript">
+        (function() {
+            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+            po.src = 'https://apis.google.com/js/plusone.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+    </script>
+
+    <div id="fb-root"></div>
+    <script>
+        window.fbAsyncInit = function() {
+            FB.init({
+                appId      : '264750043644250', // App ID
+                channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
+                status     : true, // check login status
+                cookie     : true, // enable cookies to allow the server to access the session
+                xfbml      : true  // parse XFBML
+            });
+
+            // Additional initialization code here
+        };
+
+        // Load the SDK Asynchronously
+        (function(d){
+            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+            if (d.getElementById(id)) {return;}
+            js = d.createElement('script'); js.id = id; js.async = true;
+            js.src = "//connect.facebook.net/en_US/all.js";
+            ref.parentNode.insertBefore(js, ref);
+        }(document));
+    </script>
+
+    <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=264750043644250";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+    </script>
+
+    <script>
+        !function(d,s,id){
+            var js,fjs=d.getElementsByTagName(s)[0];
+            if(!d.getElementById(id)){
+                js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";
+                fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+    </script>
+
+
+{% endblock %}
+<div id="lgodnav">
+    <a href="/"><img src="/static/img/logo2.png"></a>
+    <div onclick="location.href='#Features';" id="featuresNav" class="navSection">Features</div>
+    <div onclick="location.href='#Articles';" id="articlesNav" class="navSection">Articles</div>
+    <div id="topics" class="navSection">
+        <a
+            id="topicsLink" href="#" title="Topics"
+            data-r0='<i class="icon-reorder"></i>'
+            data-r641='Topics'
+        ></a>
+        <div id="topicsMenu">
+            <div id="mainMenu">
+                <div id="1" class="menuItem">One
+                    <div id="sub1" class="subMenu">
+                        <a href="#">Link1</a><br>
+                        <a href="#">Link2</a><br>
+                        <a href="#">Link3</a><br>
+                        <a href="#">Link4</a><br>
+                        <a href="#">Link5</a><br>
+                        <a href="#">Link6</a><br>
+                        <a href="#">Link7</a><br>
+                        <a href="#">Link8</a><br>
+                    </div>
+                </div>
+                <div id="2" class="menuItem">Two
+                    <div id="sub2" class="subMenu">
+                        <a href="#">Link11</a><br>
+                        <a href="#">Link12</a><br>
+                        <a href="#">Link13</a><br>
+                        <a href="#">Link14</a><br>
+                        <a href="#">Link15</a><br>
+                        <a href="#">Link16</a><br>
+                        <a href="#">Link17</a><br>
+                        <a href="#">Link18</a><br>
+                    </div>
+                </div>
+                <div id="3" class="menuItem">Three
+                    <div id="sub3" class="subMenu">
+                        <a href="#">Link20</a><br>
+                        <a href="#">Link21</a><br>
+                        <a href="#">Link22</a><br>
+                        <a href="#">Link23</a><br>
+                        <a href="#">Link24</a><br>
+                        <a href="#">Link25</a><br>
+                        <a href="#">Link26</a><br>
+                        <a href="#">Link27</a><br>
+                    </div>
+                </div>
+                <div id="4" class="menuItem">Four
+                    <div id="sub4" class="subMenu">
+                        <a href="#">Link30</a><br>
+                        <a href="#">Link31</a><br>
+                        <a href="#">Link32</a><br>
+                        <a href="#">Link33</a><br>
+                        <a href="#">Link34</a><br>
+                        <a href="#">Link35</a><br>
+                        <a href="#">Link36</a><br>
+                        <a href="#">Link37</a><br>
+                    </div>
+                </div>
+                <div id="5" class="menuItem">Five
+                    <div id="sub5" class="subMenu">
+                        <a href="#">Link40</a><br>
+                        <a href="#">Link41</a><br>
+                        <a href="#">Link42</a><br>
+                        <a href="#">Link43</a><br>
+                        <a href="#">Link44</a><br>
+                        <a href="#">Link45</a><br>
+                        <a href="#">Link46</a><br>
+                        <a href="#">Link47</a><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if user.is_authenticated %}
+    <div id="userNav" class="navSection">
+        <i class="icon-user"></i>
+        <div id="userMenu">
+            Hi {{ user.first_name }}!<br>
+            <a href="/staff">Staff Dashboard</a><br>
+            <a href="#createArticle" data-toggle="modal" data-target="#createArticle">Create an Article</a><br>
+            {% if pagetype == 'article' %}
+                <a href="/editor/{{ article.id }}">Edit this article</a><br>
+            {% endif %}
+            <a href="/staff/profile/">Edit your Profile</a><br>
+            <a href="/logout">Logout</a><br>
+        </div>
+    </div>
+        <!-- Modal Window for Article -->
+    {% endif %}
+    <div id="shareNav" class="navSection">
+        <i class="icon-share"></i>
+        <div id="shareMenu">
+            <div class="fb-like" data-send="false" data-layout="button_count" data-width="250" data-show-faces="false"></div>
+            <div class="g-plus" data-action="share" data-annotation="none"></div>
+            <a href="https://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a>
+            </span>
+        </div>
+    </div>
+</div>
+{% if user.is_authenticated %}
+<div class="modal editorText" id="createArticle" tabindex="-1" role="dialog" aria-labelledby="imgUploadLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Create an Article</h3>
+    </div>
+    <div class="modal-body">
+        <form class="form" action="/editor/" enctype="multipart/form-data" method="post">
+            <input class="input-xlarge type="text" name="title" id="title" placeholder=" Enter a title..."/>
+            <br />
+            <input type="hidden" name="type" id="type" value='standard' />
+    </div>
+    <div class="modal-footer">
+        <button type="submit" name="update_article" class="btn btn-primary">Create Article</button>
+    </div>
+    </form>
+</div>
+{% endif %}

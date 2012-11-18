@@ -10,56 +10,58 @@
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="posted">
-                            <table class="table table-hover" id="articleList">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    {% if editor %}
-                                    <th>Author</th>
-                                    {% endif %}
-                                    <th>Posted Date</th>
-                                    <th>Lasted Edited</th>
-                                    <th>Comment Count</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for article in posted %}
-                                <tr>
-                                    <td><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></td>
-                                    {% if editor %}
-                                    <td>{{ article.author }}</td>
-                                    {% endif %}
-                                    <td>{{ article.date_posted }}</td>
-                                    <td>{{ article.last_edited }} by {{ article.edit_user }}</td>
-                                    <td><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                            </table>
+                            {% for article in posted %}
+                            <div class="row-fluid">
+                                <div class="span10 offset1 staffArticleItem">
+                                    <div class="span2">
+                                        <img src={{ article.thumbnail.URL }}>
+                                    </div>
+                                    <div class="span5">
+                                        <a href="/article/{{ article.title_slug }}">{{ article.title }}</a><br>
+                                        Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }}<br>
+                                    </div>
+                                    <div class="span1 staffStats">
+                                        Views<br><div class="staffStatsNumber">45</div>
+                                    </div>
+                                    <div class="span2 staffStats">
+                                        Comments<br><div class="staffStatsNumber"><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></div>
+                                    </div>
+                                    <div class="span1 staffStats">
+                                        <i class="icon-facebook"></i><br><div class="staffStatsNumber">14</div>
+                                    </div>
+                                    <div class="span1 staffStats">
+                                        <i class="icon-twitter"></i><br><div class="staffStatsNumber">22</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
                         </div>
                         <div class="tab-pane" id="unposted">
-                            <table class="table table-hover" id="articleList">
-                                <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    {% if editor %}
-                                     <th>Author</th>
-                                    {% endif %}
-                                    <th>Lasted Edited</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for article in unposted %}
-                                    <tr>
-                                        <td><a href="/editor/{{ article.id }}">{{ article.title }}</a></td>
-                                        {% if editor %}
-                                            <td>{{ article.author }}</td>
-                                        {% endif %}
-                                        <td>{{ article.last_edited }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
+                           {% for article in unposted %}
+                           <div class="row-fluid">
+                               <div class="span10 offset1 staffArticleItem">
+                                   <div class="span2">
+                                       <img src={{ article.thumbnail.URL }}>
+                                   </div>
+                                   <div class="span5">
+                                       <a href="/article/{{ article.title_slug }}">{{ article.title }}</a><br>
+                                       Posted:{{ article.|date:" M jS"}} at {{ article.date_posted|date:"P" }}<br>
+                                   </div>
+                                   <div class="span1 staffStats">
+                                       Views<br><div class="staffStatsNumber">45</div>
+                                   </div>
+                                   <div class="span2 staffStats">
+                                       Comments<br><div class="staffStatsNumber"><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></div>
+                                   </div>
+                                   <div class="span1 staffStats">
+                                       <i class="icon-facebook"></i><br><div class="staffStatsNumber">14</div>
+                                   </div>
+                                   <div class="span1 staffStats">
+                                       <i class="icon-twitter"></i><br><div class="staffStatsNumber">22</div>
+                                   </div>
+                               </div>
+                           </div>
+                           {% endfor %}
                         </div>
                     </div>
                 </div>

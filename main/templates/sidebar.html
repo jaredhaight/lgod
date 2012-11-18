@@ -1,9 +1,9 @@
 		{% block header %}
-		<div class="sidebarBG">
+		<div class="sidebarBG {% if user.is_authenticated %} sidebarStaffPad {% endif %}">
 			<div class="sidebarWrapper">
 				<div class="row-fluid">
 					<div class="header">
-						<h1><a href="/">Live Geek or Test</h1></a>
+						<h1><a href="/"><img src="/static/img/logo.png"></a>
 					</div>
 				</div>
 				<div class="row-fluid homeCategories">

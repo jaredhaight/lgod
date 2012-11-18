@@ -4,60 +4,7 @@
 {% endblock %}
 {% block title %}<title>Live Geek or Die </title>{% endblock %}
 {% block content %}
-    <div class="row-fluid">
-        <div class="span12">
-            <div id="featuredArticles" class="carousel slide">
-                <!-- Carousel items -->
-                <div class="carousel-inner">
-                    {% for feature in features %}
-                    {% if forloop.first %}
-                    <div class="item active">
-                    {% else %}
-                    <div class="item">
-                    {% endif %}
-                        <div class="row-fluid">
-                            <div id="carouselImg" class="span12">
-                                <a
-                                    href="/article/{{ feature.title_slug }}"
-                                    data-r0='<img src="{{ feature.small_featured_image.URL }}">'
-                                    data-r801='<img src="{{ feature.featured_image.URL }}">'
-                                ></a>
-                                <div id="carouselDescTransbox"></div>
-                                    <div id="carouselDesc" class="span3">
-                                        <span class="carouselTitle"><b>{{ feature.title }}</b></span>
-                                        <p>{{ feature.summary }}</p>
-
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                <a class="carousel-control left" href="#featuredArticles" data-slide="prev">&lsaquo;</a>
-                <a class="carousel-control right" href="#featuredArticles" data-slide="next">&rsaquo;</a>
-            </div>
-        </div>
-    </div>
-    <div class="row-fluid">
-        <div class="span9">
-            {% include "articleList.html" %}
-        </div>
-        <div class="span3">
-            <div class="sidebarArticleList">
-            {% for article in sidebar %}
-                <div class="sidebarArticleListTitle">
-                    <a href="/article/{{ article.title_slug }}">{{ article.title }}</a>
-                </div>
-                <div class="sidebarArticleListBody">
-                    {{ article.body|safe }}
-                </div>
-                <div class="sidebarArticleListBorder"></div>
-            {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
+        {% include "articleList.html" %}
 {% endblock %}
 {% block footer %}
 <div class="paginationWrap">

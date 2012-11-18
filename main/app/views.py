@@ -1,4 +1,5 @@
 # Create your views here.
+from django.db.models import Q
 from django.contrib.auth import logout
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.contrib.auth.decorators import login_required
@@ -25,19 +26,16 @@ def article_edit_rights(user, article):
 
 def home(request):
     user = request.user
-    articles = get_list_or_404(Article.objects.filter(is_posted=True, type__in=('featured','standard')).order_by("-date_posted"))
-    sidebar = Article.objects.filter(is_posted=True,type='sidebar').order_by("-date_posted")[:5]
-    features = Article.objects.filter(is_posted=True,type='featured').order_by("-date_posted")[:8]
-    paginator = Paginator(articles, 8)
+    articles = Article.objects.filter(is_posted=True).order_by("-date_posted")
 
-    try: page = int(request.GET.get("page", '1'))
-    except ValueError: page = 1
+    features = articles.filter(type='featured')
+    articlelist= articles.filter(Q(type='standard')|Q(type='sidebar'))
+    row1 = articlelist[:6]
+    row2 = articlelist[6:12]
+    row3 = articlelist[12:18]
+    row4 = articlelist[18:24]
 
-    try: articles = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        articles = paginator.page(paginator.num_pages)
-
-    d = dict(articles=articles, features=features, sidebar=sidebar, user=user)
+    d = dict(features=features, articlelist=articlelist, row1=row1, row2=row2, row3=row3, row4=row4, user=user)
     return render_to_response("home.html", d)
 
 def category(request, jslug):
@@ -121,7 +119,9 @@ def articleEditor(request, article_id):
             except:
                 article = None
             form = ArticleForm(request.POST, request.FILES, instance=article)
+            print str(form)
             if form.is_valid():
+                print 'valid form'
                 article = form.save(commit=False)
                 if "post_article" in request.POST:
                     now = datetime.datetime.now()
