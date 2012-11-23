@@ -28,15 +28,29 @@ def home(request):
     user = request.user
     articles = Article.objects.filter(is_posted=True).order_by("-date_posted")
 
-    features = articles.filter(type='featured')
-    articlelist= articles.filter(Q(type='standard')|Q(type='sidebar'))
+    features = articles.filter(type='featured')[:3]
+    articlelist= articles.filter(Q(type='standard')|Q(type='sidebar'))[:18]
     row1 = articlelist[:6]
     row2 = articlelist[6:12]
     row3 = articlelist[12:18]
-    row4 = articlelist[18:24]
 
-    d = dict(features=features, articlelist=articlelist, row1=row1, row2=row2, row3=row3, row4=row4, user=user)
-    return render_to_response("home.html", d)
+    d = dict(features=features, articlelist=articlelist, row1=row1, row2=row2, row3=row3, user=user)
+    return render_to_response("home.html", d, context_instance=RequestContext(request))
+
+def archive(request):
+    user = request.user
+    articles = Article.objects.filter(is_posted=True).order_by("-date_posted")
+    paginator = Paginator(articles, 18)
+
+    try: page = int(request.GET.get("page", '1'))
+    except ValueError: page = 1
+
+    try: articles = paginator.page(page)
+    except (InvalidPage, EmptyPage):
+        articles = paginator.page(paginator.num_pages)
+
+    d = dict(articles=articles)
+    return render_to_response("archive.html", d, context_instance=RequestContext(request))
 
 def category(request, jslug):
     user = request.user
@@ -51,7 +65,7 @@ def category(request, jslug):
         articles = paginator.page(paginator.num_pages)
 
     d = dict(articles=articles, features=features, user=user)
-    return render_to_response("home.html", d)
+    return render_to_response("home.html", d, context_instance=RequestContext(request))
     
 def authorPage(request, jslug):
     social = None
@@ -75,7 +89,7 @@ def authorPage(request, jslug):
         articles = paginator.page(paginator.num_pages)
 
     d = dict(articles=articles, staff=staff, staffProfile=staffProfile, social=social, user=user)
-    return render_to_response("authorPage.html", d)
+    return render_to_response("authorPage.html", d, context_instance=RequestContext(request))
     
 def article(request, article_id, type):
     user = request.user
@@ -93,7 +107,7 @@ def article(request, article_id, type):
         posted = 'posted'
 
     d = dict(user=user,article=article, posted=posted, pagetype=pagetype, editable=editable)
-    return render_to_response("articleView.html", d)
+    return render_to_response("articleView.html", d, context_instance=RequestContext(request))
 
 @csrf_exempt
 @login_required
@@ -110,6 +124,13 @@ def articleEditor(request, article_id):
 
     else:
         article = None
+
+    try: staffProfile = StaffProfile.objects.get(user=user)
+    except: staffProfile = None
+
+    if not staffProfile:
+        return HttpResponseRedirect('/staff/profile/?src=article')
+
 
     if request.method == 'POST':
         if "discard_article" in request.POST:
@@ -200,10 +221,10 @@ def articleAutosave(request, article_id):
 @login_required
 def imageEditor(request,image_id):
     articleImage = get_object_or_404(ArticleImage, id=image_id)
-    featuredType = ArticleImageType.objects.get(name='featured')
-    smallFeaturedType = ArticleImageType.objects.get(name='smallFeatured')
-    featured = ArticleImageCrop.objects.get(type=featuredType.id, src=articleImage.id)
-    smallFeatured = ArticleImageCrop.objects.get(type=smallFeaturedType.id, src=articleImage.id)
+    headerType = ArticleImageType.objects.get(name='header')
+    thumbnailType = ArticleImageType.objects.get(name='thumbnail')
+    header = ArticleImageCrop.objects.get(type=headerType.id, src=articleImage.id)
+    thumbnail = ArticleImageCrop.objects.get(type=thumbnailType.id, src=articleImage.id)
     formset = imageFormset(queryset=ArticleImageCrop.objects.filter(src=articleImage.id))
 
     try:
@@ -233,10 +254,10 @@ def imageEditor(request,image_id):
     return render_to_response("imageEditor.html", {
         'formset': formset,
         'articleImage': articleImage,
-        'featuredType': featuredType,
-        'smallFeaturedType': smallFeaturedType,
-        'featured':featured,
-        'smallFeatured':smallFeatured,
+        'headerType': headerType,
+        'thumbnailType': thumbnailType,
+        'header':header,
+        'thumbnail':thumbnail,
         'imgheight':imgheight,
         'article_id':article_id},
         context_instance=RequestContext(request))
@@ -257,12 +278,15 @@ def imageUpload(request):
         if form.is_valid():
             image = form.save()
             header = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='header')))
-            featured = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='featured')))
-            smallFeatured = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='smallFeatured')))
+            mediumHeader = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='mediumHeader')))
+            smallHeader = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='smallHeader')))
             thumb = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='thumbnail')))
+            smallThumb = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='smallThumb')))
+            mediumThumb = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='mediumThumb')))
             if article_id:
                 article = get_object_or_404(Article, id=article_id)
-                connectCrops(article.id,image.id)
+                article.image = image
+                article.save()
                 return HttpResponseRedirect('/staff/image/'+str(image.id)+'/?article='+str(article_id))
             return HttpResponseRedirect('/staff/image/'+str(image.id))
     else:
@@ -276,9 +300,9 @@ def imageUpload(request):
 @login_required
 def imagePicker(request, article_id):
     article = get_object_or_404(Article, id=article_id)
-    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='smallFeatured')), URL__isnull=False)
+    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='smallThumb')), URL__isnull=False)
 
-    paginator = Paginator(imagelist, 8)
+    paginator = Paginator(imagelist, 16)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
@@ -352,20 +376,40 @@ def staffHome(request):
         posted = paginator.page(paginator.num_pages)
 
     d = dict(posted=posted, unposted=unposted, user=user, editor=editor)
-    return render_to_response("staffHome.html", d)
+    return render_to_response("staffHome.html", d, context_instance=RequestContext(request))
 
 @login_required
-def staffFileManager(request):
-    filelist = ContentImage.objects.all()
+def staffImages(request):
+    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='smallThumb')), URL__isnull=False).order_by("-id")
 
-    d = dict(filelist=filelist)
-    return render_to_response("staffFileManager.html", d)
+
+    paginator = Paginator(imagelist, 16)
+
+    try: page = int(request.GET.get("page", '1'))
+    except ValueError: page = 1
+
+    try: imagelist = paginator.page(page)
+    except (InvalidPage, EmptyPage):
+        imagelist = paginator.page(paginator.num_pages)
+
+    if request.method == "POST":
+        image = ArticleImage.objects.get(pk=request.POST['image'])
+        connectCrops(article_id,image.id)
+        return HttpResponseRedirect('/editor/'+str(article_id))
+
+    d = dict(imagelist=imagelist, article=article)
+    return render_to_response("imageList.html", d, context_instance=RequestContext(request))
 
 @login_required    
 def profilePage(request):
     user = request.user
     profile, created = StaffProfile.objects.get_or_create(user=request.user)
     notice = None
+
+    try:
+        source = request.GET['src']
+    except:
+        source = None
     
     if request.method == "POST":
         uform = UserForm(request.POST, instance=request.user)
@@ -385,7 +429,8 @@ def profilePage(request):
         'form': form,
         'uform': uform,
         'notice': notice,
-        'user': user},
+        'user': user,
+        'source':source},
         context_instance=RequestContext(request))
 
 def logout_view(request):

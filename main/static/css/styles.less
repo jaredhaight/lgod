@@ -108,7 +108,6 @@ blockquote {
   height: 50px;
   font-size: .9em;
   color: @base;
-  padding-left: 1%;
   position: fixed;
   top: 0;
   background: #fff;
@@ -120,6 +119,7 @@ blockquote {
 
 #lgodnav img {
   margin-top: -10px;
+  padding-left: 1%;
 }
 
 .navSection {
@@ -205,6 +205,10 @@ blockquote {
   z-index: 2;
 }
 
+#userMenuMobile {
+  display: none;
+}
+
 
 .menuItem {
   color: @accent;
@@ -249,7 +253,6 @@ blockquote {
   text-align: right;
   display: inline-block;
   bottom: 0;
-  margin-right: 10px;
   font-size: 1.3em;
   border-left: 1px;
   border-left-style: solid;
@@ -282,7 +285,7 @@ blockquote {
 .contentWrap {
   .readableText();
   max-width: 1425px;
-  margin: 1% auto;
+  margin: 0 auto;
   padding-left: 10px;
   padding-right: 10px;
 }
@@ -313,17 +316,19 @@ blockquote {
 
 
 .featuredArticles {
-  margin-top: -1.2%;
+  top: 0;
   cursor: pointer;
   position: relative;
   height: 400px;
+  background: #f5f5f5;
 }
 
 .row-fluid .featuredListImg {
   position: absolute;
   left: -50%;
   width: 200%;
-  height: 200%;
+  height: 100%;
+  background: #f5f5f5;
 }
 
 .featuredListImg img {
@@ -362,7 +367,6 @@ blockquote {
 
 .promotedArticles {
   cursor: pointer;
-  width: 90%;
   margin-left: auto;
   margin-right: auto;
   border: black;
@@ -370,12 +374,13 @@ blockquote {
   border-width: 1px;
   position: relative;
   height: 350px;
+  overflow: hidden;
 }
 
 .promotedListImg {
   position: absolute;
-  left: 0;
-  width: 100%;
+  left: -50%;
+  width: 200%;
   overflow: hidden;
   height: 350px;
 }
@@ -388,7 +393,7 @@ blockquote {
   bottom: 0;
   margin-left: auto;
   margin-right: auto;
-  min-height: 300px;
+  min-height: 400px;
   max-width: 1500px;
 }
 
@@ -408,8 +413,8 @@ blockquote {
   background: #ffffff;
   min-height: 125px;
   width: 100%;
-  opacity:0.4;
-  filter:alpha(opacity=40); /* For IE8 and earlier */
+  opacity:0.475;
+  filter:alpha(opacity=475); /* For IE8 and earlier */
   position: absolute;
   bottom: 0;
   left: 0;
@@ -418,19 +423,35 @@ blockquote {
 .articleListBorder {
   border: 1px solid;
   border-color: oldLace;
-  padding: 1%;
   min-height: 285px;
   overflow: hidden;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-bottom: 25px;
 }
 
 .articleListImage{
+  position: relative;
   float: left;
+  height: 200px;
   margin-right: 10px;
   margin-bottom: 0;
-  width: 105%;
+  width: 200%;
+  left: -50%;
   margin-left: -2%;
   margin-top: -2%;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  overflow: hidden;
+}
+
+.articleListImage img {
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .articleListTitle{
@@ -475,8 +496,58 @@ blockquote {
   border-color: oldLace;
   width: 80;
   text-align: center;
-  padding: 10px;
-  padding-bottom: 25px;
+  padding: 25px;
+}
+
+.archiveFeaturedListBorder {
+  border: 1px solid;
+  border-color: oldLace;
+  min-height: 285px;
+  overflow: hidden;
+}
+
+.archiveFeaturedArticleImage {
+  position: relative;
+  left: -50%;
+  width: 200%;
+  overflow: hidden;
+  height: 350px;
+}
+
+.archiveFeaturedArticleImage img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 25%;
+  margin-left: auto;
+  margin-right: auto;
+  min-height: 300px;
+  max-width: 1500px;
+}
+
+.archiveFeaturedListDesc {
+  position: absolute;
+  top: 15%;
+  bottom: 10px;
+  left: 27.5%;
+  width: 44%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  .readableText(1.1em);
+  color: @base;
+}
+
+.archiveFeaturedDescTransbox {
+  background: #ffffff;
+  min-height: 125px;
+  width: 100%;
+  opacity:0.4;
+  filter:alpha(opacity=40); /* For IE8 and earlier */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .articleHeader {
@@ -484,33 +555,43 @@ blockquote {
   min-height: 75px;
 }
 
+#articleRow {
+  position: relative;
+}
+
 #articleImage {
   position: relative;
-  width: 1500px;
+  width: 200%;
   height: 400px;
-  margin-left: -3%;
-  margin-top: -1%;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0;
+  left: -50%;
+  background: #f5f5f5;
 }
 
 #articleImage img {
+  display: block;
   height: 400px;
-  width: 1500px;
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #articleMetaBox {
   position: absolute;
   bottom: 0;
-  background: #fff;
-  width: 100%;
+  left: -2.7%;
+  background: white;
+  width: 105.4%;
   opacity: .5;
   height: 115px;
 }
 
 #articleTitle {
   position: absolute;
-  bottom: 0;
-  left: 10%;
-  bottom: 25px;
+  left: 9%;
+  bottom: 20px;
 }
 
 #articleTitle h1 {
@@ -533,7 +614,7 @@ blockquote {
 }
 
 #articleBody  {
-  .readableText(1.15em, 1.33em);
+  .readableText(1.15em, 1.4em);
 }
 
 #articleBody p {
@@ -549,9 +630,30 @@ blockquote {
   float: right;
 }
 
+.imgCaption {
+  position: relative;
+  background: #eee;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 1%;
+}
+
+.caption {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  .accentText(.65em, .95em);
+  color: #333;
+  background: white;
+  opacity: .75;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 .shareLinks {
   float: left;
-  width: 250px;
 }
 
 .fb-like {
@@ -571,6 +673,13 @@ blockquote {
   width: 60%;
   margin: 0 auto;
 }
+
+.editorWrap {
+  max-width: 1140px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .editorText {
   font-family: sans-serif;
   font-size: .7em;
@@ -589,6 +698,18 @@ blockquote {
 }
 #editorCategories {
   min-height: 280px;
+}
+
+#editorImage {
+  height: 100%;
+}
+
+#editorImage img {
+  float: left;
+  margin-right: 10px;
+  width: 50%;
+  max-width: 300px;
+  min-width: 200px;
 }
 
 .categoryHelpText {
@@ -614,7 +735,7 @@ blockquote {
   font-size: 1.1em;
   width: 79%;
   position: fixed;
-  top: 42px;
+  top: 60px;
   right: 10px;
   text-align: right;
   color: #8b0000;
@@ -624,11 +745,14 @@ blockquote {
 }
 
 .nothumb {
-  width: 125px;
-  min-height: 125px;
+  width: 250px;
+  min-height: 115px;
   background: grey;
   text-align: center;
   font-size: 20px;
+  padding-top: 10px;
+  float: left;
+  margin-right: 2%;
 }
 
 .nothumb p {
@@ -641,7 +765,10 @@ blockquote {
 
 #imageUploadForm {
   .accentText();
-
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30px;
 }
 
 #id_description {
@@ -703,27 +830,46 @@ blockquote {
   border: 1px solid;
   border-color: oldLace;
   padding: 10px;
-  height: 120px;
-  width: 98%;
+  height: 100%;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .staffArticleItem img {
-  height: 100%;
+  float: left;
+  margin-right: 2%;
 }
 
 .staffStats {
-  text-align: center;
+  height: 100%;
+  margin-top: 1%;
 }
 
 .staffStatsNumber {
-  padding-top: 10px;
-  .accentText(2em);
+  width: 25%;
+  float: left;
+  .accentText(1.5em,1.8em);
   font-weight: 100;
-  color: @accent;
+  text-align: center;
+  position: relative;
 }
 
-.staffStatsNumber a {
+.staffStatsNumberValue {
   color: @accent;
+  font-size: 1.4em;
+}
+
+.staffStatsNumberHelpText {
+  position: absolute;
+  bottom: 91%;
+  width: 400%;
+  left: -150%;
+  padding-bottom: 5px;
+  text-align: center;
+  display: none;
+  .accentText(.45em, 1em);
+  color: gray;
 }
 
 .disqus-count-text {
@@ -732,7 +878,10 @@ blockquote {
 
 .login{
   .accentText;
-  margin-top: 5%;
+  width: 400px;
+  margin-top: 10%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .profile {
@@ -744,13 +893,22 @@ blockquote {
   .accentText;
 }
 
+.authorProfile {
+  text-align: center;
+  }
+
 .socialLinks {
   font-size: 24pt;
-  padding-top: 1%;
+  padding-top: 2%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
 }
 
 .socialLinks a {
   color: #212121;
+  margin-left: 2%;
+  margin-right: 2%;
 }
 
 .socialLinks a:hover {
@@ -764,7 +922,18 @@ blockquote {
 #bioBody {
   min-height: 45%;
 }
+
+@media (max-width: 481px) {
+  .row-fluid .featuredArticles .featuredListImg img {
+    top: 0;
+  }
+}
 @media (max-width: 640px) {
+  body #lgodnav img {
+    margin-top: 10px;
+    max-width: 60%;
+  }
+
   .header {
     text-align: center;
   }
@@ -777,17 +946,32 @@ blockquote {
     display: none;
   }
 
+  .navSection {
+    border-right: none;
+    border-right-style: none;
+    border-right-color: none;
+  }
   #userNav {
-    display: none;
+    position: absolute;
+    right: 60px;
+    width: 45px;
+  }
+
+  #userMenu {
+    float: right;
+    left: auto;
+    right: 0;
+    width: 130px;
   }
 
   #topics {
-    float: right;
+    right: 0;
+    position: absolute;
     width: 60px;
     padding-left: 0;
     padding-right: 0;
     margin-right: 0;
-    margin-left: -1%;
+    margin-left: 2%;
   }
 
   #topicsMenu {
@@ -800,6 +984,7 @@ blockquote {
   .menuItem {
     margin-left: -20%;
     padding-left: 25%;
+    width: 136px;
   }
 
   .subMenu {
@@ -813,41 +998,72 @@ blockquote {
     float: left;
   }
 
-  .featuredArticles .row-fluid .featuredListDesc {
-    margin-left: 4%;
+  .featuredArticles .featuredListImg img {
+    top: -25%;
+  }
+
+  .row-fluid .featuredArticles .featuredListDesc {
+    width: 100%;
+    left: 0;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .span9 .row-fluid .articleListBorder {
     min-height: 370px;
   }
 
+  .row-fluid .articleListBorder .articleListImage {
+    height: 165px;
+  }
+
+  .row-fluid .articleListBorder .articleListImage img {
+    height: 165px;
+    max-width: 750px;
+  }
+
   #Features .row-fluid  .articleListBorder .articleListBody {
     min-height: 300px;
   }
 
-  .promotedListImg img {
-    height: 500px;
-    width: 100%;
-  }
-
-  .span8 #editorImage .span3 {
-    width: 40%;
-    float: left;
-  }
-
-  .span8 #editorImage .span9 {
-    width: 60%;
-    height: 150px;
+  .row-fluid .promotedArticles {
+    height: 300px;
   }
 
   .shareLinks {
     float: none;
   }
 
+  .row-fluid #articleAuthorBox {
+    height: 100px;
+  }
   .articleAuthorCredit{
     float: none;
     text-align: left;
     margin-bottom: 2%;
+  }
+
+  .tab-content #posted .staffArticleItem .span8 p {
+    width: 100%;
+    float: left;
+    text-align: center;
+  }
+  .tab-content #posted .staffArticleItem .span8 img {
+    margin-bottom: 1%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    float: none;
+  }
+
+  .login {
+    width: 300px;
+  }
+
+  .loginbox {
+    margin-left: auto;
+    margin-right: auto;
+    width: 75%;
   }
 }
 
@@ -856,6 +1072,10 @@ blockquote {
     padding-left: 0;
     padding-right: 0;
   }
+  
+  #lgodnav {
+    position: static;
+  }
 
   #lgodnav img {
     float: left;
@@ -863,48 +1083,47 @@ blockquote {
     margin-left: 3px;
   }
 
+  #navgap {
+    height: 5px;
+  }
+
   .contentWrap {
     padding-left: 8px;
     padding-right: 8px;
   }
 
-  .homePad {
+ .container-fluid .contentWrap .homePad {
     width: 100%;
   }
 
   .row-fluid .featuredArticles {
-    width: 111.5%;
-    margin-left: -6%;
     margin-top: -2%;
     z-index: -1;
-    height: 350px
+    height: 300px
   }
 
   .featuredListImg {
     height: 300px;
     width: 1200px;
+    overflow: hidden;
   }
 
   .featuredListImg img {
-    height: 350px;
+    height: auto;
   }
 
-  .row-fluid .featuredListDesc {
-    width: 80%;
+  .featuredArticles .featuredListDesc {
+    width: 90%;
     margin-top: 15%;
-    margin-left: 7%;
+    margin-left: 1.5%;
     text-align: center;
     margin-right: 10%;
     padding-left: 0;
   }
 
-  .row-fluid .featuredListDescTransbox {
-    width: 100%;
-
-  }
-
-  .promotedArticles {
-    width: 100%;
+  .featuredArticles .featuredListDescTransbox {
+    width: 108%;
+    left: -5%;
   }
 
   .promotedArticles .promotedListDescTransbox {
@@ -912,16 +1131,22 @@ blockquote {
   }
 
   .promotedArticles .promotedListDesc {
+    width: 90%;
     height: 80%;
+    margin-left: auto;
+    margin-right: auto;
     text-align: center;
+    padding-left: 5%;
   }
 
   .articleListBorder .articleListImage {
     height: 200px;
   }
 
-  .articleListBorder .articleListImage img {
+  .contentWrap .row-fluid .articleListBorder .articleListImage img {
     height: 200px;
+    max-width: 750px;
+    top: 0;
   }
 
   .span8 #id_title {
@@ -930,15 +1155,50 @@ blockquote {
 
   .span4 #editorCategories {
     width: 100%;
-    min-height: 220px;
+    min-height: 0;
+  }
+
+  #editorImage {
+    text-align: center;
+  }
+
+  #editorImage img {
+    float: none;
+    width: 100%;
+    margin-bottom: 10px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #savebar {
+    text-align: center;
+  }
+
+  .nothumb {
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+  }
+
+  #new_photo_btn {
+    display: none;
   }
 
   .imagePicker {
     margin-bottom: 3%;
+    text-align: center;
   }
 
   #articleAuthorBox {
     height: 65px;
+  }
+
+  #posted .staffArticleItem .span8 {
+    height: auto;
+  }
+  #posted .staffArticleItem .staffStats {
+    width: 100%;
+    float: left;
   }
 
 }
@@ -948,20 +1208,20 @@ blockquote {
     display: none;
   }
 
+  .row-fluid .articleListBorder .articleListImage img {
+    top: 0;
+  }
+
   #articleImage {
-    margin-left: -6%;
     margin-top: -2%;
     z-index: -1;
   }
 
-  #articleMetaBox {
-    height: 160px;
-  }
-
   #articleTitle {
-    left: 5%;
+    left: 0;
     bottom: 25px;
-    width: 300px;
+    width: 100%;
+    text-align: center;
   }
 
   #articleBody {
@@ -971,14 +1231,13 @@ blockquote {
   }
 
   #articleAuthorBox {
-    height: 100px;
     width: 100%;
     margin-left: 0;
     font-size: .95em;
   }
 
   #editorSummary {
-    width: 98%;
+    width: 95.5%;
   }
 
   #summaryCounter {
@@ -1021,20 +1280,16 @@ blockquote {
 
 }
 
-@media (max-width: 978px) {
+@media (max-width: 977px) {
   .row-fluid .span6 {
     width: 100%;
     margin-left: 0
   }
 
-  .carousel {
-    margin-bottom: 0;
+  .contentWrap .homePad {
+    width: 85%;
   }
 
-  .featuredArticles {
-    width: 105.75%;
-    margin-left: -2.8%;
-  }
 
   .featuredListDescTransbox {
     width: 55%;
@@ -1047,6 +1302,7 @@ blockquote {
   .row-fluid .articleListBorder{
     min-height: 230px;
     line-height: 28px;
+    margin-bottom: 3%;
   }
 
   #Features .articleListBorder{
@@ -1057,12 +1313,8 @@ blockquote {
     min-height: 145px;
   }
 
-  .articleListBody .articleListDate{
-    margin-bottom: 1%;
-  }
-
-  .articleListBody .articleListImage {
-    width: 22%;
+  .articleListBorder .articleListImage img {
+    top: -25%;
   }
 
   .promotedListDesc {
@@ -1083,9 +1335,20 @@ blockquote {
     margin-left: 5px;
   }
 
-  .span3 .sidebarArticleList {
-    margin-top: 0;
+  .contentWrap .row-fluid .authorProfile {
+    margin-left: 0
   }
+  .staffArticleItem .span8 {
+    width: 100%;
+    height: 50px;
+    float: left;
+  }
+  .staffArticleItem .staffStats {
+    width: 60%;
+    margin-top: 2%;
+    float: right;
+  }
+
 }
 
 @media (max-width: 1270px) {
@@ -1095,11 +1358,6 @@ blockquote {
     margin-top: 3%;
   }
 
-  #featuredArticles {
-    width: 107%;
-    margin-left: -3.5%;
-    margin-top: -1%;
-  }
   .featuredListDescTransbox {
     width: 40%;
   }
@@ -1109,12 +1367,14 @@ blockquote {
     left: 30px;
   }
 
+  .homePad {
+    width: 98%;
+  }
+
   .articleListBorder {
     margin-top: 1%;
-    padding-bottom: 2%;
     min-height: 300px;
     line-height: 26px;
-    padding: 10px;
   }
 
   .articleListImage {
@@ -1127,15 +1387,11 @@ blockquote {
   }
 
   .sidebarArticleListBorder {
-    margin-top: 2%;
+    margin-top: 1%;
     margin-bottom: 2%;
   }
 
   #editorSaved {
     top: 8px;
-  }
-
-  .login {
-    margin-top: 5%;
   }
 }

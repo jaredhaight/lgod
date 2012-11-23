@@ -9,9 +9,9 @@
             $('#fimage').Jcrop({
                 onSelect: featCoords,
                 onChange: featCoords,
-                minSize:['{{ featuredType.width }}','{{ featuredType.height }}'],
-            {% if featured.X2 %}
-                setSelect:   [ {{ featured.X }}, {{ featured.Y }}, {{ featured.X2 }}, {{ featured.Y2 }} ],
+                minSize:['{{ headerType.width }}','{{ headerType.height }}'],
+            {% if header.X2 %}
+                setSelect:   [ {{ header.X }}, {{ header.Y }}, {{ header.X2 }}, {{ header.Y2 }} ],
             {% endif %}
                 aspectRatio:3.75/1,
                 trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
@@ -19,33 +19,33 @@
             $('#sfimage').Jcrop({
                 onSelect: smallFeatCoords,
                 onChange: smallFeatCoords,
-                minSize:['{{ smallFeaturedType.width }}','{{ smallFeaturedType.height }}'],
-            {% if smallFeatured.X2 %}
-                setSelect:   [ {{ smallFeatured.X }}, {{ smallFeatured.Y }}, {{ smallFeatured.X2 }}, {{ smallFeatured.Y2 }} ],
+                minSize:['{{ thumbnailType.width }}','{{ thumbnailType.height }}'],
+            {% if thumbnail.X2 %}
+                setSelect:   [ {{ thumbnail.X }}, {{ thumbnail.Y }}, {{ thumbnail.X2 }}, {{ thumbnail.Y2 }} ],
             {% endif %}
-                aspectRatio:1/1,
+                aspectRatio:1.66667/1,
                 trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
             });
         });
     function featCoords(c)
     {
-        jQuery('#{{ featuredType.id }}form').find('#X').val(c.x);
-        jQuery('#{{ featuredType.id }}form').find('#Y').val(c.y);
-        jQuery('#{{ featuredType.id }}form').find('#X2').val(c.x2);
-        jQuery('#{{ featuredType.id }}form').find('#Y2').val(c.y2);
+        jQuery('#{{ headerType.id }}form').find('#X').val(c.x);
+        jQuery('#{{ headerType.id }}form').find('#Y').val(c.y);
+        jQuery('#{{ headerType.id }}form').find('#X2').val(c.x2);
+        jQuery('#{{ headerType.id }}form').find('#Y2').val(c.y2);
     };
 
     function smallFeatCoords(c)
     {
-        jQuery("#{{ smallFeaturedType.id }}form").find("#X").val(c.x);
-        jQuery("#{{ smallFeaturedType.id }}form").find("#Y").val(c.y);
-        jQuery("#{{ smallFeaturedType.id }}form").find("#X2").val(c.x2);
-        jQuery("#{{ smallFeaturedType.id }}form").find("#Y2").val(c.y2);
+        jQuery("#{{ thumbnailType.id }}form").find("#X").val(c.x);
+        jQuery("#{{ thumbnailType.id }}form").find("#Y").val(c.y);
+        jQuery("#{{ thumbnailType.id }}form").find("#X2").val(c.x2);
+        jQuery("#{{ thumbnailType.id }}form").find("#Y2").val(c.y2);
     };
 
     $(document).ready(function() {
         $('body').mouseup(function(){
-            if ($("#{{ smallFeaturedType.id }}form").find("> #X2").val() - $("#{{ smallFeaturedType.id }}form").find("> #X").val() != 0){
+            if ($("#{{ thumbnailType.id }}form").find("> #X2").val() - $("#{{ thumbnailType.id }}form").find("> #X").val() != 0){
                 $("#smalltab").addClass('imgEditorGood');
                 var smallgood = true
             } else {
@@ -53,11 +53,11 @@
                 var smallgood = false
             }
 
-            if ($("#{{ featuredType.id }}form").find("> #X2").val() - $("#{{ featuredType.id }}form").find("> #X").val() != 0){
-                $("#featuredtab").addClass('imgEditorGood');
+            if ($("#{{ headerType.id }}form").find("> #X2").val() - $("#{{ headerType.id }}form").find("> #X").val() != 0){
+                $("#headertab").addClass('imgEditorGood');
                 var featuredgood = true
             } else {
-                $("#featuredtab").removeClass('imgEditorGood');
+                $("#headertab").removeClass('imgEditorGood');
                 var featuredgood = false
             }
 
@@ -90,19 +90,19 @@
                 <form action="/staff/image/{{ articleImage.id }}/{% if article_id %}?article={{ article_id }}{% endif %}" method="post">
                     {% csrf_token %}
                 <ul class="nav nav-tabs">
-                    <li id="featuredtab" class="active"><a href="#featured" data-toggle="tab">Featured</a></li>
-                    <li id="smalltab"><a href="#smallFeatured" data-toggle="tab">Square Crop</a></li>
+                    <li id="headertab" class="active"><a href="#header" data-toggle="tab">Header Crop</a></li>
+                    <li id="smalltab"><a href="#thumbnail" data-toggle="tab">Square Crop</a></li>
                     <button id="saveButton" type="submit" name="submit" class="btn btn-primary pull-right">Save Image Selection</button>
                 </ul>
                 <div class="tab-content">
-                    <div class="tab-pane active" id="featured">
+                    <div class="tab-pane active" id="header">
                         <div class="row-fluid imageEditorCrop">
                             <div class="span12">
                                 <img id="fimage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane" id="smallFeatured">
+                    <div class="tab-pane" id="thumbnail">
                         <div class="row-fluid">
                             <div class="span12 imageEditorCrop">
                                 <img id="sfimage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">

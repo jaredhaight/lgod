@@ -6,7 +6,7 @@
 {% block title %}<title>Live Geek or Die </title>{% endblock %}
 {% block content %}
 <div class="row-fluid">
-    <div id="imageUploadForm" class="span6 offset3 margintop1">
+    <div id="imageUploadForm">
         <span class="center"><h1>Image Upload</h1></span>
         <form class="form-horizontal" method="post" action="/staff/image/upload/{% if article_id %}?article={{ article_id }}{% endif %}" enctype="multipart/form-data">
                 {% csrf_token %}

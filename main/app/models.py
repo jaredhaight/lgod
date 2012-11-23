@@ -1,5 +1,7 @@
 from django.core.files.images import get_image_dimensions
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch.dispatcher import receiver
 from django.contrib.auth.models import User
 from django.forms import ModelForm, Textarea, HiddenInput, FileInput
 from django.forms.models import modelformset_factory
@@ -33,21 +35,29 @@ def setupcats():
         cat.save()
         i = i+1
 
-    header = ArticleImageType.objects.create(name='header', editable=False, width=1000, height=300)
+    header = ArticleImageType.objects.create(name='header', editable=True, width=1500, height=400)
     header.related = None
     header.save()
 
-    thumb = ArticleImageType.objects.create(name='thumbnail', editable=False, width=200, height=200)
+    thumb = ArticleImageType.objects.create(name='thumbnail', editable=True, width=750, height=450)
     thumb.related = None
     thumb.save()
 
-    featured = ArticleImageType.objects.create(name='featured', editable=True, width=1500, height=400)
-    featured.related = ArticleImageType.objects.get(name='header')
-    featured.save()
+    mediumHeader = ArticleImageType.objects.create(name='mediumHeader', editable=False, width=1125, height=300)
+    mediumHeader.related = ArticleImageType.objects.get(name='header')
+    mediumHeader.save()
 
-    smallFeatured = ArticleImageType.objects.create(name='smallFeatured', editable=True, width=500, height=500)
-    smallFeatured.related = ArticleImageType.objects.get(name='thumbnail')
-    smallFeatured.save()
+    smallHeader = ArticleImageType.objects.create(name='smallHeader', editable=False, width=750, height=200)
+    smallHeader.related = ArticleImageType.objects.get(name='header')
+    smallHeader.save()
+
+    mediumThumb = ArticleImageType.objects.create(name='mediumThumb', editable=False, width=500, height=300)
+    mediumThumb.related = ArticleImageType.objects.get(name='thumbnail')
+    mediumThumb.save()
+
+    smallThumb = ArticleImageType.objects.create(name='smallThumb', editable=False, width=300, height=180)
+    smallThumb.related = ArticleImageType.objects.get(name='thumbnail')
+    smallThumb.save()
 
 
 def CDNUpload(file):
@@ -57,6 +67,11 @@ def CDNUpload(file):
     obj.load_from_filename(file.path)
     cdn_url = obj.public_uri()
     return cdn_url
+
+def CDNDelete(file):
+    conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
+    cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
+    cont.delete_object(file)
 
 def uniqueSlug(model, slug_field, title):
     kwargs={}
@@ -75,10 +90,10 @@ def uniqueSlug(model, slug_field, title):
             i = i+1
         return newslug
 
-def resizeImage(image, width, height):
-    workimage = Image.open(image)
+def resizeImage(src, image, width, height):
+    workimage = Image.open(open(image.path, 'rb'))
     timestamp = time.strftime('%m%d%y%H%M%S')
-    savestr = 'articles/'+timestamp+'.jpg'
+    savestr = 'articles/'+timestamp+src+'.jpg'
 
     if height == 0:
         height = workimage.size[1] * width / workimage.size[0]
@@ -93,21 +108,19 @@ def cropImage(image):
     height = image.type.height
     box = (image.X, image.Y, image.X2, image.Y2)
     timestamp = time.strftime('%m%d%y%H%M%S')
-    savestr = 'images/'+timestamp+str(image.src.id)+image.type.name+'.jpg'
+    savestr = 'articles/'+timestamp+str(image.src.id)+image.type.name+'.jpg'
     crop = workimage.crop(box)
     resize = crop.resize((width,height), Image.ANTIALIAS)
     resize.save(MEDIA_ROOT+savestr, "JPEG", quality=95)
+    print savestr
     return savestr
 
 def connectCrops(article_id,image_id):
     article = Article.objects.get(pk=article_id)
     image = ArticleImage.objects.get(pk=image_id)
-
-    article.featured_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='featured')), src=image)
-    article.header_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='header')), src=image)
-    article.small_featured_image = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='smallFeatured')), src=image)
-    article.thumbnail = ArticleImageCrop.objects.get(type=(ArticleImageType.objects.get(name='thumbnail')), src=image)
+    article.image = image
     article.save()
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -119,10 +132,7 @@ class Article(models.Model):
     type = models.CharField(max_length=20, choices=ARTICLE_TYPE, default='standard')
     title = models.CharField(max_length=150)
     title_slug = models.SlugField(null=True, blank=True, unique=True)
-    featured_image=models.ForeignKey('ArticleImageCrop',related_name='featured_image', null=True, blank=True)
-    header_image=models.ForeignKey('ArticleImageCrop', related_name='header_image', null=True, blank=True)
-    small_featured_image = models.ForeignKey('ArticleImageCrop', related_name='small_featured_image', null=True, blank=True)
-    thumbnail=models.ForeignKey('ArticleImageCrop', related_name='thumbnail', null=True, blank=True)
+    image = models.ForeignKey('ArticleImage', related_name='article_image', null=True, blank=True)
     summary = models.TextField(null=True, blank=True)
     body = models.TextField(null=True, blank=True)
     categories = models.ManyToManyField(Category, null=True, blank=True)
@@ -131,6 +141,7 @@ class Article(models.Model):
     last_edited = models.DateTimeField(auto_now=True)
     is_posted = models.BooleanField()
     date_posted = models.DateTimeField(null=True, blank=True)
+    social = models.ForeignKey('ArticleSocialStats', related_name='social_stats', null=True, blank=True)
 
     def __unicode__(self):
         return self.title
@@ -145,7 +156,7 @@ class Article(models.Model):
         if self.type != 'sidebar' and not self.summary:
             errors.append('Article has no summary')
 
-        if self.type != 'sidebar' and not self.thumbnail:
+        if self.type != 'sidebar' and not self.image:
             errors.append('Article does not have an image')
 
         if self.type != 'sidebar' and self.categories.count() < 1:
@@ -160,8 +171,11 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         super(Article, self).save(*args, **kwargs)
-        if self.is_posted and not self.title_slug:
+        if not self.is_posted:
             self.title_slug = uniqueSlug('Article','title_slug',self.title)
+        if not self.social:
+            social = ArticleSocialStats.objects.create()
+            self.social = social
         super(Article, self).save(*args, **kwargs)
 
 class ArticleForm(ModelForm):
@@ -176,6 +190,14 @@ class ArticleForm(ModelForm):
             'categories': SelectMultiple(attrs={'id':'editorCategories'})
         }
 
+class ArticleSocialStats(models.Model):
+    pageviews = models.BigIntegerField(max_length=10, null=True, blank=True)
+    pv_date_updated = models.DateTimeField(null=True, blank=True)
+    tweets = models.BigIntegerField(max_length=10, null=True, blank=True)
+    tweets_date_updated = models.DateTimeField(null=True, blank=True)
+    facebook = models.BigIntegerField(max_length=10, null=True, blank=True)
+    facebook_date_updated = models.DateTimeField(null=True, blank=True)
+
 class ArticleImageType(models.Model):
     name = models.CharField(max_length=20, null=True, blank=True)
     editable = models.BooleanField()
@@ -188,12 +210,19 @@ class ArticleImageType(models.Model):
 
 class ArticleImage(models.Model):
     image = models.ImageField(upload_to="full_img", null=True, blank=True)
+    header=models.ForeignKey('ArticleImageCrop', related_name='header_image', null=True, blank=True)
+    small_header = models.ForeignKey('ArticleImageCrop', related_name='small_header_image', null=True, blank=True)
+    medium_header = models.ForeignKey('ArticleImageCrop', related_name='medium_header_image', null=True, blank=True)
+    thumbnail = models.ForeignKey('ArticleImageCrop', related_name='thumbnail', null=True, blank=True)
+    small_thumbnail = models.ForeignKey('ArticleImageCrop', related_name='small_thumbnail', null=True, blank=True)
+    medium_thumbnail = models.ForeignKey('ArticleImageCrop', related_name='medium_thumbnail', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     uploaded_by = models.ForeignKey(User, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
         return str(self.id)
+
 
 class ArticleImageForm(ModelForm):
     class Meta:
@@ -226,18 +255,63 @@ class ArticleImageCrop(models.Model):
 
     def save(self, *args, **kwargs):
         super(ArticleImageCrop, self).save(*args, **kwargs)
-        if self.X2 and self.type.editable:
+        if self.X2:
+            articleImage = ArticleImage.objects.get(id = self.src.id)
             self.cropped_file = cropImage(self)
             self.URL = CDNUpload(self.cropped_file)
-            if self.type.related:
-                image = resizeImage(self.cropped_file, self.type.related.width, self.type.related.height)
-                crop = ArticleImageCrop.objects.get(src=self.src, type=self.type.related)
+            if self.type.name == 'header':
+                articleImage.header = self
+                smallHeader = ArticleImageType.objects.get(name='smallHeader')
+                image = resizeImage(smallHeader.name, self.cropped_file, smallHeader.width, smallHeader.height)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=smallHeader)
                 crop.cropped_file = image
                 crop.save()
                 url = CDNUpload(crop.cropped_file)
                 crop.URL = url
                 crop.save()
+                articleImage.small_header = crop
+
+                mediumHeader = ArticleImageType.objects.get(name='mediumHeader')
+                image = resizeImage(mediumHeader.name, self.cropped_file, mediumHeader.width, mediumHeader.height)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=mediumHeader)
+                crop.cropped_file = image
+                crop.save()
+                url = CDNUpload(crop.cropped_file)
+                crop.URL = url
+                crop.save()
+                articleImage.medium_header = crop
+
+            if self.type.name == 'thumbnail':
+                articleImage.thumbnail = self
+                smallThumb = ArticleImageType.objects.get(name='smallThumb')
+                image = resizeImage(smallThumb.name, self.cropped_file, smallThumb.width, smallThumb.height)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=smallThumb)
+                crop.cropped_file = image
+                crop.save()
+                url = CDNUpload(crop.cropped_file)
+                crop.URL = url
+                crop.save()
+                articleImage.small_thumbnail = crop
+
+                mediumThumb = ArticleImageType.objects.get(name='mediumThumb')
+                image = resizeImage(mediumThumb.name, self.cropped_file, mediumThumb.width, mediumThumb.height)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=mediumThumb)
+                crop.cropped_file = image
+                crop.save()
+                url = CDNUpload(crop.cropped_file)
+                crop.URL = url
+                crop.save()
+                articleImage.medium_thumbnail = crop
+            articleImage.save()
             super(ArticleImageCrop, self).save(*args, **kwargs)
+
+    def delete(self):
+        CDNDelete(self.cropped_file)
+        super(ArticleImageCrop, self).delete()
+
+@receiver(post_delete, sender=ArticleImageCrop)
+def _articleimagecrop_delete(sender, instance, **kwargs):
+    CDNDelete(instance.cropped_file)
 
 
 class ArticleImageCropForm(ModelForm):
@@ -263,10 +337,10 @@ class ContentImage(models.Model):
     
     def save(self, *args, **kwargs):
         super(ContentImage, self).save(*args, **kwargs)
-        if self.image.width > 400:
-            self.image = resizeImage(self.image.path, 400, 0)
-        if self.image.height > 400:
-            self.image = resizeImage(self.image.path, 0, 400)
+        if self.image.width > 800:
+            self.image = resizeImage('ac', self.image, 800, 0)
+        if self.image.height > 800:
+            self.image = resizeImage('ac', self.image, 0, 800)
 
         self.cdn_url = CDNUpload(self.image)
         self.save_base()

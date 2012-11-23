@@ -1,5 +1,43 @@
 {% extends "base.html" %}
-{% block title %}<title xmlns="http://www.w3.org/1999/html"> {{ article.title }} - Live Geek or Die </title>{% endblock %}
+{% block head %}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(function($){
+            $('#articleBody img').each(function(index) {
+                $(this).load(function(){
+                    $alt = $(this).attr('alt');
+                    $float = $(this).css('float')
+                    if ($alt) {
+                        $image = new Image()
+                        $image.src = $(this).attr('src')
+                        $height = $image.height;
+                        $width = $image.width;
+                        $margin = $(this).css('margin');
+                        $this = $(this).wrap('<div class="imgCaption"/>');
+                        $(this).css('margin','');
+                        $(this).css('height','auto');
+                        $(this).parent().css('float',$float);
+                        $(this).parent().css('max-height',$height);
+                        $(this).parent().css('max-width',$width);
+                        if ($float == 'right') {
+                            $(this).parent().css('margin-left','10px');
+                        }
+                        if ($float == 'left') {
+                            $(this).parent().css('margin-right','10px');
+                        }
+                        $('<div class="caption">' + $this.attr("alt") + '</div>').insertAfter($this);
+                    } else if ($float == 'none') {
+                        $(this).css('margin','');
+                        $(this).css('height','auto');
+                        $(this).parent().css('text-align','center');
+                    }
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% block title %}<title xmlns="http://www.w3.org/1999/html">{{ article.title }}</title>{% endblock %}
 {% block meta %}
     <meta property="og:url" content="http://lgod.photosandtext.com/articles/{{ article.title_slug }}"
     <meta name="title" content="{{ article.title }}" />
@@ -9,8 +47,8 @@
     <meta property="og:description" content="{{ article.summary|safe }}" />
     <meta property="og:type" content="website" />
 
-    <link rel="image_src" href="{{ article.thumbnail.URL }}" />
-    <meta property="og:image" content="{{ article.thumbnail.URL }}" />
+    <link rel="image_src" href="{{ article.image.small_thumbnail.URL }}" />
+    <meta property="og:image" content="{{ article.image.small_thumbnail.URL }}" />
 {% endblock %}
 {% block notice %}
 	{% if not posted %}
@@ -26,16 +64,22 @@
 {% endblock %}
 
 {% block content %}
-<div class="row-fluid">
-    <div id="articleImage" class="span12">
-        <img src="{{ article.featured_image.URL }}">
-        <div id="articleMetaBox"></div>
-        <div id="articleTitle">
-            <h1>{{ article.title }}</h1>
-            <div id="articleDate">
-            {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
-             {% if article.type == 'featured' %}<br><span class="label label-important">Featured Article</span>{% endif %}
-            </div>
+<div id="articleRow" class="row-fluid">
+    <div id="articleImage" class="span12"
+    <a
+            href="/article/{{ article.title_slug }}"
+            data-r0='<img src="{{ article.image.medium_thumbnail.URL }}">'
+            data-r481='<img src="{{ article.image.thumbnail.URL }}">'
+            data-r641='<img src="{{ article.image.medium_header.URL }}">'
+            data-r767='<img src="{{ article.image.header.URL }}">'
+            ></a>>
+    </div>
+    <div id="articleMetaBox"></div>
+    <div id="articleTitle">
+        <h1>{{ article.title }}</h1>
+        <div id="articleDate">
+        {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
+         {% if article.type == 'featured' %}<br><span class="label label-important">Featured Article</span>{% endif %}
         </div>
     </div>
 </div>
@@ -50,9 +94,9 @@
             This article was written by <a href="/author/{{ article.author.first_name|lower }}">{{ article.author.first_name }}</a>
         </div>
         <div class="shareLinks">
-            <div class="fb-like" data-send="false" data-layout="button_count" data-width="250" data-show-faces="false"></div>
-            <div class="g-plus" data-action="share" data-annotation="none"></div>
-            <a href="https://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a>
+            <div class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>
+            <div class="g-plus" data-action="share" data-annotation="bubble"></div>
+            <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
         </div>
     </div>
 </div>
@@ -74,14 +118,8 @@
 
 
 {% endblock %}
-{% block keyboardnav %}
-        {% if editable %}
-            if (event.which == 69){
-                url = '/editor/{{ article.id }}/';
-            };
-        {% endif %}
-{% endblock %}
 {% block javascript %}
+
     <script type="text/javascript">
         (function() {
             var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
@@ -91,45 +129,26 @@
     </script>
 
     <div id="fb-root"></div>
-    <script>
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : '264750043644250', // App ID
-                channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
-                status     : true, // check login status
-                cookie     : true, // enable cookies to allow the server to access the session
-                xfbml      : true  // parse XFBML
-            });
-
-            // Additional initialization code here
-        };
-
-        // Load the SDK Asynchronously
-        (function(d){
-            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement('script'); js.id = id; js.async = true;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            ref.parentNode.insertBefore(js, ref);
-        }(document));
-    </script>
-
     <script>(function(d, s, id) {
         var js, fjs = d.getElementsByTagName(s)[0];
         if (d.getElementById(id)) return;
         js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=264750043644250";
+        js.async=true;
+        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
         fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-    </script>
+    }(document, 'script', 'facebook-jssdk'));</script>
 
     <script>
         !function(d,s,id){
             var js,fjs=d.getElementsByTagName(s)[0];
             if(!d.getElementById(id)){
-                 js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";
-                 fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+                js=d.createElement(s);
+                js.id=id;js.src="//platform.twitter.com/widgets.js";
+                fjs.parentNode.insertBefore(js,fjs);
+            }
+        }(document,"script","twitter-wjs");
     </script>
+
 
 {% endblock %}
 

@@ -1,22 +1,256 @@
 {% extends "base.html" %}
 {%  block head %}
-    <script src="/static/js/response.min.js"></script>
 {% endblock %}
 {% block title %}<title>Live Geek or Die </title>{% endblock %}
 {% block content %}
-        {% include "articleList.html" %}
+    <div class="row-fluid">
+        <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="span12">
+            <div class="featuredArticles">
+                <div class="span12 featuredListImg">
+                    <a
+                            href="/article/{{ features.0.title_slug }}"
+                            data-r0='<img src="{{ features.0.image.medium_thumbnail.URL }}">'
+                            data-r481='<img src="{{ features.0.image.thumbnail.URL }}">'
+                            data-r641='<img src="{{ features.0.image.medium_header.URL }}">'
+                            data-r767='<img src="{{ features.0.image.header.URL }}">'
+                            ></a>
+                </div>
+                <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListDescTransbox"></div>
+                <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListDesc">
+                    <span class="featuredListTitle"><b>{{ features.0.title }}</b></span>
+                    <p>{{ features.0.summary }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid homePad">
+        {% for article in row1 %}
+            {% if article.type = 'standard' %}
+                <div class="span6 articleListBorder">
+                    <div class="articleListImage">
+                        <a
+                        href="/article/{{ article.title_slug }}"
+                        data-r0='<img src={{ article.image.small_header.URL }}>'
+                        data-r801='<img src="{{ article.image.medium_header.URL }}">'
+                        data-r978='<img src={{ article.image.small_header.URL }}>'
+                        ></a>
+                    </div>
+                    <div class="articleListBody">
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        </div>
+                        <p>
+                            {{ article.summary }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                        <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                        <div class="articleListTags margintop1" >Tagged:
+                            {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                            {% for category in article.categories.all %}
+                                <span class="label label-info">{{ category.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if article.type = 'sidebar' %}
+                <div class="span6 sidebarArticleListBorder">
+                    <div class="sidebarArticleListBody">
+                        <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        </div>
+                        <p>
+                            {{ article.body|safe }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <div class="articleListTags margintop1" >
+                            <span class="label label-info">Side Notes</span>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if forloop.counter|divisibleby:2 and not forloop.last%}
+                </div>
+                <div class="row-fluid homePad">
+            {% endif %}
+        {% endfor %}
+        </div>
+    <div class="row-fluid homePad">
+        <div class="span12">
+            <div class="promotedArticles">
+                <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListImg">
+                    <a
+                            href="/article/{{ features.1.title_slug }}"
+                            data-r0='<img src="{{ features.1.image.medium_thumbnail.URL }}">'
+                            data-r481='<img src="{{ features.1.image.thumbnail.URL }}">'
+                            data-r641='<img src="{{ features.1.image.header.URL }}">'
+                            ></a>
+                </div>
+                <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDescTransbox"></div>
+                <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDesc">
+                    <span class="promotedListTitle"><b>{{ features.1.title }}</b></span>
+                    <p>{{ features.1.summary }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid homePad">
+        {% for article in row2 %}
+            {% if article.type = 'standard' %}
+                <div class="span6 articleListBorder">
+                    <div class="articleListImage">
+                        <a
+                            href="/article/{{ article.title_slug }}"
+                            data-r0='<img src={{ article.image.small_header.URL }}>'
+                            data-r801='<img src="{{ article.image.medium_header.URL }}">'
+                            data-r978='<img src={{ article.image.small_header.URL }}>'
+                            ></a>
+                    </div>
+                    <div class="articleListBody">
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        </div>
+                        <p>
+                            {{ article.summary }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                        <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                        <div class="articleListTags margintop1" >Tagged:
+                            {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                            {% for category in article.categories.all %}
+                                <span class="label label-info">{{ category.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if article.type = 'sidebar' %}
+                <div class="span6 sidebarArticleListBorder">
+                    <div class="sidebarArticleListBody">
+                        <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        </div>
+                        <p>
+                            {{ article.body|safe }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <div class="articleListTags margintop1" >
+                            <span class="label label-info">Side Notes</span>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if forloop.counter|divisibleby:2 and not forloop.last%}
+                </div>
+                <div class="row-fluid homePad">
+            {% endif %}
+        {% endfor %}
+        </div>
+    <div class="row-fluid homePad">
+        <div class="span12">
+            <div class="promotedArticles">
+                <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListImg">
+                    <a
+                            href="/article/{{ features.2.title_slug }}"
+                            data-r0='<img src="{{ features.2.image.medium_thumbnail.URL }}">'
+                            data-r481='<img src="{{ features.2.image.thumbnail.URL }}">'
+                            data-r641='<img src="{{ features.2.image.header.URL }}">'
+                            ></a>
+                </div>
+                <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDescTransbox"></div>
+                <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDesc">
+                    <span class="promotedListTitle"><b>{{ features.2.title }}</b></span>
+                    <p>{{ features.2.summary }}</p>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid homePad">
+        {% for article in row3 %}
+            {% if article.type = 'standard' %}
+                <div class="span6 articleListBorder">
+                    <div class="articleListImage">
+                        <a
+                            href="/article/{{ article.title_slug }}"
+                            data-r0='<img src={{ article.image.small_header.URL }}>'
+                            data-r801='<img src="{{ article.image.medium_header.URL }}">'
+                            data-r978='<img src={{ article.image.small_header.URL }}>'
+                            ></a>
+                    </div>
+                    <div class="articleListBody">
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        </div>
+                        <p>
+                            {{ article.summary }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                        <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                        <div class="articleListTags margintop1" >Tagged:
+                            {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                            {% for category in article.categories.all %}
+                                <span class="label label-info">{{ category.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if article.type = 'sidebar' %}
+                <div class="span6 sidebarArticleListBorder">
+                    <div class="sidebarArticleListBody">
+                        <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        </div>
+                        <p>
+                            {{ article.body|safe }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <div class="articleListTags margintop1" >
+                            <span class="label label-info">Side Notes</span>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if forloop.counter|divisibleby:2 and not forloop.last%}
+                </div>
+                <div class="row-fluid homePad">
+            {% endif %}
+        {% endfor %}
+    </div>
 {% endblock %}
 {% block footer %}
 <div class="paginationWrap">
-	<div class="pagination">
-	  <ul>
-		<li><a href="?page={{ articles.previous_page_number }}">Prev</a></li>
-		<li><a href="#">1</a></li>
-		<li><a href="#">2</a></li>
-		<li><a href="#">3</a></li>
-		<li><a href="#">4</a></li>
-		<li><a href="?page={{ articles.next_page_number }}">Next</a></li>
-	  </ul>
-	</div>
+    <a href="/archive?page=2">Past Articles</a>
 </div>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'livegeekortest'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function () {
+            var s = document.createElement('script'); s.async = true;
+            s.type = 'text/javascript';
+            s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+            (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
+        }());
+    </script>
 {% endblock %}

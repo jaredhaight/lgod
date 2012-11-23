@@ -1,5 +1,4 @@
 {% block javascript %}
-<script src="/static/js/waypoints.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         $(".navSection").hover(
@@ -19,14 +18,6 @@
             }
         );
 
-        $("#shareNav").hover(
-            function () {
-                $("#shareMenu").show();
-            },
-            function () {
-                $("#shareMenu").hide();
-            }
-        );
         $("#userNav").hover(
                 function () {
                     $("#userMenu").show();
@@ -46,64 +37,7 @@
             }
         )
     });
-    </script>
-
-    <script type="text/javascript">
-            (function() {
-                var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-                po.src = 'https://apis.google.com/js/plusone.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-            })();
-    </script>
-    <script type="text/javascript">
-        (function() {
-            var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-            po.src = 'https://apis.google.com/js/plusone.js';
-            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-        })();
-    </script>
-
-    <div id="fb-root"></div>
-    <script>
-        window.fbAsyncInit = function() {
-            FB.init({
-                appId      : '264750043644250', // App ID
-                channelUrl : '//WWW.YOUR_DOMAIN.COM/channel.html', // Channel File
-                status     : true, // check login status
-                cookie     : true, // enable cookies to allow the server to access the session
-                xfbml      : true  // parse XFBML
-            });
-
-            // Additional initialization code here
-        };
-
-        // Load the SDK Asynchronously
-        (function(d){
-            var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement('script'); js.id = id; js.async = true;
-            js.src = "//connect.facebook.net/en_US/all.js";
-            ref.parentNode.insertBefore(js, ref);
-        }(document));
-    </script>
-
-    <script>(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=264750043644250";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-    </script>
-
-    <script>
-        !function(d,s,id){
-            var js,fjs=d.getElementsByTagName(s)[0];
-            if(!d.getElementById(id)){
-                js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";
-                fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-    </script>
-
+</script>
 
 {% endblock %}
 <div id="lgodnav">
@@ -197,15 +131,6 @@
     </div>
         <!-- Modal Window for Article -->
     {% endif %}
-    <div id="shareNav" class="navSection">
-        <i class="icon-share"></i>
-        <div id="shareMenu">
-            <div class="fb-like" data-send="false" data-layout="button_count" data-width="250" data-show-faces="false"></div>
-            <div class="g-plus" data-action="share" data-annotation="none"></div>
-            <a href="https://twitter.com/share" class="twitter-share-button" data-count="none">Tweet</a>
-            </span>
-        </div>
-    </div>
 </div>
 {% if user.is_authenticated %}
 <div class="modal editorText" id="createArticle" tabindex="-1" role="dialog" aria-labelledby="imgUploadLabel" aria-hidden="true">

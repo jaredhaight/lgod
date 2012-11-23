@@ -1,39 +1,67 @@
 {% extends "base.html" %}
-{% block title %}<title>Live Geek or Die </title>{% endblock %}
+{% block title %}<title xmlns="http://www.w3.org/1999/html">Live Geek or Die </title>{% endblock %}
 {% block content %}
          <div class="row-fluid staffHome">
 			<div class="span12">
                 <div class="tabbable">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#posted" data-toggle="tab">Posted</a></li>
-                        <li><a href="#unposted" data-toggle="tab">Not Posted</a></li>
+                        <li class="active"><a href="#posted" data-toggle="tab">Dashboard</a></li>
+                        <li><a href="#unposted" data-toggle="tab">Drafts</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="posted">
                             {% for article in posted %}
-                            <div class="row-fluid">
-                                <div class="span10 offset1 staffArticleItem">
-                                    <div class="span2">
-                                        <img src={{ article.thumbnail.URL }}>
+                            {% if article.type != 'sidebar' %}
+                            <div class="row-fluid staffArticleItem">
+                                <div class="span8">
+                                    {% if article.image.small_thumbnail.URL %}
+                                        <img src={{ article.image.small_thumbnail.URL }}>
+                                    {% endif %}
+                                    <p><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></br>
+                                    Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }}<br></p>
+                                </div>
+                                <div class="span4 staffStats">
+                                   <div class="staffStatsNumber">
+                                       <i class="icon-globe"></i><br>
+                                       <div class="staffStatsNumberHelpText">Pageviews from Google Analytics</div>
+                                       <span class="staffStatsNumberValue">
+                                       {% if article.social.pageviews >= 0 %}
+                                           {{ article.social.pageviews }}
+                                       {% else %}
+                                           N
+                                       {% endif %}
+                                       </span>
+                                   </div>
+                                   <div class="staffStatsNumber">
+                                       <i class="icon-facebook"></i><br>
+                                       <div class="staffStatsNumberHelpText">Mentions, Comments and Likes on Facebook</div>
+                                       <span class="staffStatsNumberValue">
+                                       {% if article.social.facebook >= 0 %}
+                                           {{ article.social.facebook }}
+                                       {% else %}
+                                           N
+                                       {% endif %}
+                                       </span>
+                                   </div>
+                                    <div class="staffStatsNumber">
+                                        <i class="icon-twitter"></i><br>
+                                        <div class="staffStatsNumberHelpText">Mentions on Twitter</div>
+                                        <span class="staffStatsNumberValue">
+                                        {% if article.social.tweets >= 0 %}
+                                            {{ article.social.tweets }}
+                                        {% else %}
+                                            N
+                                        {% endif %}
+                                        </span>
                                     </div>
-                                    <div class="span5">
-                                        <a href="/article/{{ article.title_slug }}">{{ article.title }}</a><br>
-                                        Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }}<br>
-                                    </div>
-                                    <div class="span1 staffStats">
-                                        Views<br><div class="staffStatsNumber">45</div>
-                                    </div>
-                                    <div class="span2 staffStats">
-                                        Comments<br><div class="staffStatsNumber"><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></div>
-                                    </div>
-                                    <div class="span1 staffStats">
-                                        <i class="icon-facebook"></i><br><div class="staffStatsNumber">14</div>
-                                    </div>
-                                    <div class="span1 staffStats">
-                                        <i class="icon-twitter"></i><br><div class="staffStatsNumber">22</div>
+                                    <div class="staffStatsNumber">
+                                        <i class="icon-comments-alt"></i><br>
+                                        <div class="staffStatsNumberHelpText">Comments</div>
+                                        <a class="staffStatsNumberValue" href="/article/{{ article.title_slug }}/#disqus_thread">0</a>
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                             {% endfor %}
                         </div>
                         <div class="tab-pane" id="unposted">
@@ -41,23 +69,15 @@
                            <div class="row-fluid">
                                <div class="span10 offset1 staffArticleItem">
                                    <div class="span2">
-                                       <img src={{ article.thumbnail.URL }}>
+                                   {% if article.image.small_thumbnail.URL %}
+                                       <img src={{ article.image.small_thumbnail.URL }}>
+                                   {% else %}
+                                        No Thumbnail
+                                   {% endif %}
                                    </div>
                                    <div class="span5">
-                                       <a href="/article/{{ article.title_slug }}">{{ article.title }}</a><br>
-                                       Posted:{{ article.|date:" M jS"}} at {{ article.date_posted|date:"P" }}<br>
-                                   </div>
-                                   <div class="span1 staffStats">
-                                       Views<br><div class="staffStatsNumber">45</div>
-                                   </div>
-                                   <div class="span2 staffStats">
-                                       Comments<br><div class="staffStatsNumber"><a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a></div>
-                                   </div>
-                                   <div class="span1 staffStats">
-                                       <i class="icon-facebook"></i><br><div class="staffStatsNumber">14</div>
-                                   </div>
-                                   <div class="span1 staffStats">
-                                       <i class="icon-twitter"></i><br><div class="staffStatsNumber">22</div>
+                                       <a href="/editor/{{ article.id}}">{{ article.title }}</a><br>
+                                       Edited:{{ article.last_edited|date:" M jS"}} at {{ article.last_edited|date:"P" }}<br>
                                    </div>
                                </div>
                            </div>
@@ -70,6 +90,19 @@
 {% endblock %}
 {% block javascript %}
         <script type="text/javascript">
+        $(document).ready(function(){
+            $(".staffStatsNumber").hover(
+                    function () {
+                        $(".staffStatsNumberHelpText", this).show();
+                    },
+                    function () {
+                        $(".staffStatsNumberHelpText", this).hide();
+                    }
+            )
+        });
+        </script>
+        <script type="text/javascript">
+
         /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
         var disqus_shortname = 'livegeekortest'; // required: replace example with your forum shortname
 

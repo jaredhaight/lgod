@@ -26,6 +26,16 @@ $(document).ready(
 		</div>
 	</div>
 	{% endif %}
+    {% if source == 'article' %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="alert alert-warning accentText">
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                <center>Sorry, you need to update your profile before creating an article.</center>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 {% endblock %}
 {% block content %}
 {% if form.errors %}
@@ -50,7 +60,7 @@ $(document).ready(
 </div>
 <div class="row-fluid margintop5">
 	<div class="span3 offset1">
-		These are optional. They will show up on your profile page, which is linked to from any article you write.
+		These are optional. They will show up on your profile page, which is linked to from any article you write. If you write a bio, you should write it in the third person.
 	</div>
 	<div class="span7 profileForm">
 			{% csrf_token %}

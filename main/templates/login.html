@@ -3,22 +3,24 @@
 
 {% block content %}
 <div class="row-fluid">
-    <div class="span4 offset4 login well">
-        <legend>Please Sign In</legend>
-        {% if form.errors %}
-        <div class="alert alert-error">
-            <a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
-        </div>
-        {% endif %}
-        <div class="loginbox">
-        <form method="POST" action="{% url django.contrib.auth.views.login %}">
-            {% csrf_token %}
-            {{ form.username|bootstrap }}
-            {{ form.password|bootstrap }}
-        </div>
-            <button type="submit" name="submit" class="btn btn-info btn-block">Sign in</button>
-            <input type="hidden" name="next" value="{{ next }}" />
-        </form>
+    <div class="span12">
+         <div class="login well">
+            <legend>Please Sign In</legend>
+            {% if form.errors %}
+            <div class="alert alert-error">
+                <a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
+            </div>
+            {% endif %}
+            <div class="loginbox">
+            <form method="POST" action="{% url django.contrib.auth.views.login %}">
+                {% csrf_token %}
+                {{ form.username|bootstrap }}
+                {{ form.password|bootstrap }}
+            </div>
+                <button type="submit" name="submit" class="btn btn-info btn-block">Sign in</button>
+                <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+         </div>
     </div>
 </div>
 
