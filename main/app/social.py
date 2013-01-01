@@ -47,7 +47,7 @@ service = initialize_service()
 
 def get_google_stats(service, article):
     date_posted = article.date_posted.strftime('%Y-%m-%d')
-    today = datetime.date.today().strftime('%Y-%m-%d')
+    today = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
     url = 'ga:pagePath==/article/'+article.title_slug+'/'
     # Use the Analytics Service Object to query the Core Reporting API
     return service.data().ga().get(

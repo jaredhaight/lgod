@@ -1,5 +1,5 @@
 from django.contrib import admin
-from app.models import Article, Category, ContentImage, ArticleImage ,ArticleImageCrop, ArticleImageType
+from app.models import Article, Category, ContentImage, ArticleImage ,ArticleImageCrop, ArticleImageType, StaffProfile
 
 class ArticleAdmin(admin.ModelAdmin):
     pass
@@ -19,10 +19,14 @@ class ArticleImageCropAdmin(admin.ModelAdmin):
 class ArticleImageTypeAdmin(admin.ModelAdmin):
     pass
 
+class StaffProfileAdmin(admin.ModelAdmin):
+    pass
+
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(ContentImage, FileAdmin)
 admin.site.register(ArticleImage, ArticleImageAdmin)
 admin.site.register(ArticleImageCrop, ArticleImageCropAdmin)
 admin.site.register(ArticleImageType, ArticleImageTypeAdmin)
+admin.site.register(StaffProfile, StaffProfileAdmin)
 

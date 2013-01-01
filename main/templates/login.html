@@ -1,27 +1,28 @@
 {% extends "base.html" %}
 {% load bootstrap %}
-
+{% block title %}<title>Login - Live Geek or Die</title>{% endblock %}
 {% block content %}
-<div class="row-fluid">
-    <div class="span12">
-         <div class="login well">
-            <legend>Please Sign In</legend>
-            {% if form.errors %}
-            <div class="alert alert-error">
-                <a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
-            </div>
-            {% endif %}
-            <div class="loginbox">
-            <form method="POST" action="{% url django.contrib.auth.views.login %}">
-                {% csrf_token %}
-                {{ form.username|bootstrap }}
-                {{ form.password|bootstrap }}
-            </div>
-                <button type="submit" name="submit" class="btn btn-info btn-block">Sign in</button>
-                <input type="hidden" name="next" value="{{ next }}" />
-            </form>
-         </div>
+<div class="content">
+    <div class="row-fluid">
+        <div class="span12">
+             <div class="login well">
+                <legend>Please Sign In</legend>
+                {% if form.errors %}
+                <div class="alert alert-error">
+                    <a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
+                </div>
+                {% endif %}
+                <div class="loginbox">
+                <form method="POST" action="{% url django.contrib.auth.views.login %}">
+                    {% csrf_token %}
+                    {{ form.username|bootstrap }}
+                    {{ form.password|bootstrap }}
+                </div>
+                    <button type="submit" name="submit" class="btn btn-info btn-block">Sign in</button>
+                    <input type="hidden" name="next" value="{{ next }}" />
+                </form>
+             </div>
+        </div>
     </div>
 </div>
-
 {% endblock %}

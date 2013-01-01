@@ -16,6 +16,7 @@ $(document).ready(
 </script>
 {% endblock %}
 {% block notice %}
+<div class="content staffProfile">
 	{% if notice %}
 		<div class="row-fluid">
 		<div class="span12">	
@@ -36,47 +37,60 @@ $(document).ready(
         </div>
     </div>
     {% endif %}
-{% endblock %}
-{% block content %}
-{% if form.errors %}
-<p>There were errors with your submission</p>
-{% endif %}
-<form class="form-horizontal" method="post" action=".">
-<div class="row-fluid margintop1">
-	<div class="span12">
-		Hi {{ user.first_name }}, this is your profile information for the site. 
-	</div>
-</div>
-<div class="row-fluid margintop1">
-	<div class="span3 offset1">
-		This information is required. We use your email for notifications and your gender and name for some formatting throughout the site.
-	</div>
-	<div class="span7 profileForm">
-			
-			{{ uform.first_name|bootstrap }}
-			{{ uform.email|bootstrap }}
-			{{ form.gender|bootstrap }}
-	</div>
-</div>
-<div class="row-fluid margintop5">
-	<div class="span3 offset1">
-		These are optional. They will show up on your profile page, which is linked to from any article you write. If you write a bio, you should write it in the third person.
-	</div>
-	<div class="span7 profileForm">
-			{% csrf_token %}
-			{{ form.twitter|bootstrap }}
-			{{ form.facebook|bootstrap }}
-			{{ form.gplus|bootstrap }}
-			{{ form.purl_name|bootstrap }} 
-			{{ form.purl|bootstrap }}
-			{{ form.bio|bootstrap }}
-		<div class="control-group">
-			<div class="controls">
-				<button type="submit" class="btn">Submit</button>
-			</div>
-		</div>
-		</form>
-	</div>
-</div>
+    {% endblock %}
+    {% block content %}
+    {% if form.errors %}
+    <p>There were errors with your submission</p>
+        {% for error in form.errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    {% endif %}
+    {% if uform.errors %}
+        <p>There were errors with your submission</p>
+        {% for error in uform.errors %}
+            <p>{{ error }}</p>
+        {% endfor %}
+    {% endif %}
 
+    <form class="form-horizontal" method="post" action=".">
+    <div class="row-fluid paddingtop1">
+        <div class="span4 well">
+            This information is required. We use your email for notifications and your gender and name for some formatting throughout the site.
+        </div>
+        <div class="span8 margintop1">
+
+                {{ form.displayName|bootstrap }}
+                {{ uform.email|bootstrap }}
+                {{ form.gender|bootstrap }}
+        </div>
+    </div>
+    <div class="row-fluid paddingtop1 margintop1">
+        <div class="span4 well">
+            Please select where you'd like to pull your profile image from. To use Facebook or Twitter, you'll have to fill out that information below. To use gravatar, you'll have to have a <a href="https://en.gravatar.com/site/signup/">gravatar setup</a> for the email address you've listed.
+        </div>
+        <div class="span8 margintop1 profileImageType">
+            {{ form.imageType|bootstrap }}
+        </div>
+    </div>
+    <div class="row-fluid paddingtop1">
+        <div class="span4 well">
+            These are optional. They will show up on your profile page, which is linked to from any article you write. If you write a bio, you should write it in the third person.
+        </div>
+        <div class="span8 margintop1">
+                {% csrf_token %}
+                {{ form.twitter|bootstrap }}
+                {{ form.facebook|bootstrap }}
+                {{ form.gplus|bootstrap }}
+                {{ form.purl_name|bootstrap }}
+                {{ form.purl|bootstrap }}
+                {{ form.bio|bootstrap }}
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+</div>
 {% endblock %}	

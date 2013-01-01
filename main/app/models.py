@@ -3,16 +3,15 @@ from django.db import models
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 from django.contrib.auth.models import User
-from django.forms import ModelForm, Textarea, HiddenInput, FileInput
+from django.forms import ModelForm, Textarea, HiddenInput, ChoiceField
 from django.forms.models import modelformset_factory
 from django import forms
-from django.forms.widgets import  TextInput, SelectMultiple
+from django.forms.widgets import  TextInput, SelectMultiple, RadioSelect
 from django.template.defaultfilters import slugify
 from django.db.models import get_model
-import cloudfiles
-import time
+import cloudfiles, time, hashlib, urllib
 from PIL import Image
-from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER, MEDIA_ROOT
+from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER, MEDIA_ROOT, BASE_URL, STATIC_URL
 
 
 GENDER_CHOICES = (
@@ -20,12 +19,18 @@ GENDER_CHOICES = (
         ('F', 'Female'),
     )
 
+PROFILE_IMAGE_SOURCES = (
+        ('gravatar', 'Gravatar'),
+        ('facebook','Facebook'),
+        ('twitter','Twitter')
+)
+
 ARTICLE_TYPE = (
         ('featured','Featured'),
         ('standard','Standard'),
         ('sidebar','Sidebar')
 )
-# This is a function for testing. It creates thirty categories.
+# This is a function for testing. It creates thirty categories and the crop sizes.
 def setupcats():
     i = 0
     while i < 30:
@@ -39,8 +44,8 @@ def setupcats():
     header.related = None
     header.save()
 
-    thumb = ArticleImageType.objects.create(name='thumbnail', editable=True, width=750, height=450)
-    thumb.related = None
+    thumb = ArticleImageType.objects.create(name='thumbnail', editable=False, width=400, height=400)
+    thumb.related = ArticleImageType.objects.get(name='header')
     thumb.save()
 
     mediumHeader = ArticleImageType.objects.create(name='mediumHeader', editable=False, width=1125, height=300)
@@ -51,13 +56,14 @@ def setupcats():
     smallHeader.related = ArticleImageType.objects.get(name='header')
     smallHeader.save()
 
-    mediumThumb = ArticleImageType.objects.create(name='mediumThumb', editable=False, width=500, height=300)
-    mediumThumb.related = ArticleImageType.objects.get(name='thumbnail')
-    mediumThumb.save()
 
-    smallThumb = ArticleImageType.objects.create(name='smallThumb', editable=False, width=300, height=180)
-    smallThumb.related = ArticleImageType.objects.get(name='thumbnail')
-    smallThumb.save()
+    mediumHeader = ArticleImageType.objects.create(name='mediumFeatured', editable=False, width=800, height=400)
+    mediumHeader.related = ArticleImageType.objects.get(name='header')
+    mediumHeader.save()
+
+    smallHeader = ArticleImageType.objects.create(name='smallFeatured', editable=False, width=650, height=400)
+    smallHeader.related = ArticleImageType.objects.get(name='header')
+    smallHeader.save()
 
 
 def CDNUpload(file):
@@ -73,12 +79,12 @@ def CDNDelete(file):
     cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
     cont.delete_object(file)
 
-def uniqueSlug(model, slug_field, title):
+def uniqueSlug(model, id, slug_field, title):
     kwargs={}
     slug = slugify(title)
     model = get_model('app',model)
     kwargs[slug_field] = slug
-    count = model.objects.filter(**kwargs).count()
+    count = model.objects.filter(**kwargs).exclude(id=id).count()
     if count == 0:
         return slug
     else:
@@ -86,34 +92,46 @@ def uniqueSlug(model, slug_field, title):
         while count > 0:
             newslug = slug+'-'+str(i)
             kwargs[slug_field] = newslug
-            count = model.objects.filter(**kwargs).count()
+            count = model.objects.filter(**kwargs).exclude(id=id).count()
             i = i+1
         return newslug
 
 def resizeImage(src, image, width, height):
     workimage = Image.open(open(image.path, 'rb'))
-    timestamp = time.strftime('%m%d%y%H%M%S')
+    timestamp = time.strftime('%y%m%d%H%M%S')
     savestr = 'articles/'+timestamp+src+'.jpg'
 
     if height == 0:
         height = workimage.size[1] * width / workimage.size[0]
 
     resize = workimage.resize((width,height), Image.ANTIALIAS)
-    resize.save(MEDIA_ROOT+savestr, "JPEG", quality=95)
+    resize.save(MEDIA_ROOT+savestr, "JPEG", quality=85)
     return savestr
 
 def cropImage(image):
-    workimage = Image.open(image.src.image)
+    workimage = Image.open(image.src.image.path)
     width = image.type.width
     height = image.type.height
     box = (image.X, image.Y, image.X2, image.Y2)
-    timestamp = time.strftime('%m%d%y%H%M%S')
+    timestamp = time.strftime('%y%m%d%H%M%S')
     savestr = 'articles/'+timestamp+str(image.src.id)+image.type.name+'.jpg'
     crop = workimage.crop(box)
     resize = crop.resize((width,height), Image.ANTIALIAS)
-    resize.save(MEDIA_ROOT+savestr, "JPEG", quality=95)
+    resize.save(MEDIA_ROOT+savestr, "JPEG", quality=85)
     print savestr
     return savestr
+
+def trimImage(articleImageCrop,type,size):
+    workimage = Image.open(articleImageCrop.cropped_file.path)
+    x = size
+    x2 = (workimage.size[0] - size)
+    box = (x, 0 , x2, workimage.size[1])
+    timestamp = time.strftime('%y%m%d%H%M%S')
+    savestr = 'articles/'+timestamp+type+'.jpg'
+    trim = workimage.crop(box)
+    trim.save(MEDIA_ROOT+savestr, "JPEG", quality=85)
+    return savestr
+
 
 def connectCrops(article_id,image_id):
     article = Article.objects.get(pk=article_id)
@@ -169,10 +187,14 @@ class Article(models.Model):
 
         return status, errors
 
+    def get_absolute_url(self):
+        return BASE_URL+'article/'+self.title_slug
+
+
     def save(self, *args, **kwargs):
-        super(Article, self).save(*args, **kwargs)
         if not self.is_posted:
-            self.title_slug = uniqueSlug('Article','title_slug',self.title)
+            self.title_slug = uniqueSlug('Article',self.id,'title_slug',self.title)
+        super(Article, self).save(*args, **kwargs)
         if not self.social:
             social = ArticleSocialStats.objects.create()
             self.social = social
@@ -214,8 +236,8 @@ class ArticleImage(models.Model):
     small_header = models.ForeignKey('ArticleImageCrop', related_name='small_header_image', null=True, blank=True)
     medium_header = models.ForeignKey('ArticleImageCrop', related_name='medium_header_image', null=True, blank=True)
     thumbnail = models.ForeignKey('ArticleImageCrop', related_name='thumbnail', null=True, blank=True)
-    small_thumbnail = models.ForeignKey('ArticleImageCrop', related_name='small_thumbnail', null=True, blank=True)
-    medium_thumbnail = models.ForeignKey('ArticleImageCrop', related_name='medium_thumbnail', null=True, blank=True)
+    small_featured = models.ForeignKey('ArticleImageCrop', related_name='small_featured', null=True, blank=True)
+    medium_featured = models.ForeignKey('ArticleImageCrop', related_name='medium_featured', null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     uploaded_by = models.ForeignKey(User, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
@@ -256,14 +278,65 @@ class ArticleImageCrop(models.Model):
     def save(self, *args, **kwargs):
         super(ArticleImageCrop, self).save(*args, **kwargs)
         if self.X2:
+            if self.URL:
+                try: CDNDelete(self.cropped_file)
+                except: pass
             articleImage = ArticleImage.objects.get(id = self.src.id)
             self.cropped_file = cropImage(self)
             self.URL = CDNUpload(self.cropped_file)
+            super(ArticleImageCrop, self).save(*args, **kwargs)
             if self.type.name == 'header':
                 articleImage.header = self
+                articleImage.save()
+
+                smallFeatured = ArticleImageType.objects.get(name='smallFeatured')
+                size = (self.type.width - smallFeatured.width) / 2
+                image = trimImage(self, smallFeatured.name, size)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=smallFeatured)
+                if crop.URL:
+                    try: CDNDelete(crop.cropped_file)
+                    except: pass
+                crop.cropped_file = image
+                crop.save()
+                url = CDNUpload(crop.cropped_file)
+                crop.URL = url
+                crop.save()
+                articleImage.small_featured = crop
+
+                mediumFeatured = ArticleImageType.objects.get(name='mediumFeatured')
+                size = (self.type.width - mediumFeatured.width) / 2
+                image = trimImage(self, mediumFeatured.name, size)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=mediumFeatured)
+                if crop.URL:
+                    try: CDNDelete(crop.cropped_file)
+                    except: pass
+                crop.cropped_file = image
+                crop.save()
+                url = CDNUpload(crop.cropped_file)
+                crop.URL = url
+                crop.save()
+                articleImage.medium_featured = crop
+
+                thumbnail = ArticleImageType.objects.get(name='thumbnail')
+                size = (self.type.width - thumbnail.width) / 2
+                image = trimImage(self, thumbnail.name, size)
+                crop = ArticleImageCrop.objects.get(src=self.src, type=thumbnail)
+                if crop.URL:
+                    try: CDNDelete(crop.cropped_file)
+                    except: pass
+                crop.cropped_file = image
+                crop.save()
+                url = CDNUpload(crop.cropped_file)
+                crop.URL = url
+                crop.save()
+                articleImage.thumbnail = crop
+
                 smallHeader = ArticleImageType.objects.get(name='smallHeader')
                 image = resizeImage(smallHeader.name, self.cropped_file, smallHeader.width, smallHeader.height)
                 crop = ArticleImageCrop.objects.get(src=self.src, type=smallHeader)
+                if crop.URL:
+                    try: CDNDelete(crop.cropped_file)
+                    except: pass
                 crop.cropped_file = image
                 crop.save()
                 url = CDNUpload(crop.cropped_file)
@@ -274,34 +347,15 @@ class ArticleImageCrop(models.Model):
                 mediumHeader = ArticleImageType.objects.get(name='mediumHeader')
                 image = resizeImage(mediumHeader.name, self.cropped_file, mediumHeader.width, mediumHeader.height)
                 crop = ArticleImageCrop.objects.get(src=self.src, type=mediumHeader)
+                if crop.URL:
+                    try: CDNDelete(crop.cropped_file)
+                    except: pass
                 crop.cropped_file = image
                 crop.save()
                 url = CDNUpload(crop.cropped_file)
                 crop.URL = url
                 crop.save()
                 articleImage.medium_header = crop
-
-            if self.type.name == 'thumbnail':
-                articleImage.thumbnail = self
-                smallThumb = ArticleImageType.objects.get(name='smallThumb')
-                image = resizeImage(smallThumb.name, self.cropped_file, smallThumb.width, smallThumb.height)
-                crop = ArticleImageCrop.objects.get(src=self.src, type=smallThumb)
-                crop.cropped_file = image
-                crop.save()
-                url = CDNUpload(crop.cropped_file)
-                crop.URL = url
-                crop.save()
-                articleImage.small_thumbnail = crop
-
-                mediumThumb = ArticleImageType.objects.get(name='mediumThumb')
-                image = resizeImage(mediumThumb.name, self.cropped_file, mediumThumb.width, mediumThumb.height)
-                crop = ArticleImageCrop.objects.get(src=self.src, type=mediumThumb)
-                crop.cropped_file = image
-                crop.save()
-                url = CDNUpload(crop.cropped_file)
-                crop.URL = url
-                crop.save()
-                articleImage.medium_thumbnail = crop
             articleImage.save()
             super(ArticleImageCrop, self).save(*args, **kwargs)
 
@@ -347,7 +401,10 @@ class ContentImage(models.Model):
 
 class StaffProfile(models.Model):
     user = models.OneToOneField(User)
+    displayName = models.CharField(max_length=20)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
+    imageType = models.CharField(max_length=15, choices=PROFILE_IMAGE_SOURCES)
+    imageURL = models.URLField(null=True, blank=True)
     twitter = models.CharField(max_length=30, null=True,  blank=True)
     facebook = models.URLField(null=True,  blank=True)
     gplus = models.URLField(null=True,  blank=True)
@@ -355,21 +412,40 @@ class StaffProfile(models.Model):
     purl = models.URLField(null=True,  blank=True)
     bio = models.TextField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        print 'Saving Profile Model'
+        if self.imageType == 'facebook' and self.facebook:
+            fbindex = self.facebook.index('.com/')+5
+            fbuser = self.facebook[fbindex:].strip('/')
+            self.imageURL = 'http://graph.facebook.com/'+fbuser+'/picture/?type=large'
+        elif self.imageType == 'twitter' and self.twitter:
+            twituser = self.twitter.strip('@')
+            self.imageURL = 'https://api.twitter.com/1/users/profile_image?screen_name='+twituser+'&size=original'
+        else:
+            self.imageType = 'gravatar'
+            default = 'http://ace9a87d776422b2d1ab-2b334246b9b35e4c2de9424cd61cfe99.r33.cf2.rackcdn.com/img/default.png'
+            size = 200
+            gravatar_url = "http://www.gravatar.com/avatar/" + hashlib.md5(self.user.email.lower()).hexdigest() + "?" + urllib.urlencode({'d':default, 's':str(size)})
+            self.imageURL = gravatar_url
+        super(StaffProfile, self).save(*args, **kwargs)
+
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('first_name', 'email')
+        fields = ('first_name','email')
         
 class ProfileForm(ModelForm):
+    displayName = forms.CharField(label='Display Name')
     twitter = forms.CharField(label='Twitter Username', required=False)
     facebook = forms.URLField(label='Facebook URL', required=False)
     gplus = forms.URLField(label='Google+ URL', required=False)
     purl_name = forms.CharField(label='Website Name', required=False)
     purl = forms.URLField(label='Website URL', required=False)
+    imageType = forms.ChoiceField(label='Profile Image Source', choices=PROFILE_IMAGE_SOURCES)
     
     class Meta:
         model = StaffProfile
-        exclude = ('user')
+        exclude = ('user','imageURL')
         widgets = {
             'bio': Textarea(attrs={'id':'bioBody'}),
         }

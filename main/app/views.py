@@ -8,9 +8,12 @@ from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-import datetime
 import json
 import logging
+import feedparser
+from time import mktime
+from datetime import datetime
+
 from app.models import *
 
 logger = logging.getLogger(__name__)
@@ -23,6 +26,31 @@ def article_edit_rights(user, article):
         return True
     return False
 
+def latestComments():
+    url = 'http://livegeekortest.disqus.com/latest.rss'
+    comments = feedparser.parse(url)
+    count = 0
+    results = []
+    now = datetime.now()
+    for item in comments['items'][:6]:
+        title = item['title_detail']['value']
+        comment = item['summary_detail']['value']
+        author = item['author_detail']['name']
+        link = item['link']
+        posted = datetime.fromtimestamp(mktime(item['updated_parsed']))
+        difference = now - posted
+        print title +' '+ str(difference) + ' ' + str(posted) + ' ' + str(now)
+        if difference.days > 0:
+            clean_time = str(difference.days)+' day(s) ago'
+        elif difference.seconds > 3600:
+            clean_time = str((difference.seconds /60) / 60) + ' hours ago'
+        elif difference.seconds > 60:
+            clean_time = str(difference.seconds /60) + ' minutes ago'
+        else:
+            clean_time = str(difference.seconds) + ' seconds ago'
+        result = {'title':title.replace('Re: ','').replace(' - Live Geek or Die',''),'comment':comment,'time':clean_time,'author':author, 'link':link}
+        results.append(result)
+    return results
 
 def home(request):
     user = request.user
@@ -30,11 +58,12 @@ def home(request):
 
     features = articles.filter(type='featured')[:3]
     articlelist= articles.filter(Q(type='standard')|Q(type='sidebar'))[:18]
+    sidebarlist = articles.filter(type='sidebar')[:4]
     row1 = articlelist[:6]
     row2 = articlelist[6:12]
     row3 = articlelist[12:18]
 
-    d = dict(features=features, articlelist=articlelist, row1=row1, row2=row2, row3=row3, user=user)
+    d = dict(features=features, articlelist=articlelist, row1=row1, row2=row2, row3=row3, user=user, sidebarlist=sidebarlist)
     return render_to_response("home.html", d, context_instance=RequestContext(request))
 
 def archive(request):
@@ -79,7 +108,7 @@ def authorPage(request, jslug):
     if staffProfile.twitter or staffProfile.facebook or staffProfile.gplus:
         social = 'social'
 
-    paginator = Paginator(articles, 8)
+    paginator = Paginator(articles, 14)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
@@ -142,12 +171,24 @@ def articleEditor(request, article_id):
             form = ArticleForm(request.POST, request.FILES, instance=article)
             print str(form)
             if form.is_valid():
-                print 'valid form'
                 article = form.save(commit=False)
                 if "post_article" in request.POST:
-                    now = datetime.datetime.now()
-                    article.date_posted = now.strftime("%Y-%m-%dT%H:%M:%S")
-                    article.is_posted = True
+                    status = article.post_status()
+                    if status[0] == 'ready_to_post':
+                        now = datetime.now()
+                        article.date_posted = now.strftime("%Y-%m-%dT%H:%M:%S")
+                        article.title_slug = uniqueSlug('Article', article.id, 'title_slug', article.title)
+                        article.is_posted = True
+                    else:
+                        errors.append("Article post status is not 'ready_to_post'. Can not post this article.")
+                        return render_to_response("articleEditor.html", {
+                            'form': form,
+                            'article' : article,
+                            'posted' : posted,
+                            'user' : user,
+                            'status':status,
+                            'errors':errors},
+                            context_instance=RequestContext(request))
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
                 article.author = request.user
@@ -168,7 +209,6 @@ def articleEditor(request, article_id):
                 else:
                     return HttpResponseRedirect('/editor/'+str(article.id)+'/preview')
 
-            
     else:
         form = ArticleForm(instance=article)
 
@@ -177,8 +217,7 @@ def articleEditor(request, article_id):
         'article' : article,
         'posted' : posted,
         'user' : user,
-        'status':status,
-        'errors':errors},
+        'status':status},
         context_instance=RequestContext(request))
 
 @csrf_exempt
@@ -191,8 +230,14 @@ def articleAutosave(request, article_id):
         data = json.loads(request.body)
     except:
         data = None
+
     try:
-        body = request.POST['body']
+        title = data['title']
+    except:
+        title = None
+
+    try:
+        body = data['body']
     except:
         body = None
 
@@ -205,7 +250,9 @@ def articleAutosave(request, article_id):
         categories = data['categories']
     except:
         categories = None
-
+    if title:
+        article.title = title
+        status.append({'title':'saved'})
     if body:
         article.body = body
         status.append({'body':'saved'})
@@ -276,13 +323,15 @@ def imageUpload(request):
             article_id = None
         form = ArticleImageForm(request.POST, request.FILES)
         if form.is_valid():
-            image = form.save()
+            image = form.save(commit=False)
+            image.uploaded_by = request.user
+            image.save()
             header = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='header')))
             mediumHeader = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='mediumHeader')))
             smallHeader = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='smallHeader')))
             thumb = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='thumbnail')))
-            smallThumb = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='smallThumb')))
-            mediumThumb = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='mediumThumb')))
+            smallFeatured = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='smallFeatured')))
+            mediumFeatured = ArticleImageCrop.objects.create(src = image, type=(ArticleImageType.objects.get(name='mediumFeatured')))
             if article_id:
                 article = get_object_or_404(Article, id=article_id)
                 article.image = image
@@ -300,7 +349,7 @@ def imageUpload(request):
 @login_required
 def imagePicker(request, article_id):
     article = get_object_or_404(Article, id=article_id)
-    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='smallThumb')), URL__isnull=False)
+    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='thumbnail')), URL__isnull=False)
 
     paginator = Paginator(imagelist, 16)
 
@@ -366,7 +415,30 @@ def staffHome(request):
         posted = Article.objects.filter(is_posted=True, author=user).order_by("-date_posted")
         unposted = Article.objects.filter(is_posted=False, author=user).order_by("-date_posted")
 
-    paginator = Paginator(posted, 30)
+    paginator = Paginator(posted, 10)
+    draftcount = len(unposted)
+    comments = latestComments()
+    try: page = int(request.GET.get("page", '1'))
+    except ValueError: page = 1
+
+    try: posted = paginator.page(page)
+    except (InvalidPage, EmptyPage):
+        posted = paginator.page(paginator.num_pages)
+
+    d = dict(posted=posted, unposted=unposted, user=user, editor=editor, draftcount = draftcount, comments=comments)
+    return render_to_response("staffHome.html", d, context_instance=RequestContext(request))
+
+@login_required()
+def staffDrafts(request):
+    user = request.user
+    if user.groups.filter(name='editors').count() > 0:
+        editor = True
+        unposted = Article.objects.filter(is_posted=False).order_by("-date_posted")
+    else:
+        editor = False
+        unposted = Article.objects.filter(is_posted=False, author=user).order_by("-date_posted")
+
+    paginator = Paginator(unposted, 15)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
@@ -375,13 +447,12 @@ def staffHome(request):
     except (InvalidPage, EmptyPage):
         posted = paginator.page(paginator.num_pages)
 
-    d = dict(posted=posted, unposted=unposted, user=user, editor=editor)
-    return render_to_response("staffHome.html", d, context_instance=RequestContext(request))
+    d = dict(unposted=unposted, user=user, editor=editor)
+    return render_to_response("staffDrafts.html", d, context_instance=RequestContext(request))
 
 @login_required
 def staffImages(request):
-    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='smallThumb')), URL__isnull=False).order_by("-id")
-
+    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='thumbnail')), URL__isnull=False).order_by("-id")
 
     paginator = Paginator(imagelist, 16)
 
@@ -403,6 +474,7 @@ def staffImages(request):
 @login_required    
 def profilePage(request):
     user = request.user
+    print 'User first name at load: '+request.user.first_name
     profile, created = StaffProfile.objects.get_or_create(user=request.user)
     notice = None
 
@@ -412,10 +484,13 @@ def profilePage(request):
         source = None
     
     if request.method == "POST":
+        firstName = user.first_name
         uform = UserForm(request.POST, instance=request.user)
         form = ProfileForm(request.POST, instance=profile)
         if form.is_valid() and uform.is_valid():
-            uform.save()
+            userForm = uform.save(commit=False)
+            userForm.first_name = firstName
+            userForm.save()
             profile = form.save(commit=False)
             profile.user = request.user
             profile.save()

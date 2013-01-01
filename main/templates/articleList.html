@@ -3,7 +3,12 @@
         {% if article.type = 'standard' %}
             <div class="span6 articleListBorder">
                 <div class="articleListImage">
-                    <img src={{ article.image.small_header.URL }}>
+                    <a
+                            href="/article/{{ article.title_slug }}"
+                            data-r0='<img src={{ article.image.small_header.URL }}>'
+                            data-r801='<img src="{{ article.image.medium_header.URL }}">'
+                            data-r978='<img src={{ article.image.small_header.URL }}>'
+                            ></a>
                 </div>
                 <div class="articleListBody">
                     <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
@@ -48,16 +53,17 @@
             <div class="span6 archiveFeaturedListBorder">
                 <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedArticleImage">
                     <a
-                            href="/article/{{ article.title_slug }}"
-                            data-r0='<img src="{{ article.image.thumbnail.URL }}">'
-                            data-r641='<img src="{{ article.image.thumbnail.URL }}">'
-                            ></a>
-                    <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedDescTransbox"></div>
-                    <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedListDesc">
-                        <span class="articleListTitle"><b>{{ article.title }}</b></span>
-                        <p>{{ article.summary }}</p>
+                        href="/article/{{ article.title_slug }}"
+                        data-r0='<img src={{ article.image.thumbnail.URL }}>'
+                        data-r320='<img src={{ article.image.small_featured.URL }}>'
+                        data-r641='<img src="{{ article.image.medium_featured.URL }}">'
+                    ></a>
+                </div>
+                <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedDescTransbox"></div>
+                <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedListDesc">
+                    <span class="articleListTitle"><b>{{ article.title }}</b></span>
+                    <p>{{ article.summary }}</p>
 
-                    </div>
                 </div>
             </div>
         {% endif %}
@@ -69,30 +75,14 @@
     </div>
 {% block footer %}
     <div class="paginationWrap">
-        <div class="pagination">
-            <ul>
+        <ul class="pager">
+            {% if articles.previous_page_number %}
                 <li><a href="?page={{ articles.previous_page_number }}">Prev</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
+            {% endif %}
+            {% if articles.next_page_number %}
                 <li><a href="?page={{ articles.next_page_number }}">Next</a></li>
-            </ul>
-        </div>
-    </div>
-{% endblock %}
-{% block footer %}
-    <div class="paginationWrap">
-        <div class="pagination">
-            <ul>
-                {% if imagelist.previous_page_number %}
-                    <li><a href="?page={{ imagelist.previous_page_number }}">Prev</a></li>
-                {% endif %}
-                {% if imagelist.next_page_number %}
-                    <li><a href="?page={{ imagelist.next_page_number }}">Next</a></li>
-                {% endif %}
-            </ul>
-        </div>
+            {% endif %}
+        </ul>
     </div>
 {% endblock %}
 {% block javascript %}

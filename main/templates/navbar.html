@@ -26,6 +26,45 @@
                     $("#userMenu").hide();
                 }
         );
+
+        $("#searchBtn").hover(
+                function() {
+                    $("#navSearchMobile").toggle();
+                    $(this).toggleClass("navSectionHighlight")
+                }
+        );
+
+        $("#notesNav").hover(
+                function () {
+                    if ($(".royalSlider")) {
+                        $(".royalSlider").royalSlider('stopAutoPlay');
+                    }
+                    $("#notesbar").show();
+                },
+                function () {
+                    if ($(".royalSlider")) {
+                        $(".royalSlider").royalSlider('startAutoPlay');
+                    }
+                    $("#notesbar").hide();
+                }
+        );
+
+        $("#notesbar").hover(
+            function () {
+                if ($(".royalSlider")) {
+                    $(".royalSlider").royalSlider('stopAutoPlay');
+                }
+                $("#notesNav").addClass("navSectionHighlight");
+                $("#notesbar").show();
+            },
+            function () {
+                if ($(".royalSlider")) {
+                    $(".royalSlider").royalSlider('startAutoPlay');
+                }
+                $("#notesNav").removeClass("navSectionHighlight");
+                $("#notesbar").hide();
+            }
+        );
         $(".menuItem").hover(
             function () {
                 $(this).addClass("menuItemHighlight")
@@ -42,8 +81,6 @@
 {% endblock %}
 <div id="lgodnav">
     <a href="/"><img src="/static/img/logo2.png"></a>
-    <div onclick="location.href='#Features';" id="featuresNav" class="navSection">Features</div>
-    <div onclick="location.href='#Articles';" id="articlesNav" class="navSection">Articles</div>
     <div id="topics" class="navSection">
         <a
             id="topicsLink" href="#" title="Topics"
@@ -52,7 +89,7 @@
         ></a>
         <div id="topicsMenu">
             <div id="mainMenu">
-                <div id="1" class="menuItem">One
+                <div id="1" class="menuItem">Games
                     <div id="sub1" class="subMenu">
                         <a href="#">Link1</a><br>
                         <a href="#">Link2</a><br>
@@ -64,7 +101,7 @@
                         <a href="#">Link8</a><br>
                     </div>
                 </div>
-                <div id="2" class="menuItem">Two
+                <div id="2" class="menuItem">Tech
                     <div id="sub2" class="subMenu">
                         <a href="#">Link11</a><br>
                         <a href="#">Link12</a><br>
@@ -76,7 +113,7 @@
                         <a href="#">Link18</a><br>
                     </div>
                 </div>
-                <div id="3" class="menuItem">Three
+                <div id="3" class="menuItem">Entertainment
                     <div id="sub3" class="subMenu">
                         <a href="#">Link20</a><br>
                         <a href="#">Link21</a><br>
@@ -88,7 +125,7 @@
                         <a href="#">Link27</a><br>
                     </div>
                 </div>
-                <div id="4" class="menuItem">Four
+                <div id="4" class="menuItem">Events
                     <div id="sub4" class="subMenu">
                         <a href="#">Link30</a><br>
                         <a href="#">Link31</a><br>
@@ -100,7 +137,7 @@
                         <a href="#">Link37</a><br>
                     </div>
                 </div>
-                <div id="5" class="menuItem">Five
+                <div id="5" class="menuItem">Opinion
                     <div id="sub5" class="subMenu">
                         <a href="#">Link40</a><br>
                         <a href="#">Link41</a><br>
@@ -115,6 +152,18 @@
             </div>
         </div>
     </div>
+    <div onclick="location.href='#Features';" id="notesNav" class="navSection">Notes</div>
+    <div id="notesbar">
+        <div class="notesbarList">
+            {% for article in sidebarlist %}
+            <div class="notesbarItem">
+                <h1>{{ article.title }}</h1>
+                {{ article.body|safe }}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div onclick="location.href='/about';" id="aboutLink" class="navSection">About</div>
     {% if user.is_authenticated %}
     <div id="userNav" class="navSection">
         <i class="icon-user"></i>
@@ -131,6 +180,20 @@
     </div>
         <!-- Modal Window for Article -->
     {% endif %}
+    <div id="navSearchFull">
+        <form action="/search/" method="get">
+            <input type="text" placeholder="Search" name="q" ><a href="#" onclick="$(this).closest('form').submit()"><i class="icon-search"></i></a>
+        </form>
+    </div>
+    <div id="searchBtn">
+        <i class="icon-search"></i>
+        <div id="navSearchMobile">
+            <form action="/search/" method="get">
+                <input type="text" placeholder="Search" name="q" ><br>
+                <button class="btn btn-primary">Search</button>
+            </form>
+        </div>
+    </div>
 </div>
 {% if user.is_authenticated %}
 <div class="modal editorText" id="createArticle" tabindex="-1" role="dialog" aria-labelledby="imgUploadLabel" aria-hidden="true">

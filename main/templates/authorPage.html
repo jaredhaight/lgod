@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-{% block title %}<title>Live Geek or Die </title>{% endblock %}
-
+{% block title %}<title>{{ staffProfile.displayName }} - Live Geek or Die</title>{% endblock %}
 {% block content %}
+<div class="content">
     {% include "authorProfile.html" %}
     <div class="row-fluid">
-		<div class="span12" style="text-align: center">
+		<div class="span12 authorProfileList">
 			Recent Articles
 		</div>
 	</div>
 	{% include "articleList.html" %}
+</div>
 {% endblock %}
 

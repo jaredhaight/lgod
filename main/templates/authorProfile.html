@@ -1,23 +1,26 @@
-{% if staffProfile.bio %}
-    <div class="row-fluid">
-        <div class="span6 offset3 well margintop1 authorProfile">
+{% if staffProfile %}
+    <div class="row-fluid authorProfile">
+        <div class="authorProfileImg">
+            <img src="{{ staffProfile.imageURL }}">
+        </div>
+        <div class="authorProfileBio">
             {{ staffProfile.bio|safe }}
-            {% if social %}
-            <div class="socialLinks">
-                {%if staffProfile.twitter %}
-                    <a href="http://www.twitter.com/{{ staffProfile.twitter }}"><i class="icon-twitter"></i></a>
-                {% endif %}
-                {% if staffProfile.facebook %}
-                    <a href="{{ staffProfile.facebook }}"><i class="icon-facebook"></i></a>
-                {% endif %}
-                {% if staffProfile.gplus %}
-                    <a href="{{ staffProfile.gplus }}"><i class="icon-google-plus-sign"></i></a>
-                {% endif %}
-                {% if staffProfile.purl %}
-                    <a href="{{ staffProfile.purl }}" title="{{ staffProfile.purl_name }}"><i class="icon-globe"></i></a>
-                {% endif %}
-            </div>
-            {% endif %}
         </div>
     </div>
+    {% if social %}
+    <div class="socialLinks">
+        {%if staffProfile.twitter %}
+            <p><a href="http://www.twitter.com/{{ staffProfile.twitter }}"><i class="icon-twitter"></i>{{ staffProfile.twitter }}</a></p>
+        {% endif %}
+        {% if staffProfile.facebook %}
+            <p><a href="{{ staffProfile.facebook }}"><i class="icon-facebook"></i> {{ staffProfile.displayName }}</a></p>
+        {% endif %}
+        {% if staffProfile.gplus %}
+            <p><a href="{{ staffProfile.gplus }}"><i class="icon-google-plus-sign"></i> {{ staffProfile.displayName }}</a></p>
+        {% endif %}
+        {% if staffProfile.purl %}
+            <p><a href="{{ staffProfile.purl }}" title="{{ staffProfile.purl_name }}"><i class="icon-globe"></i> {{ staffProfile.purl_name }}</a></p>
+        {% endif %}
+    </div>
+    {% endif %}
 {% endif %}

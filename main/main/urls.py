@@ -10,11 +10,13 @@ admin.autodiscover()
 urlpatterns = patterns('',
     # Examples:
     url(r'^$', 'app.views.home', name='home'),
+    url(r'^search/', include('haystack.urls')),
     url(r'^archive/', 'app.views.archive', name='archive'),
     url(r"^category/(?P<jslug>[\-\d\w]+)/$", "app.views.category"),
     url(r"^article/(?P<article_id>[\-\d\w]+)/$", "app.views.article", {'type':'articleView'}),
     url(r"^author/(?P<jslug>[\-\d\w]+)/$", "app.views.authorPage"),
     url(r"^staff/$", "app.views.staffHome"),
+    url(r"^staff/drafts/$", "app.views.staffDrafts"),
     url(r"^staff/profile/$", "app.views.profilePage"),
     url(r"^staff/image/(?P<image_id>\d+)/", "app.views.imageEditor"),
     url(r"^staff/image/upload/$","app.views.imageUpload"),

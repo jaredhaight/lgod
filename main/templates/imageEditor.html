@@ -16,16 +16,6 @@
                 aspectRatio:3.75/1,
                 trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
             });
-            $('#sfimage').Jcrop({
-                onSelect: smallFeatCoords,
-                onChange: smallFeatCoords,
-                minSize:['{{ thumbnailType.width }}','{{ thumbnailType.height }}'],
-            {% if thumbnail.X2 %}
-                setSelect:   [ {{ thumbnail.X }}, {{ thumbnail.Y }}, {{ thumbnail.X2 }}, {{ thumbnail.Y2 }} ],
-            {% endif %}
-                aspectRatio:1.66667/1,
-                trueSize: [{{ articleImage.image.width }},{{ articleImage.image.height }}]
-            });
         });
     function featCoords(c)
     {
@@ -35,24 +25,13 @@
         jQuery('#{{ headerType.id }}form').find('#Y2').val(c.y2);
     };
 
-    function smallFeatCoords(c)
-    {
-        jQuery("#{{ thumbnailType.id }}form").find("#X").val(c.x);
-        jQuery("#{{ thumbnailType.id }}form").find("#Y").val(c.y);
-        jQuery("#{{ thumbnailType.id }}form").find("#X2").val(c.x2);
-        jQuery("#{{ thumbnailType.id }}form").find("#Y2").val(c.y2);
-    };
 
     $(document).ready(function() {
-        $('body').mouseup(function(){
-            if ($("#{{ thumbnailType.id }}form").find("> #X2").val() - $("#{{ thumbnailType.id }}form").find("> #X").val() != 0){
-                $("#smalltab").addClass('imgEditorGood');
-                var smallgood = true
-            } else {
-                $("#smalltab").removeClass('imgEditorGood');
-                var smallgood = false
-            }
 
+        $(checkImageCrop);
+
+        $('body').on('mouseup', checkImageCrop);
+        function checkImageCrop() {
             if ($("#{{ headerType.id }}form").find("> #X2").val() - $("#{{ headerType.id }}form").find("> #X").val() != 0){
                 $("#headertab").addClass('imgEditorGood');
                 var featuredgood = true
@@ -61,18 +40,34 @@
                 var featuredgood = false
             }
 
-            if (smallgood && featuredgood){
-                $('#saveButton').show();
+            if (featuredgood){
+                $('#saveButton').removeClass("disabled");
+                $('#saveButton').unbind('click');
+                $("#saveButton").click(function() {
+                    $("#imageEditorSaveScreen").show();
+                });
             } else {
-                $('#saveButton').hide();
+                $('#saveButton').addClass("disabled");
+                $('#saveButton').click(function() {
+                    return false;
+                });
             }
-        });
+        }
     });
     </script>
 {% endblock %}
 {% block title %}<title> Image Editor - Live Geek or Die </title>{% endblock %}
 
 {% block content %}
+    <div id="imageEditorSaveScreen">
+        <div id="imageEditorSaveScreenBG"></div>
+        <div id="imageEditorSaveScreenBox">
+            Creating thumbnails and magic.
+            <div class="progress progress-striped active">
+                <div class="bar" style="width: 100%;"></div>
+            </div>
+        </div>
+    </div>
     {% if form.errors %}
         <div class="row-fluid">
             <div class="span12">
@@ -84,42 +79,29 @@
             </div>
         </div>
     {% endif %}
+    <form action="/staff/image/{{ articleImage.id }}/{% if article_id %}?article={{ article_id }}{% endif %}" method="post">
+    {% csrf_token %}
+    <div class="row-fluid">
+        <div id="editorImageSaveBar" class="span12">
+            <button id="saveButton" type="submit" name="submit" class="btn btn-primary disabled">Save Image Selection</button>
+        </div>
+    </div>
     <div class="row-fluid">
         <div class="span12 margintop1">
-            <div class="tabbable">
-                <form action="/staff/image/{{ articleImage.id }}/{% if article_id %}?article={{ article_id }}{% endif %}" method="post">
-                    {% csrf_token %}
-                <ul class="nav nav-tabs">
-                    <li id="headertab" class="active"><a href="#header" data-toggle="tab">Header Crop</a></li>
-                    <li id="smalltab"><a href="#thumbnail" data-toggle="tab">Square Crop</a></li>
-                    <button id="saveButton" type="submit" name="submit" class="btn btn-primary pull-right">Save Image Selection</button>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane active" id="header">
-                        <div class="row-fluid imageEditorCrop">
-                            <div class="span12">
-                                <img id="fimage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="tab-pane" id="thumbnail">
-                        <div class="row-fluid">
-                            <div class="span12 imageEditorCrop">
-                                <img id="sfimage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
-                            </div>
-                        </div>
-                    </div>
+            <div class="row-fluid imageEditorCrop">
+                <div class="span12">
+                    <img id="fimage" src="{{ articleImage.image.url }}" width="1140" height="{{ imgheight }}">
                 </div>
-            </div>
-            <div class="row">
-                {{ formset.management_form }}
-            {% for form in formset %}
-                <div id="{{ form.type.value }}form" class="span2">
-                    {{ form }}
-                </div>
-            {% endfor %}
             </div>
         </div>
+    </div>
+    <div class="row">
+        {{ formset.management_form }}
+        {% for form in formset %}
+        <div id="{{ form.type.value }}form" class="span2">
+            {{ form }}
+        </div>
+        {% endfor %}
     </div>
     </form>
 {% endblock %}

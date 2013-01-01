@@ -1,93 +1,105 @@
 {% extends "base.html" %}
-{% block title %}<title xmlns="http://www.w3.org/1999/html">Live Geek or Die </title>{% endblock %}
+{% block title %}<title xmlns="http://www.w3.org/1999/html">Dashboard - Live Geek or Die </title>{% endblock %}
 {% block content %}
-         <div class="row-fluid staffHome">
-			<div class="span12">
-                <div class="tabbable">
-                    <ul class="nav nav-tabs">
-                        <li class="active"><a href="#posted" data-toggle="tab">Dashboard</a></li>
-                        <li><a href="#unposted" data-toggle="tab">Drafts</a></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane active" id="posted">
-                            {% for article in posted %}
-                            {% if article.type != 'sidebar' %}
-                            <div class="row-fluid staffArticleItem">
-                                <div class="span8">
-                                    {% if article.image.small_thumbnail.URL %}
-                                        <img src={{ article.image.small_thumbnail.URL }}>
-                                    {% endif %}
-                                    <p><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></br>
-                                    Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }}<br></p>
-                                </div>
-                                <div class="span4 staffStats">
-                                   <div class="staffStatsNumber">
-                                       <i class="icon-globe"></i><br>
-                                       <div class="staffStatsNumberHelpText">Pageviews from Google Analytics</div>
-                                       <span class="staffStatsNumberValue">
-                                       {% if article.social.pageviews >= 0 %}
-                                           {{ article.social.pageviews }}
-                                       {% else %}
-                                           N
-                                       {% endif %}
-                                       </span>
-                                   </div>
-                                   <div class="staffStatsNumber">
-                                       <i class="icon-facebook"></i><br>
-                                       <div class="staffStatsNumberHelpText">Mentions, Comments and Likes on Facebook</div>
-                                       <span class="staffStatsNumberValue">
-                                       {% if article.social.facebook >= 0 %}
-                                           {{ article.social.facebook }}
-                                       {% else %}
-                                           N
-                                       {% endif %}
-                                       </span>
-                                   </div>
-                                    <div class="staffStatsNumber">
-                                        <i class="icon-twitter"></i><br>
-                                        <div class="staffStatsNumberHelpText">Mentions on Twitter</div>
-                                        <span class="staffStatsNumberValue">
-                                        {% if article.social.tweets >= 0 %}
-                                            {{ article.social.tweets }}
-                                        {% else %}
-                                            N
-                                        {% endif %}
-                                        </span>
-                                    </div>
-                                    <div class="staffStatsNumber">
-                                        <i class="icon-comments-alt"></i><br>
-                                        <div class="staffStatsNumberHelpText">Comments</div>
-                                        <a class="staffStatsNumberValue" href="/article/{{ article.title_slug }}/#disqus_thread">0</a>
-                                    </div>
-                                </div>
-                            </div>
-                            {% endif %}
-                            {% endfor %}
-                        </div>
-                        <div class="tab-pane" id="unposted">
-                           {% for article in unposted %}
-                           <div class="row-fluid">
-                               <div class="span10 offset1 staffArticleItem">
-                                   <div class="span2">
-                                   {% if article.image.small_thumbnail.URL %}
-                                       <img src={{ article.image.small_thumbnail.URL }}>
-                                   {% else %}
-                                        No Thumbnail
-                                   {% endif %}
-                                   </div>
-                                   <div class="span5">
-                                       <a href="/editor/{{ article.id}}">{{ article.title }}</a><br>
-                                       Edited:{{ article.last_edited|date:" M jS"}} at {{ article.last_edited|date:"P" }}<br>
-                                   </div>
-                               </div>
-                           </div>
-                           {% endfor %}
-                        </div>
+<div class="content">
+    <div class="row-fluid paddingtop1">
+        <div class="span9">
+        {% for article in posted %}
+        {% if article.type != 'sidebar' %}
+            <div class="row-fluid staffArticleItem">
+                <div class="span12 staffArticleItemContents">
+                    {% if article.image.thumbnail.URL %}
+                        <img src={{ article.image.thumbnail.URL }}>
+                    {% endif %}
+                    <a href="/article/{{ article.title_slug }}">{{ article.title }}</a></br>
+                    <p>Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }}</p>
+                    <a href="/article/{{ article.title_slug }}/"class="btn btn-primary draftsbtn"><i class="icon-eye-open"></i>  View Article</a>
+                    <a href="/editor/{{ article.id }}"class="btn btn-warning draftsbtn"><i class="icon-edit"></i> Edit Article</a>
+
+                </div>
+                <div class="staffStats">
+                   <div class="staffStatsNumber">
+                       <i class="icon-globe"></i><br>
+                       <div class="staffStatsNumberHelpText">Pageviews from Google Analytics</div>
+                       <span class="staffStatsNumberValue">
+                       {% if article.social.pageviews >= 0 %}
+                           {{ article.social.pageviews }}
+                       {% else %}
+                           N
+                       {% endif %}
+                       </span>
+                   </div>
+                   <div class="staffStatsNumber">
+                       <i class="icon-facebook"></i><br>
+                       <div class="staffStatsNumberHelpText">Mentions, Comments and Likes on Facebook</div>
+                       <span class="staffStatsNumberValue">
+                       {% if article.social.facebook >= 0 %}
+                           {{ article.social.facebook }}
+                       {% else %}
+                           N
+                       {% endif %}
+                       </span>
+                   </div>
+                    <div class="staffStatsNumber">
+                        <i class="icon-twitter"></i><br>
+                        <div class="staffStatsNumberHelpText">Mentions on Twitter</div>
+                        <span class="staffStatsNumberValue">
+                        {% if article.social.tweets >= 0 %}
+                            {{ article.social.tweets }}
+                        {% else %}
+                            N
+                        {% endif %}
+                        </span>
+                    </div>
+                    <div class="staffStatsNumber">
+                        <i class="icon-comments-alt"></i><br>
+                        <div class="staffStatsNumberHelpText">Comments</div>
+                        <a class="staffStatsNumberValue" href="/article/{{ article.title_slug }}/#disqus_thread">0</a>
                     </div>
                 </div>
             </div>
-         </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+        <div class="span3">
+            <div class="row-fluid staffHome">
+                <div class="span12 well margintop1" style="text-align: center">
+                    <p>There are <br>
+                    <div class="staffDraftNumber">{{ draftcount }}</div>
+                    articles set aside as drafts.</p>
+                    {% if draftcount %}
+                        <a href="/staff/drafts/"class="btn btn-primary draftsbtn"><i class="icon-edit"></i> Edit Drafts</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row-fluid staffHome">
+                <div class="span12 well margintop1" style="text-align: center">
+                    Latest comments from across the site
+                    {% for comment in comments %}
+                        <div class="staffComments">
+                            <a href="{{ comment.link }}">{{ comment.title|safe }}</a>
+                            {{ comment.comment|safe }}
+                            <span class="staffCommentsTime">{{ comment.author|safe }} - {{ comment.time|safe }}<br></span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+{% block footer %}
+    <div class="paginationWrap">
+        <ul class="pager">
+            {% if posted.previous_page_number %}
+                <li><a href="?page={{ posted.previous_page_number }}">Prev</a></li>
+            {% endif %}
+            {% if posted.next_page_number %}
+                <li><a href="?page={{ posted.next_page_number }}">Next</a></li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock %}
+</div>
 {% block javascript %}
         <script type="text/javascript">
         $(document).ready(function(){
