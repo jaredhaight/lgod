@@ -168,15 +168,14 @@ $(document).ready(
                         {% if status == 'posted' %}
                             <div id="post_btn" class="btn-group editorButtons">
                                 <button id="save_btn" class="btn btn-primary" name="save_article" type="submit" value="Save"><i class="icon-save"></i> Save Changes</button>
-                                <button class="btn dropdown-toggle" data-toggle="dropdown">
+                                <button id="saveBtnDropdown" class="btn dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">Save and republish</a></li>
+                                <ul class="dropdown-menu editorRepubBtn">
+                                    <li><button name="republish_article" type="submit" value="Republish">Save and republish</button></li>
                                 </ul>
                             </div>
                             <button id="unpublish_btn" class="btn btn-warning editorButtons" name="unpost_article" type="submit" value="Un-Publish"><i class="icon-remove-sign"></i> Un-Publish</button>
-                            </div>
                         {% else %}
                             <button id="post_btn" class="btn btn-primary editorButtons" name="post_article" type="submit" value="Post"><i class="icon-ok-sign"></i> Post</button>
                             <button id="preview_btn" class="btn btn-info editorButtons" name="preview_article" type="submit" value="Preview"><i class="icon-globe"></i> Preview</button>

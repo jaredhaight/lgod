@@ -54,10 +54,10 @@ def latestComments():
 
 def home(request):
     user = request.user
-    articles = Article.objects.filter(is_posted=True).order_by("-date_posted")
+    articles = Article.objects.filter(is_posted=True).order_by("-list_date")
 
     features = articles.filter(type='featured')[:3]
-    articlelist= articles.filter(Q(type='standard')|Q(type='sidebar'))[:18]
+    articlelist= articles.filter(type='standard')[:18]
     sidebarlist = articles.filter(type='sidebar')[:4]
     row1 = articlelist[:6]
     row2 = articlelist[6:12]
@@ -68,7 +68,7 @@ def home(request):
 
 def archive(request):
     user = request.user
-    articles = Article.objects.filter(is_posted=True).order_by("-date_posted")
+    articles = Article.objects.filter(is_posted=True).order_by("-list_date")
     paginator = Paginator(articles, 18)
 
     try: page = int(request.GET.get("page", '1'))
@@ -83,7 +83,7 @@ def archive(request):
 
 def category(request, jslug):
     user = request.user
-    articles = get_list_or_404(Article.objects.filter(categories__slug=jslug, is_posted=True).order_by("-date_posted"))
+    articles = get_list_or_404(Article.objects.filter(categories__slug=jslug, is_posted=True).order_by("-list_date"))
     paginator = Paginator(articles, 8)
 
     try: page = int(request.GET.get("page", '1'))
@@ -93,14 +93,14 @@ def category(request, jslug):
     except (InvalidPage, EmptyPage):
         articles = paginator.page(paginator.num_pages)
 
-    d = dict(articles=articles, features=features, user=user)
-    return render_to_response("home.html", d, context_instance=RequestContext(request))
+    d = dict(articles=articles, user=user)
+    return render_to_response("archive.html", d, context_instance=RequestContext(request))
     
 def authorPage(request, jslug):
     social = None
     user = request.user
     staff = get_object_or_404(User, username__iexact=str(jslug))
-    articles = get_list_or_404(Article.objects.filter(author__username=jslug, is_posted=True).order_by("-date_posted"))
+    articles = get_list_or_404(Article.objects.filter(author__username=jslug, is_posted=True).order_by("-list_date"))
     
     try: staffProfile = StaffProfile.objects.get(user=User.objects.get(username=jslug))
     except: staffProfile = None
@@ -123,6 +123,7 @@ def authorPage(request, jslug):
 def article(request, article_id, type):
     user = request.user
     posted = None
+    updated = None
     pagetype = 'article'
 
     if type=='editorPreview' and request.user.is_authenticated():
@@ -135,7 +136,10 @@ def article(request, article_id, type):
     if article.is_posted:
         posted = 'posted'
 
-    d = dict(user=user,article=article, posted=posted, pagetype=pagetype, editable=editable)
+    if article.date_posted != article.list_date:
+        updated = article.list_date
+
+    d = dict(user=user,article=article, posted=posted, pagetype=pagetype, editable=editable, updated=updated)
     return render_to_response("articleView.html", d, context_instance=RequestContext(request))
 
 @csrf_exempt
@@ -177,6 +181,7 @@ def articleEditor(request, article_id):
                     if status[0] == 'ready_to_post':
                         now = datetime.now()
                         article.date_posted = now.strftime("%Y-%m-%dT%H:%M:%S")
+                        article.list_date = article.date_posted
                         article.title_slug = uniqueSlug('Article', article.id, 'title_slug', article.title)
                         article.is_posted = True
                     else:
@@ -189,6 +194,9 @@ def articleEditor(request, article_id):
                             'status':status,
                             'errors':errors},
                             context_instance=RequestContext(request))
+                elif "republish_article" in request.POST:
+                    now = datetime.now()
+                    article.list_date = now.strftime("%Y-%m-%dT%H:%M:%S")
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
                 article.author = request.user
@@ -408,12 +416,12 @@ def staffHome(request):
     user = request.user
     if user.groups.filter(name='editors').count() > 0:
         editor = True
-        posted = Article.objects.filter(is_posted=True).order_by("-date_posted")
-        unposted = Article.objects.filter(is_posted=False).order_by("-date_posted")
+        posted = Article.objects.filter(is_posted=True).order_by("-list_date")
+        unposted = Article.objects.filter(is_posted=False).order_by("-list_date")
     else:
         editor = False
-        posted = Article.objects.filter(is_posted=True, author=user).order_by("-date_posted")
-        unposted = Article.objects.filter(is_posted=False, author=user).order_by("-date_posted")
+        posted = Article.objects.filter(is_posted=True, author=user).order_by("-list_date")
+        unposted = Article.objects.filter(is_posted=False, author=user).order_by("-list_date")
 
     paginator = Paginator(posted, 10)
     draftcount = len(unposted)
@@ -433,10 +441,10 @@ def staffDrafts(request):
     user = request.user
     if user.groups.filter(name='editors').count() > 0:
         editor = True
-        unposted = Article.objects.filter(is_posted=False).order_by("-date_posted")
+        unposted = Article.objects.filter(is_posted=False).order_by("-list_date")
     else:
         editor = False
-        unposted = Article.objects.filter(is_posted=False, author=user).order_by("-date_posted")
+        unposted = Article.objects.filter(is_posted=False, author=user).order_by("-list_date")
 
     paginator = Paginator(unposted, 15)
 

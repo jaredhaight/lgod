@@ -9,6 +9,7 @@
     <!-- Main slider JS script file -->
     <!-- Create it with slider online build tool for better performance. -->
     <script src="{{ STATIC_URL }}js/jquery.royalslider.custom.min.js"></script>
+    <script src="{{ STATIC_URL }}js/jquery.lazyload.min.js"></script>
 {% endblock %}
 {% block featured %}
     <div class="row-fluid">
@@ -60,6 +61,16 @@
             </div>
         </div>
     </div>
+    <div id="notesbar">
+        <div class="notesbarList">
+            {% for article in sidebarlist %}
+                <div class="notesbarItem">
+                    <h1>{{ article.title }}</h1>
+                    {{ article.body|safe }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}
 {% block content %}
     <div class="row-fluid homePad">
@@ -69,15 +80,20 @@
                     <div class="articleListImage">
                         <a
                         href="/article/{{ article.title_slug }}"
-                        data-r0='<img src={{ article.image.small_header.URL }}>'
-                        data-r801='<img src="{{ article.image.medium_header.URL }}">'
-                        data-r978='<img src={{ article.image.small_header.URL }}>'
+                        data-r0='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                        data-r801='<img class="lazy" data-original="{{ article.image.medium_header.URL }}" src="/static/img/grey.png">'
+                        data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
                         ></a>
                     </div>
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            {% if article.date_posted != article.list_date %}
+                            <div class="articleUpdateDate">
+                                Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                            </div>
+                            {% endif %}
                         </div>
                         <p>
                             {{ article.summary }}
@@ -100,7 +116,12 @@
                     <div class="sidebarArticleListBody">
                         <span class="sidebarArticleListTitle">{{ article.title }}</span>
                         <div class="articleListDate">
-                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            {% if article.date_posted != article.list_date %}
+                                <div class="articleUpdateDate">
+                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                </div>
+                            {% endif %}
                         </div>
                         <p>
                             {{ article.body|safe }}
@@ -144,16 +165,21 @@
                 <div class="span6 articleListBorder">
                     <div class="articleListImage">
                         <a
-                            href="/article/{{ article.title_slug }}"
-                            data-r0='<img src={{ article.image.small_header.URL }}>'
-                            data-r801='<img src="{{ article.image.medium_header.URL }}">'
-                            data-r978='<img src={{ article.image.small_header.URL }}>'
-                            ></a>
+                                href="/article/{{ article.title_slug }}"
+                                data-r0='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                                data-r801='<img class="lazy" data-original="{{ article.image.medium_header.URL }}" src="/static/img/grey.png">'
+                                data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                                ></a>
                     </div>
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            {% if article.date_posted != article.list_date %}
+                                <div class="articleUpdateDate">
+                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                </div>
+                            {% endif %}
                         </div>
                         <p>
                             {{ article.summary }}
@@ -176,7 +202,12 @@
                     <div class="sidebarArticleListBody">
                         <span class="sidebarArticleListTitle">{{ article.title }}</span>
                         <div class="articleListDate">
-                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                           Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            {% if article.date_posted != article.list_date %}
+                                <div class="articleUpdateDate">
+                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                </div>
+                            {% endif %}
                         </div>
                         <p>
                             {{ article.body|safe }}
@@ -221,16 +252,21 @@
                 <div class="span6 articleListBorder">
                     <div class="articleListImage">
                         <a
-                            href="/article/{{ article.title_slug }}"
-                            data-r0='<img src={{ article.image.small_header.URL }}>'
-                            data-r801='<img src="{{ article.image.medium_header.URL }}">'
-                            data-r978='<img src={{ article.image.small_header.URL }}>'
-                            ></a>
+                                href="/article/{{ article.title_slug }}"
+                                data-r0='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                                data-r801='<img class="lazy" data-original="{{ article.image.medium_header.URL }}" src="/static/img/grey.png">'
+                                data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                                ></a>
                     </div>
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            {% if article.date_posted != article.list_date %}
+                                <div class="articleUpdateDate">
+                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                </div>
+                            {% endif %}
                         </div>
                         <p>
                             {{ article.summary }}
@@ -253,7 +289,12 @@
                     <div class="sidebarArticleListBody">
                         <span class="sidebarArticleListTitle">{{ article.title }}</span>
                         <div class="articleListDate">
-                            {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            {% if article.date_posted != article.list_date %}
+                                <div class="articleUpdateDate">
+                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                </div>
+                            {% endif %}
                         </div>
                         <p>
                             {{ article.body|safe }}
@@ -281,7 +322,13 @@
 
 {% block javascript %}
     <script type="text/javascript">
+
         $(document).ready(function($) {
+            function loadImages (){
+                $("img.lazy").lazyload();
+            }
+            Response.action(loadImages);
+
             $(".royalSlider").royalSlider({
                 imgHeight: '400px',
                 transitionType: 'fade',

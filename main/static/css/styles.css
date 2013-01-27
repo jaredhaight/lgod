@@ -12,6 +12,7 @@ a:hover {
 }
 blockquote {
   font-size: .9em;
+  line-height: 1.1em;
   font-style: italic;
   color: #888;
   margin-top: 1%;
@@ -19,6 +20,10 @@ blockquote {
   margin-left: 3%;
   padding-left: 1%;
   border-left: 3px solid #ccc;
+}
+blockquote p {
+  font-size: .9em;
+  line-height: 1.35em;
 }
 .fright {
   float: right;
@@ -264,6 +269,54 @@ blockquote {
 #navSearchMobile form {
   margin-top: 10px;
 }
+#navSearchFull form input.st-search-input {
+  padding: 0px 0px 0px 5px;
+}
+#st-results-container {
+  display: block;
+  left: 10%;
+  margin-left: 0;
+  z-index: 100002;
+  position: absolute;
+  top: 0px;
+  margin-top: 0px;
+  width: 80%;
+}
+#st-results-container .swiftype .st-search-bar {
+  width: 100%;
+}
+#st-results-container .swiftype .st-search-bar input[type="text"] {
+  width: 60%;
+  margin-left: 10%;
+}
+#st-results-container .swiftype .st-result-listing {
+  width: 100%;
+}
+#st-results-container .swiftype .st-result-listing .st-results {
+  width: 80%;
+}
+#st-results-container .swiftype .st-result-listing .st-search-summary {
+  width: 95%;
+}
+#st-results-container .swiftype .st-result-listing .st-results .st-result {
+  margin-bottom: 10px;
+}
+#st-results-container .swiftype .st-result-listing .st-results .st-result .st-result-image {
+  display: inline;
+}
+#st-results-container .swiftype .st-result-listing .st-results .st-result.with_image .st-result-text {
+  width: 85%;
+  display: inline;
+}
+#st-results-container .swiftype .st-result-listing .st-results .st-result.with_image .st-result-text h3 a {
+  font-size: 1.45em;
+}
+#st-results-container .swiftype .st-result-listing .st-results .st-result .st-result-text .st-metadata .st-snippet {
+  font-size: 1.5em;
+}
+#st-results-container .swiftype .st-result-listing .st-results .st-result .st-result-text .st-metadata .st-snippet em {
+  font-weight: 800;
+}
 .content {
   background: #fefefe;
   padding-left: 2%;
@@ -301,8 +354,10 @@ blockquote {
   margin-top: 40px;
 }
 .homePad {
+  width: 95%;
   margin-left: auto;
   margin-right: auto;
+  padding-top: 8px;
 }
 .featuredArticles {
   top: 0;
@@ -365,42 +420,33 @@ blockquote {
   top: 0;
   left: 0;
 }
-#notesNav {
-  position: relative;
-}
 #notesbar {
-  display: none;
   width: 100%;
-  position: absolute;
-  top: 50px;
-  left: 0;
-  padding: 10px;
-  padding-left: 2%;
-  padding-right: 2%;
+  padding-bottom: 5px;
   font-family: sans-serif;
-  font-size: 0.7em;
+  font-size: 0.85em;
   line-height: 1.1em;
   background: #d7e9fa;
   color: #333333;
-  border-top: 8px;
-  border-top-style: solid;
-  border-top-color: #a9d0f5;
+  border-bottom: 8px;
+  border-bottom-style: solid;
+  border-bottom-color: #a9d0f5;
 }
 .notesbarList {
-  width: 95%;
   max-width: 1500px;
   margin-left: auto;
   margin-right: auto;
 }
 .notesbarList h1 {
-  font-size: 1.5em;
-  line-height: .25em;
+  font-size: 1.2em;
+  line-height: 1.05em;
   color: #778899;
   text-align: center;
+  margin: 5px 0 5px 0;
 }
 .notesbarItem {
-  width: 21.5%;
-  float: left;
+  display: inline-table;
+  width: 24.55%;
   padding-left: 1%;
   text-align: left;
   text-transform: none;
@@ -446,6 +492,7 @@ blockquote {
 }
 .promotedListDesc {
   position: absolute;
+  width: 65%;
   bottom: 10px;
   left: 2%;
   font-family: 'Merriweather', Georgia, serif;
@@ -463,8 +510,8 @@ blockquote {
 }
 .promotedListDescTransbox {
   background: #ffffff;
-  min-height: 125px;
-  width: 100%;
+  min-height: 165px;
+  width: 67%;
   opacity: 0.475;
   filter: alpha(opacity=475);
   /* For IE8 and earlier */
@@ -518,7 +565,8 @@ blockquote {
   font-size: 0.65em;
   line-height: 1em;
   color: gray;
-  margin-bottom: 1.5%;
+  margin-top: 3px;
+  margin-bottom: 8px;
 }
 .articleListBody {
   font-family: 'Merriweather', Georgia, serif;
@@ -654,14 +702,21 @@ blockquote {
 #articleMetaBox {
   position: absolute;
   bottom: 0;
+  width: 100%;
+  padding-top: 30px;
+}
+#articleMetaBoxBG {
+  position: absolute;
+  bottom: 0;
   background: #fefefe;
   width: 100%;
   opacity: .5;
-  height: 115px;
+  height: 100%;
 }
 #articleTitle {
-  position: absolute;
+  position: relative;
   left: 14.5%;
+  width: 75%;
   bottom: 20px;
 }
 #articleTitle h1 {
@@ -673,6 +728,10 @@ blockquote {
   font-size: 0.82em;
   line-height: 1.2em;
   color: #df0101;
+}
+.articleUpdated {
+  font-style: italic;
+  font-weight: 400;
 }
 #articleSummary {
   font-size: 1em;
@@ -916,6 +975,18 @@ blockquote {
 .editorButtons {
   float: left;
   margin-right: 15px;
+}
+.editorRepubBtn {
+  text-align: center;
+}
+.editorRepubBtn button {
+  background: #fff;
+  border: 0;
+  width: 100%;
+  padding: 5px;
+}
+.editorRepubBtn button:hover {
+  background: #a9d0f5;
 }
 .previewBar {
   height: 40px;
@@ -1222,6 +1293,10 @@ blockquote {
   .row-fluid .featuredArticles .featuredListImg img {
     top: 0;
   }
+  .row-fluid #articleBody {
+    font-size: .95em;
+    line-height: 1.38em;
+  }
 }
 @media (max-width: 640px) {
   body #lgodnav img {
@@ -1268,6 +1343,11 @@ blockquote {
   }
   #lgodnav #searchBtn {
     right: 60px;
+  }
+  .notesbarList .notesbarItem {
+    width: 94%;
+    margin-left: 3%;
+    margin-right: 3%;
   }
   .articleStaff {
     text-align: left;
@@ -1358,6 +1438,12 @@ blockquote {
   }
 }
 @media (max-width: 767px) {
+  .notesbarList .notesbarItem:nth-child(3) {
+    display: none;
+  }
+  .notesbarList .notesbarItem:nth-child(4) {
+    display: none;
+  }
   body {
     padding-left: 0;
     padding-right: 0;
@@ -1385,6 +1471,11 @@ blockquote {
   #userMenu a {
     line-height: 1.4em;
     font-size: 1.1em;
+  }
+  #navSearchMobile {
+    border-top: 5px;
+    border-top-style: solid;
+    border-top-color: #A9D0F5;
   }
   #navgap {
     height: 5px;
@@ -1425,9 +1516,11 @@ blockquote {
   .featuredArticles .featuredListDescTransbox {
     width: 100%;
     min-height: 400px;
+    opacity: .55;
   }
   .promotedArticles .promotedListDescTransbox {
     height: 100%;
+    width: 100%;
   }
   .promotedArticles .promotedListDesc {
     width: 90%;
@@ -1510,7 +1603,7 @@ blockquote {
     margin-right: 0px;
   }
   #articleBody {
-    font-size: .95em;
+    font-size: 1.05em;
     line-height: 1.35em;
     width: 100%;
     margin-left: 0;
@@ -1556,6 +1649,21 @@ blockquote {
     float: right;
     height: 150px;
   }
+  .editorControls {
+    height: 160px;
+  }
+  .editorButtons {
+    float: none;
+  }
+  #save_btn {
+    width: 75%;
+  }
+  #saveBtnDropdown {
+    width: 29.5%;
+  }
+  .editorRepubBtn {
+    width: 104%;
+  }
   .editorControls .btn {
     width: 100%;
     margin-bottom: 2%;
@@ -1588,14 +1696,14 @@ blockquote {
   }
 }
 @media (max-width: 977px) {
-  #notesNav {
-    display: none;
-  }
   #searchBtn {
     display: inline-block;
   }
   #navSearchFull {
     display: none;
+  }
+  .notesbarItem {
+    width: 49%;
   }
   .row-fluid .span6 {
     width: 100%;

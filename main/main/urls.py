@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-
+from app.feeds import lgodFeed
 # Uncomment the next two lines to enable the admin:
 # test comment
 from django.contrib import admin
@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r"^category/(?P<jslug>[\-\d\w]+)/$", "app.views.category"),
     url(r"^article/(?P<article_id>[\-\d\w]+)/$", "app.views.article", {'type':'articleView'}),
     url(r"^author/(?P<jslug>[\-\d\w]+)/$", "app.views.authorPage"),
+    url(r"^feed/", lgodFeed()),
     url(r"^staff/$", "app.views.staffHome"),
     url(r"^staff/drafts/$", "app.views.staffDrafts"),
     url(r"^staff/profile/$", "app.views.profilePage"),

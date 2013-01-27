@@ -34,37 +34,6 @@
                 }
         );
 
-        $("#notesNav").hover(
-                function () {
-                    if ($(".royalSlider")) {
-                        $(".royalSlider").royalSlider('stopAutoPlay');
-                    }
-                    $("#notesbar").show();
-                },
-                function () {
-                    if ($(".royalSlider")) {
-                        $(".royalSlider").royalSlider('startAutoPlay');
-                    }
-                    $("#notesbar").hide();
-                }
-        );
-
-        $("#notesbar").hover(
-            function () {
-                if ($(".royalSlider")) {
-                    $(".royalSlider").royalSlider('stopAutoPlay');
-                }
-                $("#notesNav").addClass("navSectionHighlight");
-                $("#notesbar").show();
-            },
-            function () {
-                if ($(".royalSlider")) {
-                    $(".royalSlider").royalSlider('startAutoPlay');
-                }
-                $("#notesNav").removeClass("navSectionHighlight");
-                $("#notesbar").hide();
-            }
-        );
         $(".menuItem").hover(
             function () {
                 $(this).addClass("menuItemHighlight")
@@ -76,10 +45,26 @@
             }
         )
     });
+
+    var Swiftype = window.Swiftype || {};
+    (function() {
+        Swiftype.key = 'mKzrmYrDKkxhACurLqar';
+        Swiftype.inputElement = '.st-search-input';
+        Swiftype.resultContainingElement = '#st-results-container';
+        Swiftype.attachElement = '.st-search-input';
+        Swiftype.renderStyle = "overlay";
+
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.src = "//swiftype.com/embed.js";
+        var entry = document.getElementsByTagName('script')[0];
+        entry.parentNode.insertBefore(script, entry);
+    }());
 </script>
 
 {% endblock %}
-<div id="lgodnav">
+<div data-swiftype-index='false' id="lgodnav">
     <a href="/"><img src="/static/img/logo2.png"></a>
     <div id="topics" class="navSection">
         <a
@@ -152,17 +137,6 @@
             </div>
         </div>
     </div>
-    <div onclick="location.href='#Features';" id="notesNav" class="navSection">Notes</div>
-    <div id="notesbar">
-        <div class="notesbarList">
-            {% for article in sidebarlist %}
-            <div class="notesbarItem">
-                <h1>{{ article.title }}</h1>
-                {{ article.body|safe }}
-            </div>
-            {% endfor %}
-        </div>
-    </div>
     <div onclick="location.href='/about';" id="aboutLink" class="navSection">About</div>
     {% if user.is_authenticated %}
     <div id="userNav" class="navSection">
@@ -180,17 +154,20 @@
     </div>
         <!-- Modal Window for Article -->
     {% endif %}
+
     <div id="navSearchFull">
-        <form action="/search/" method="get">
-            <input type="text" placeholder="Search" name="q" ><a href="#" onclick="$(this).closest('form').submit()"><i class="icon-search"></i></a>
+        <form>
+             <input type="text" id="st-search-input" class="st-search-input" />
+            <!-- <input type="text" placeholder="Search" name="q" ><a href="#" onclick="$(this).closest('form').submit()"><i class="icon-search"></i></a>-->
         </form>
     </div>
     <div id="searchBtn">
         <i class="icon-search"></i>
         <div id="navSearchMobile">
-            <form action="/search/" method="get">
-                <input type="text" placeholder="Search" name="q" ><br>
-                <button class="btn btn-primary">Search</button>
+            <form>
+                <input type="text" id="st-search-input" class="st-search-input" />
+                <!-- <input type="text" placeholder="Search" name="q" ><br>
+                <button class="btn btn-primary">Search</button>-->
             </form>
         </div>
     </div>

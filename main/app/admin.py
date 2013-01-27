@@ -2,6 +2,8 @@ from django.contrib import admin
 from app.models import Article, Category, ContentImage, ArticleImage ,ArticleImageCrop, ArticleImageType, StaffProfile
 
 class ArticleAdmin(admin.ModelAdmin):
+    list_display = ('title','is_posted','date_posted', 'author')
+    list_filter = ('is_posted','author')
     pass
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -11,6 +13,7 @@ class FileAdmin(admin.ModelAdmin):
     pass
 
 class ArticleImageAdmin(admin.ModelAdmin):
+    list_display = ('admin_thumbnail','header','small_header','medium_header','thumbnail','small_featured','medium_featured','uploaded_by','date')
     pass
 
 class ArticleImageCropAdmin(admin.ModelAdmin):

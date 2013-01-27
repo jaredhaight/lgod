@@ -13,7 +13,8 @@
             <div class="span12 searchResult">
                 <img src="{{ result.object.image.thumbnail.URL }}">
                 <a href="{{ result.object.get_absolute_url }}">{{ result.object.title }}</a>
-                <p>{% highlight result.object.body with request.GET.q %}</p>
+                {{ result.summary }}
+                <p>{% highlight result.summary with request.GET.q %}</p>
             </div>
         </div>
         {% empty %}

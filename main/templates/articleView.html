@@ -43,12 +43,14 @@
     <meta name="title" content="{{ article.title }}" />
     <meta property="og:site_name" content="Live Geek or Die" />
     <meta property="og:title" content="{{ article.title }}" />
+    <meta property='st:title' content="{{ article.title }}" />
     <meta name="description" content="{{ article.summary|safe }}" />
     <meta property="og:description" content="{{ article.summary|safe }}" />
     <meta property="og:type" content="website" />
 
     <link rel="image_src" href="{{ article.image.thumbnail.URL }}" />
     <meta property="og:image" content="{{ article.image.thumbnail.URL }}" />
+    <meta property='st:image' content="{{ article.image.thumbnail.URL }}" />
 {% endblock %}
 {% block notice %}
 
@@ -62,12 +64,17 @@
          data-r801='<img src="{{ article.image.header.URL }}">'
         >
     </div>
-    <div id="articleMetaBox"></div>
-    <div id="articleTitle">
-        <h1>{{ article.title }}</h1>
-        <div id="articleDate">
-        {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
-         {% if article.type == 'featured' %}<br><span class="label label-important">Featured Article</span>{% endif %}
+    <div id="articleMetaBox">
+        <div id="articleMetaBoxBG"></div>
+        <div id="articleTitle">
+            <h1>{{ article.title }}</h1>
+            <div id="articleDate">
+            Posted on {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
+            {% if updated %}
+            <div class="articleUpdated">Updated: {{ article.list_date|date:"l, F jS" }} at {{ article.list_date|date:"P" }}</div>
+            {% endif %}
+             {% if article.type == 'featured' %}<br><span class="label label-important">Featured Article</span>{% endif %}
+            </div>
         </div>
     </div>
 </div>
@@ -90,7 +97,7 @@
         {{ article.body|safe }}
         </div>
     </div>
-    <div class="row-fluid">
+    <div data-swiftype-index='false' class="row-fluid">
         <div id="articleAuthorBox" class="span10 offset1 well">
             <div class="articleAuthorCredit">
                 This article was written by <a href="/author/{{ article.author.username|lower }}">{{ article.author.staffprofile.displayName }}</a>
@@ -102,7 +109,7 @@
             </div>
         </div>
     </div>
-    <div class="row-fluid">
+    <div data-swiftype-index='false' class="row-fluid">
         <div class="span12">
             <div id="disqus_thread"></div>
             <script type="text/javascript">

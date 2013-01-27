@@ -81,6 +81,9 @@ def CDNDelete(file):
 
 def uniqueSlug(model, id, slug_field, title):
     kwargs={}
+    title = title[:48]
+    last_space = title.rfind(' ')
+    title = title[:last_space]
     slug = slugify(title)
     model = get_model('app',model)
     kwargs[slug_field] = slug
@@ -160,6 +163,7 @@ class Article(models.Model):
     is_posted = models.BooleanField()
     date_posted = models.DateTimeField(null=True, blank=True)
     social = models.ForeignKey('ArticleSocialStats', related_name='social_stats', null=True, blank=True)
+    list_date = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
         return self.title
@@ -241,6 +245,11 @@ class ArticleImage(models.Model):
     description = models.TextField(null=True, blank=True)
     uploaded_by = models.ForeignKey(User, null=True, blank=True)
     date = models.DateTimeField(auto_now=True)
+
+    def admin_thumbnail(self):
+        return u'<img style="width:200px;" src="%s"/>'% (self.thumbnail.URL)
+    admin_thumbnail.short_description  = 'Thumbnail'
+    admin_thumbnail.allow_tags = True
 
     def __unicode__(self):
         return str(self.id)
