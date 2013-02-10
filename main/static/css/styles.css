@@ -80,6 +80,9 @@ blockquote p {
   margin-top: -10px;
   padding-left: 1%;
 }
+.clickable {
+  height: 35px;
+}
 .navSection {
   position: relative;
   display: inline-block;
@@ -118,13 +121,20 @@ blockquote p {
 #topics {
   position: relative;
 }
+#topicsButton {
+  position: absolute;
+  width: 160px;
+  display: inline-block;
+  height: 50px;
+  z-index: 1;
+}
 #topicsMenu {
   display: none;
   position: absolute;
   top: 50px;
   left: 0;
   background: #a9d0f5;
-  height: 175px;
+  height: 250px;
   width: 100%;
   border: 2px;
   float: left;
@@ -138,6 +148,13 @@ blockquote p {
   border-right: 1px;
   border-right-color: #a9d0f5;
   border-right-style: solid;
+}
+#userButton {
+  position: absolute;
+  width: 42px;
+  display: inline-block;
+  height: 50px;
+  z-index: 1;
 }
 #userNav {
   position: relative;
@@ -165,8 +182,8 @@ blockquote p {
 }
 .menuItem {
   color: #df0101;
-  padding-top: 7px;
-  padding-bottom: 6px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   padding-left: 9px;
   width: 250px;
   float: left;
@@ -179,22 +196,32 @@ blockquote p {
   display: none;
   background: #d7e9fa;
   text-transform: none;
-  height: 165px;
-  width: 120px;
+  height: 240px;
+  width: 140px;
   float: right;
   font-size: .75em;
   font-weight: normal;
-  padding: 5px;
-  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   position: absolute;
   left: 200%;
   top: 0;
 }
 .subMenu a {
   color: #333333;
+  line-height: 21px;
 }
 .subMenu a:hover {
   color: #000060;
+}
+.menuLink {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
+  font-size: 1.3em;
+}
+.menuLinkHighlight {
+  background: #fefefe;
 }
 #shareNav {
   position: relative;
@@ -208,35 +235,32 @@ blockquote p {
   border-left-color: #cccccc;
   width: 20px;
 }
-#searchBtn {
-  display: none;
-  position: absolute;
-  right: 0px;
-  cursor: pointer;
-  height: 35px;
-  padding-left: 2%;
-  padding-right: 2%;
-  margin-right: -8px;
-  padding-top: 15px;
-  text-align: center;
-  width: 30px;
-  z-index: 100;
+#searchButton {
+  width: 0;
+  z-index: 10;
 }
-#navSearchFull {
-  display: inline-block;
+#search i {
   float: right;
-  top: 0px;
-  position: relative;
-  right: 0px;
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  height: 50px;
+  z-index: 1;
+}
+#navSearch {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-block;
   background: #f1f1f1;
   height: 100%;
-  width: 18%;
+  width: 20%;
   max-width: 400px;
   border-left: 1px;
   border-left-style: solid;
   border-left-color: #CCC;
 }
-#navSearchFull input {
+#navSearch input {
   font-size: 1.1em;
   font-weight: 200;
   border: 0px;
@@ -250,8 +274,11 @@ blockquote p {
   width: 82%;
   background: #f1f1f1;
 }
-#navSearchFull a {
+#navSearch a {
   font-size: 1.3em;
+}
+#navSearch .btn {
+  display: none;
 }
 #navSearchMobile {
   display: none;
@@ -269,7 +296,7 @@ blockquote p {
 #navSearchMobile form {
   margin-top: 10px;
 }
-#navSearchFull form input.st-search-input {
+#navSearch form input.st-search-input {
   padding: 0px 0px 0px 5px;
 }
 #st-results-container {
@@ -333,11 +360,10 @@ blockquote p {
   line-height: 1.2em;
   color: #333333;
   text-rendering: optimizelegibility;
-  max-width: 1425px;
+  max-width: 1500px;
   margin: 0 auto;
   background: #f9f9f9;
-  padding-left: 2%;
-  padding-right: 2%;
+  padding-left: 1px;
 }
 #navgap {
   position: relative;
@@ -358,6 +384,9 @@ blockquote p {
   margin-left: auto;
   margin-right: auto;
   padding-top: 8px;
+}
+.mobileHomeFeatured {
+  display: none;
 }
 .featuredArticles {
   top: 0;
@@ -387,7 +416,7 @@ blockquote p {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1.75em;
   line-height: 1.1em;
-  color: #222222;
+  color: #f9f9f9;
   text-rendering: optimizelegibility;
 }
 .featuredListDesc {
@@ -398,21 +427,22 @@ blockquote p {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1.1em;
   line-height: 1.2em;
-  color: #222222;
+  color: #f9f9f9;
   text-rendering: optimizelegibility;
 }
 .featuredListDesc p {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1em;
-  line-height: 1.2em;
-  color: #333333;
+  line-height: 1.15em;
+  color: #f9f9f9;
   text-rendering: optimizelegibility;
+  margin-top: 5px;
 }
 .featuredListDescTransbox {
-  background: #FFFFFF;
-  min-height: 378px;
+  background: #111;
+  min-height: 377px;
   width: 35%;
-  opacity: 0.65;
+  opacity: 0.75;
   filter: alpha(opacity=40);
   /* For IE8 and earlier */
 
@@ -422,15 +452,20 @@ blockquote p {
 }
 #notesbar {
   width: 100%;
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 10px;
   padding-bottom: 5px;
   font-family: sans-serif;
   font-size: 0.85em;
   line-height: 1.1em;
   background: #d7e9fa;
   color: #333333;
-  border-bottom: 8px;
-  border-bottom-style: solid;
-  border-bottom-color: #a9d0f5;
+  border-top: 8px;
+  border-top-style: solid;
+  border-top-color: #a9d0f5;
+  text-align: center;
 }
 .notesbarList {
   max-width: 1500px;
@@ -446,7 +481,7 @@ blockquote p {
 }
 .notesbarItem {
   display: inline-table;
-  width: 24.55%;
+  width: 22.5%;
   padding-left: 1%;
   text-align: left;
   text-transform: none;
@@ -487,38 +522,41 @@ blockquote p {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1.75em;
   line-height: 1.1em;
-  color: #222222;
+  color: #fefefe;
   text-rendering: optimizelegibility;
 }
 .promotedListDesc {
   position: absolute;
-  width: 65%;
+  width: 63%;
   bottom: 10px;
   left: 2%;
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1.1em;
   line-height: 1.2em;
-  color: #222222;
+  color: #fefefe;
   text-rendering: optimizelegibility;
+  z-index: 1;
 }
 .promotedListDesc p {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1.1em;
   line-height: 1.2em;
-  color: #333333;
+  color: #fefefe;
   text-rendering: optimizelegibility;
 }
 .promotedListDescTransbox {
-  background: #ffffff;
+  background: #111;
   min-height: 165px;
-  width: 67%;
-  opacity: 0.475;
+  height: 115%;
+  width: 105%;
+  opacity: 0.85;
   filter: alpha(opacity=475);
   /* For IE8 and earlier */
 
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: -10px;
+  left: -4%;
+  z-index: -1;
 }
 .articleListBorder {
   border: 1px solid;
@@ -557,7 +595,7 @@ blockquote p {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1.2em;
   line-height: 0.9em;
-  color: #222222;
+  color: #fefefe;
   text-rendering: optimizelegibility;
 }
 .articleListDate {
@@ -576,6 +614,7 @@ blockquote p {
   text-rendering: optimizelegibility;
   min-height: 180px;
   word-wrap: break-word;
+  padding-top: 10px;
 }
 .articleListMetaData {
   font-family: sans-serif;
@@ -649,15 +688,14 @@ blockquote p {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1.1em;
   line-height: 1.2em;
-  color: #222222;
+  color: #fefefe;
   text-rendering: optimizelegibility;
-  color: #333333;
 }
 .archiveFeaturedDescTransbox {
-  background: #ffffff;
+  background: #111;
   min-height: 125px;
   width: 100%;
-  opacity: 0.4;
+  opacity: 0.65;
   filter: alpha(opacity=40);
   /* For IE8 and earlier */
 
@@ -681,36 +719,42 @@ blockquote p {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  height: 400px;
+  height: 392px;
 }
 #articleImage {
-  position: relative;
+  position: fixed;
   width: 200%;
   height: 400px;
   margin-left: auto;
   margin-right: auto;
-  top: 0;
-  left: -50%;
+  top: 50px;
+  left: -49.999%;
+  z-index: -1;
 }
 #articleImage img {
   display: block;
-  height: 400px;
+  max-height: 400px;
   max-width: 1500px;
   margin-left: auto;
   margin-right: auto;
 }
+#articleRow.articleNoImage {
+  max-height: 100px;
+}
 #articleMetaBox {
   position: absolute;
+  left: 0;
   bottom: 0;
   width: 100%;
   padding-top: 30px;
 }
 #articleMetaBoxBG {
   position: absolute;
+  left: 0;
   bottom: 0;
-  background: #fefefe;
+  background: #111;
   width: 100%;
-  opacity: .5;
+  opacity: .75;
   height: 100%;
 }
 #articleTitle {
@@ -722,6 +766,7 @@ blockquote p {
 #articleTitle h1 {
   margin-bottom: 0;
   line-height: 1.1em;
+  color: #fefefe;
 }
 #articleDate {
   font-family: sans-serif;
@@ -750,12 +795,12 @@ blockquote p {
 }
 #articleBody {
   font-family: 'Merriweather', Georgia, serif;
-  font-size: 1.15em;
-  line-height: 1.55em;
+  font-size: 1.08em;
+  line-height: 1.5em;
   color: #333333;
   text-rendering: optimizelegibility;
-  padding-left: 5%;
-  padding-right: 5%;
+  padding-left: 7%;
+  padding-right: 7%;
   padding-top: 10px;
   padding-bottom: 15px;
 }
@@ -765,12 +810,25 @@ blockquote p {
 #articleBody p:last-child {
   margin-bottom: 0px;
 }
+#articleBody ul {
+  margin: 0 0px 0px 50px;
+  margin-bottom: 20px;
+}
+#articleBody li {
+  line-height: 1.25em;
+}
+#articleBody ul + p {
+  margin-top: -20px;
+}
 #articleAuthorBox {
   font-family: 'Merriweather', Georgia, serif;
   font-size: 1em;
   line-height: 1.2em;
   color: #333333;
   text-rendering: optimizelegibility;
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 90%;
 }
 .articleAuthorCredit {
   text-align: right;
@@ -1293,6 +1351,12 @@ blockquote p {
   .row-fluid .featuredArticles .featuredListImg img {
     top: 0;
   }
+  .mobileHomeFeatured .featuredArticles .featuredListDesc {
+    font-size: .9em;
+  }
+  .promotedListDesc {
+    font-size: .9em;
+  }
   .row-fluid #articleBody {
     font-size: .95em;
     line-height: 1.38em;
@@ -1311,6 +1375,10 @@ blockquote p {
     border-right-style: none;
     border-right-color: none;
   }
+  #userButton {
+    right: 100px;
+    width: 45px;
+  }
   #userNav {
     position: absolute;
     right: 100px;
@@ -1324,6 +1392,10 @@ blockquote p {
     padding-right: 0;
     margin-right: 0;
     margin-left: 2%;
+  }
+  #topicsButton {
+    right: 0;
+    width: 60px;
   }
   #topicsMenu {
     width: 160px;
@@ -1341,8 +1413,27 @@ blockquote p {
     left: auto;
     right: 80px;
   }
-  #lgodnav #searchBtn {
-    right: 60px;
+  .menuLink .menuLink {
+    font-size: 1.5em;
+    line-height: 1.3em;
+  }
+  #lgodnav #searchButton {
+    position: absolute;
+    right: 55px;
+  }
+  #lgodnav #search {
+    right: 55px;
+  }
+  #lgodnav #search i {
+    text-align: center;
+    right: 17px;
+    z-index: 0;
+  }
+  .mobileHomeFeatured {
+    display: inline;
+  }
+  .rsDefault {
+    display: none;
   }
   .notesbarList .notesbarItem {
     width: 94%;
@@ -1354,8 +1445,7 @@ blockquote p {
     float: left;
   }
   .row-fluid .featuredArticles .featuredListDesc {
-    width: 80%;
-    left: 10%;
+    top: 15px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -1373,6 +1463,7 @@ blockquote p {
   }
   .shareLinks {
     float: none;
+    margin-left: 8%;
   }
   .row-fluid #articleAuthorBox {
     height: 100px;
@@ -1472,13 +1563,19 @@ blockquote p {
     line-height: 1.4em;
     font-size: 1.1em;
   }
-  #navSearchMobile {
+  #searchBtn #navSearch {
     border-top: 5px;
     border-top-style: solid;
-    border-top-color: #A9D0F5;
+    border-top-color: #a9d0f5;
   }
   #navgap {
     height: 5px;
+  }
+  #articleImage {
+    position: absolute;
+    top: 0;
+    margin-top: -2%;
+    z-index: 0;
   }
   .contentWrap {
     padding-left: 8px;
@@ -1504,31 +1601,6 @@ blockquote p {
   }
   .featuredListImg img {
     height: auto;
-  }
-  .featuredArticles .featuredListDesc {
-    width: 90%;
-    top: 15%;
-    left: 5%;
-    margin-right: 10%;
-    text-align: center;
-    padding-left: 0;
-  }
-  .featuredArticles .featuredListDescTransbox {
-    width: 100%;
-    min-height: 400px;
-    opacity: .55;
-  }
-  .promotedArticles .promotedListDescTransbox {
-    height: 100%;
-    width: 100%;
-  }
-  .promotedArticles .promotedListDesc {
-    width: 90%;
-    height: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    padding-left: 5%;
   }
   .span8 #id_title {
     width: 100%;
@@ -1583,20 +1655,28 @@ blockquote p {
   }
 }
 @media (max-width: 800px) {
+  body #st-results-container {
+    left: 0;
+    width: 100%;
+  }
+  body #st-results-container .swiftype .st-result-listing .st-results {
+    width: 95%;
+  }
+  body #st-results-container .swiftype .st-search-bar input[type="text"] {
+    width: 70%;
+    margin-left: 5%;
+  }
   .row-fluid .articleListBorder .articleListImage img {
-    height: 200px;
     width: 750px;
     top: 0;
-  }
-  #articleImage {
-    margin-top: -2%;
-    z-index: 0;
   }
   #articleTitle {
     left: 0;
     bottom: 25px;
-    width: 100%;
+    width: 95%;
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
   }
   .articleWrap {
     margin-left: 0px;
@@ -1607,6 +1687,8 @@ blockquote p {
     line-height: 1.35em;
     width: 100%;
     margin-left: 0;
+    padding-left: 1%;
+    padding-right: 1%;
   }
   #articleAuthorBox {
     width: 100%;
@@ -1696,14 +1778,60 @@ blockquote p {
   }
 }
 @media (max-width: 977px) {
-  #searchBtn {
-    display: inline-block;
+  #search {
+    right: 0;
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    top: 0;
   }
-  #navSearchFull {
+  #searchButton {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  #navSearch {
     display: none;
+    top: 50px;
+    right: 0;
+    position: absolute;
+    width: 275px;
+    height: 100px;
+    text-align: center;
+    background: #fefefe;
+    border-top: 8px;
+    border-top-style: solid;
+    border-top-color: #a9d0f5;
+    border: 1px solid;
+    border-color: #cccccc;
+    z-index: 100;
+  }
+  #navSearch input {
+    border: 1px solid #ccc;
+    width: 245px;
+    margin-top: 10px;
+  }
+  #navSearch .btn {
+    display: inline;
+  }
+  .featuredArticles .featuredListDesc {
+    width: 90%;
+    top: 15%;
+    left: 5%;
+    margin-right: 10%;
+    text-align: center;
+    padding-left: 0;
+  }
+  .featuredArticles .featuredListDescTransbox {
+    width: 100%;
+    min-height: 400px;
+    opacity: .55;
   }
   .notesbarItem {
-    width: 49%;
+    width: 47%;
   }
   .row-fluid .span6 {
     width: 100%;
@@ -1729,10 +1857,19 @@ blockquote p {
     top: -25%;
   }
   .promotedListDesc {
-    margin-right: 1%;
+    width: 90%;
+    height: 100%;
+    bottom: auto;
+    left: auto;
+    text-align: center;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 5%;
+    padding-right: 5%;
   }
   .promotedListDescTransbox {
-    min-height: 165px;
+    opacity: .6;
   }
   #Features .span9 {
     width: 100%;

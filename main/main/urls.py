@@ -32,6 +32,12 @@ urlpatterns = patterns('',
     url(r"^editor/upload/recent/$", "app.views.recentFiles", name="recentFiles"),
     url(r"^login/$", 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
     url(r"^logout/$", 'app.views.logout_view'),
+    # Legacy URLs
+    url(r'^games/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
+    url(r'^technology/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
+    url(r'^entertainment/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
+    url(r'^events/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
+    url(r'^opinion/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

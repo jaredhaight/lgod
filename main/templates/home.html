@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {%  block head %}
     <!-- basic stylesheet -->
-    <link href="{{ STATIC_URL }}css/royalslider.css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}css/royalslider.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
 
     <!-- skin stylesheet (change it if you use another) -->
     <link href="{{ STATIC_URL }}css/rs-default.css" rel="stylesheet">
@@ -13,6 +13,18 @@
 {% endblock %}
 {% block featured %}
     <div class="row-fluid">
+        <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="mobileHomeFeatured">
+            <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredArticles">
+                <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListImg">
+                    <a href="/article/{{ features.0.title_slug }}"><img src="{{ features.0.image.small_featured.URL }}"></a>
+                </div>
+                <div class="featuredListDescTransbox"></div>
+                <div class="featuredListDesc">
+                    <span class="featuredListTitle"><b>{{ features.0.title }}</b></span>
+                    <p>{{ features.0.summary }}</p>
+                </div>
+            </div>
+        </div>
         <div class="royalSlider rsDefault">
             <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredArticles">
                 <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListImg">
@@ -77,6 +89,7 @@
         {% for article in row1 %}
             {% if article.type = 'standard' %}
                 <div class="span6 articleListBorder">
+                    {% if article.image %}
                     <div class="articleListImage">
                         <a
                         href="/article/{{ article.title_slug }}"
@@ -85,13 +98,14 @@
                         data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
                         ></a>
                     </div>
+                    {% endif %}
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} {{ article.date_posted|date:"P" }}
                             {% if article.date_posted != article.list_date %}
                             <div class="articleUpdateDate">
-                                Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                Updated on {{ article.list_date|date:"M jS Y"}} {{ article.list_date|date:"P" }}
                             </div>
                             {% endif %}
                         </div>
@@ -116,10 +130,10 @@
                     <div class="sidebarArticleListBody">
                         <span class="sidebarArticleListTitle">{{ article.title }}</span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
                             {% if article.date_posted != article.list_date %}
                                 <div class="articleUpdateDate">
-                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                    Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
                                 </div>
                             {% endif %}
                         </div>
@@ -151,10 +165,10 @@
                             data-r641='<img src="{{ features.1.image.header.URL }}">'
                             ></a>
                 </div>
-                <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDescTransbox"></div>
                 <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDesc">
                     <span class="promotedListTitle"><b>{{ features.1.title }}</b></span>
                     <p>{{ features.1.summary }}</p>
+                    <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
             </div>
         </div>
@@ -163,6 +177,7 @@
         {% for article in row2 %}
             {% if article.type = 'standard' %}
                 <div class="span6 articleListBorder">
+                    {% if article.image %}
                     <div class="articleListImage">
                         <a
                                 href="/article/{{ article.title_slug }}"
@@ -171,13 +186,14 @@
                                 data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
                                 ></a>
                     </div>
+                    {% endif %}
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
                             {% if article.date_posted != article.list_date %}
                                 <div class="articleUpdateDate">
-                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                    Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
                                 </div>
                             {% endif %}
                         </div>
@@ -193,29 +209,6 @@
                             {% for category in article.categories.all %}
                                 <span class="label label-info">{{ category.name }}</span>
                             {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
-            {% if article.type = 'sidebar' %}
-                <div class="span6 sidebarArticleListBorder">
-                    <div class="sidebarArticleListBody">
-                        <span class="sidebarArticleListTitle">{{ article.title }}</span>
-                        <div class="articleListDate">
-                           Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
-                            {% if article.date_posted != article.list_date %}
-                                <div class="articleUpdateDate">
-                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <p>
-                            {{ article.body|safe }}
-                        </p>
-                    </div>
-                    <div class="articleListMetaData fright">
-                        <div class="articleListTags margintop1" >
-                            <span class="label label-info">Side Notes</span>
                         </div>
                     </div>
                 </div>
@@ -237,11 +230,10 @@
                             data-r641='<img src="{{ features.2.image.header.URL }}">'
                             ></a>
                 </div>
-                <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDescTransbox"></div>
                 <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDesc">
                     <span class="promotedListTitle"><b>{{ features.2.title }}</b></span>
                     <p>{{ features.2.summary }}</p>
-
+                    <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
             </div>
         </div>
@@ -250,6 +242,7 @@
         {% for article in row3 %}
             {% if article.type = 'standard' %}
                 <div class="span6 articleListBorder">
+                    {% if article.image %}
                     <div class="articleListImage">
                         <a
                                 href="/article/{{ article.title_slug }}"
@@ -258,13 +251,14 @@
                                 data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
                                 ></a>
                     </div>
+                    {% endif %}
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
                             {% if article.date_posted != article.list_date %}
                                 <div class="articleUpdateDate">
-                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
+                                    Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
                                 </div>
                             {% endif %}
                         </div>
@@ -284,29 +278,6 @@
                     </div>
                 </div>
             {% endif %}
-            {% if article.type = 'sidebar' %}
-                <div class="span6 sidebarArticleListBorder">
-                    <div class="sidebarArticleListBody">
-                        <span class="sidebarArticleListTitle">{{ article.title }}</span>
-                        <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
-                            {% if article.date_posted != article.list_date %}
-                                <div class="articleUpdateDate">
-                                    Updated on {{ article.list_date|date:"M jS"}} {{ article.list_date|date:"P" }}
-                                </div>
-                            {% endif %}
-                        </div>
-                        <p>
-                            {{ article.body|safe }}
-                        </p>
-                    </div>
-                    <div class="articleListMetaData fright">
-                        <div class="articleListTags margintop1" >
-                            <span class="label label-info">Side Notes</span>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
             {% if forloop.counter|divisibleby:2 and not forloop.last%}
                 </div>
                 <div class="row-fluid homePad">
@@ -316,7 +287,12 @@
 {% endblock %}
 {% block footer %}
 <div class="paginationWrap">
-    <a href="/archive?page=2">Past Articles</a>
+    <div class="paginationWrap">
+        <ul class="pager">
+            <li><a href="/archive?page=2">Past Articles</a></li>
+        </ul>
+    </div>
+
 </div>
 {% endblock %}
 
@@ -325,7 +301,7 @@
 
         $(document).ready(function($) {
             function loadImages (){
-                $("img.lazy").lazyload();
+                $("img.lazy").lazyload({ threshold : 200 });
             }
             Response.action(loadImages);
 

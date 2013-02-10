@@ -9,29 +9,92 @@
                     $(this).removeClass("navSectionHighlight")
                 }
         );
-        $("#topics").hover(
+
+        $("#topicsButton").hover(
             function () {
                 $("#topicsMenu").show();
+                $('#topics').addClass("navSectionHighlight")
             },
             function () {
                 $("#topicsMenu").hide();
+                $('#topics').removeClass("navSectionHighlight")
             }
         );
 
-        $("#userNav").hover(
-                function () {
-                    $("#userMenu").show();
+        $('#topicsButton').bind('touchstart',
+            function(){
+                $('#topicsMenu').toggle();
+                $('#topics').toggleClass('navSectionHighlight');
+            }
+        );
+
+        $('.menu').hover(
+                function() {
+                    $(this).show();
                 },
                 function () {
-                    $("#userMenu").hide();
+                    $(this).hide();
                 }
         );
 
-        $("#searchBtn").hover(
-                function() {
-                    $("#navSearchMobile").toggle();
-                    $(this).toggleClass("navSectionHighlight")
+        $("#userButton").hover(
+                function () {
+                    $("#userMenu").show();
+                    $("#userNav").addClass("navSectionHighlight")
+                },
+                function () {
+                    $("#userMenu").hide();
+                    $("#userNav").removeClass("navSectionHighlight")
                 }
+        );
+
+        $('#userButton').bind('touchstart',
+            function(){
+                $('#userMenu').toggle();
+                $('#userNav').toggleClass('navSectionHighlight');
+                return false;
+            }
+        );
+
+        $("#searchButton").hover(
+            function(){
+                if ($('#searchButton').width() > 10) {
+                    $("#navSearch").show();
+                    $('#search').addClass("navSectionHighlight")
+                    }
+            },
+            function(){
+                if ($('#searchButton').width() > 10) {
+                    console.log('Hide it.')
+                    $("#navSearch").hide();
+                    $('#search').removeClass("navSectionHighlight")
+                    }
+            }
+        );
+
+        $("#searchButton").bind('touchstart',
+            function(){
+                $('#navSearch').toggle();
+                $('#search').toggleClass('navSectionHighlight')
+                return false;
+            }
+        );
+
+        $('#navSearch').hover(
+            function(){
+                if ($('#searchButton').width() > 10) {
+                    console.log('1')
+                    $(this).show()
+                    $('#search').addClass("navSectionHighlight")
+                }
+            },
+            function(){
+                if ($('#searchButton').width() > 10) {
+                    console.log('2')
+                    $(this).hide()
+                    $('#search').removeClass("navSectionHighlight")
+                }
+            }
         );
 
         $(".menuItem").hover(
@@ -44,6 +107,21 @@
                 $(".subMenu", this).hide();
             }
         )
+
+        $(".menuLink").hover(
+                function() {
+                    $(this).addClass("menuLinkHighlight")
+                },
+                function(){
+                    $(this).removeClass("menuLinkHighlight")
+                }
+        );
+
+        $('.menuLink').click(
+            function(event) {
+                window.location = $('a', this).attr('href')
+            }
+        );
     });
 
     var Swiftype = window.Swiftype || {};
@@ -66,72 +144,63 @@
 {% endblock %}
 <div data-swiftype-index='false' id="lgodnav">
     <a href="/"><img src="/static/img/logo2.png"></a>
+    <div id="topicsButton"></div>
     <div id="topics" class="navSection">
         <a
             id="topicsLink" href="#" title="Topics"
             data-r0='<i class="icon-reorder"></i>'
             data-r641='Topics'
         ></a>
-        <div id="topicsMenu">
+        <div id="topicsMenu" class="menu">
             <div id="mainMenu">
                 <div id="1" class="menuItem">Games
                     <div id="sub1" class="subMenu">
-                        <a href="#">Link1</a><br>
-                        <a href="#">Link2</a><br>
-                        <a href="#">Link3</a><br>
-                        <a href="#">Link4</a><br>
-                        <a href="#">Link5</a><br>
-                        <a href="#">Link6</a><br>
-                        <a href="#">Link7</a><br>
-                        <a href="#">Link8</a><br>
+                        <div class="menuLink"><a href="/category/xbox">Xbox 360</a></div>
+                        <div class="menuLink"><a href="/category/ps3">Playstation</a></div>
+                        <div class="menuLink"><a href="/category/wii">Wii</a></div>
+                        <div class="menuLink"><a href="/category/portable">Portable</a></div>
+                        <div class="menuLink"><a href="/category/pctech">PC Gaming</a></div>
+                        <div class="menuLink"><a href="/category/tabletop">Tabletop</a></div>
+                        <div class="menuLink"><a href="/category/reviews">Reviews</a></div>
+                        <div class="menuLink"><a href="/category/upcoming">Upcoming</a></div>
+                        <div class="menuLink"><a href="/category/industry">Industry</a></div>
                     </div>
                 </div>
                 <div id="2" class="menuItem">Tech
                     <div id="sub2" class="subMenu">
-                        <a href="#">Link11</a><br>
-                        <a href="#">Link12</a><br>
-                        <a href="#">Link13</a><br>
-                        <a href="#">Link14</a><br>
-                        <a href="#">Link15</a><br>
-                        <a href="#">Link16</a><br>
-                        <a href="#">Link17</a><br>
-                        <a href="#">Link18</a><br>
+                        <div class="menuLink"><a href="/category/pctech">PC</a></div>
+                        <div class="menuLink"><a href="/category/apple">Apple</a></div>
+                        <div class="menuLink"><a href="/category/mobile">Mobile</a></div>
+                        <div class="menuLink"><a href="/category/gadgets">Gadgets</a></div>
+                        <div class="menuLink"><a href="/category/web">Internet</a></div>
                     </div>
                 </div>
                 <div id="3" class="menuItem">Entertainment
                     <div id="sub3" class="subMenu">
-                        <a href="#">Link20</a><br>
-                        <a href="#">Link21</a><br>
-                        <a href="#">Link22</a><br>
-                        <a href="#">Link23</a><br>
-                        <a href="#">Link24</a><br>
-                        <a href="#">Link25</a><br>
-                        <a href="#">Link26</a><br>
-                        <a href="#">Link27</a><br>
+                        <div class="menuLink"><a href="/category/movies">Movies</a></div>
+                        <div class="menuLink"><a href="/category/music">Music</a></div>
+                        <div class="menuLink"><a href="/category/books">Books</a></div>
+                        <div class="menuLink"><a href="/category/comix">Comics</a></div>
+                        <div class="menuLink"><a href="/category/web-comics">Web Comics</a></div>
+                        <div class="menuLink"><a href="/category/tv">TV</a></div>
+                        <div class="menuLink"><a href="/category/things-we-like">Things We Like</a></div>
                     </div>
                 </div>
                 <div id="4" class="menuItem">Events
                     <div id="sub4" class="subMenu">
-                        <a href="#">Link30</a><br>
-                        <a href="#">Link31</a><br>
-                        <a href="#">Link32</a><br>
-                        <a href="#">Link33</a><br>
-                        <a href="#">Link34</a><br>
-                        <a href="#">Link35</a><br>
-                        <a href="#">Link36</a><br>
-                        <a href="#">Link37</a><br>
+                        <div class="menuLink"><a href="/category/cons">Conventions</a></div>
+                        <div class="menuLink"><a href="/category/releases">Releases</a></div>
+                        <div class="menuLink"><a href="/category/random">Random</a></div>
+                        <div class="menuLink"><a href="/category/meetup">Meetup</a></div>
                     </div>
                 </div>
                 <div id="5" class="menuItem">Opinion
                     <div id="sub5" class="subMenu">
-                        <a href="#">Link40</a><br>
-                        <a href="#">Link41</a><br>
-                        <a href="#">Link42</a><br>
-                        <a href="#">Link43</a><br>
-                        <a href="#">Link44</a><br>
-                        <a href="#">Link45</a><br>
-                        <a href="#">Link46</a><br>
-                        <a href="#">Link47</a><br>
+                        <div class="menuLink"><a href="/category/public">Public Policy</a></div>
+                        <div class="menuLink"><a href="/category/spec">Speculation</a></div>
+                        <div class="menuLink"><a href="/category/ip">Intellectual Property</a></div>
+                        <div class="menuLink"><a href="/category/privacy">Privacy</a></div>
+                        <div class="menuLink"><a href="/category/technology">Technology</a></div>
                     </div>
                 </div>
             </div>
@@ -139,9 +208,12 @@
     </div>
     <div onclick="location.href='/about';" id="aboutLink" class="navSection">About</div>
     {% if user.is_authenticated %}
+    <div id="userButton"></div>
     <div id="userNav" class="navSection">
-        <i class="icon-user"></i>
-        <div id="userMenu">
+        <div id="userBtn">
+            <i class="icon-user"></i>
+        </div>
+        <div id="userMenu" class="menu">
             Hi {{ user.first_name }}!<br>
             <a href="/staff">Staff Dashboard</a><br>
             <a href="#createArticle" data-toggle="modal" data-target="#createArticle">Create an Article</a><br>
@@ -154,20 +226,14 @@
     </div>
         <!-- Modal Window for Article -->
     {% endif %}
-
-    <div id="navSearchFull">
-        <form>
-             <input type="text" id="st-search-input" class="st-search-input" />
-            <!-- <input type="text" placeholder="Search" name="q" ><a href="#" onclick="$(this).closest('form').submit()"><i class="icon-search"></i></a>-->
-        </form>
-    </div>
-    <div id="searchBtn">
+    <div id="searchButton"></div>
+    <div id="search">
         <i class="icon-search"></i>
-        <div id="navSearchMobile">
+        <div id="navSearch">
             <form>
                 <input type="text" id="st-search-input" class="st-search-input" />
-                <!-- <input type="text" placeholder="Search" name="q" ><br>
-                <button class="btn btn-primary">Search</button>-->
+                <!-- <input type="text" placeholder="Search" name="q" ><br>-->
+                <button class="btn btn-primary">Search</button>
             </form>
         </div>
     </div>

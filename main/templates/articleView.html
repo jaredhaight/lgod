@@ -1,7 +1,16 @@
 {% extends "base.html" %}
 {% block head %}
 <script type="text/javascript">
+    function checkHeight () {
+        h = $('#articleImage img').height();
+        if (h) {
+            $('#articleRow').height(h-8);
+        }
+        console.log('Check Height Run. H = '+h);
+    }
+
     $(document).ready(function () {
+        checkHeight();
         $(function($){
             $('#articleBody img').each(function(index) {
                 $(this).load(function(){
@@ -34,10 +43,13 @@
                 });
             });
         });
+
     });
+
+
 </script>
 {% endblock %}
-{% block title %}<title xmlns="http://www.w3.org/1999/html">{{ article.title }}</title>{% endblock %}
+{% block title %}<title>{{ article.title }}</title>{% endblock %}
 {% block meta %}
     <meta property="og:url" content="http://lgod.photosandtext.com/article/{{ article.title_slug }}/"
     <meta name="title" content="{{ article.title }}" />
@@ -57,19 +69,21 @@
 {% endblock %}
 
 {% block featured %}
-<div id="articleRow">
+<div id="articleRow" {% if not article.image %}class="articleNoImage"{% endif %}>
+    {% if article.image %}
     <div id="articleImage" class="span12"
          data-r0='<img src="{{ article.image.small_featured.URL }}">'
          data-r641='<img src="{{ article.image.medium_featured.URL }}">'
          data-r801='<img src="{{ article.image.header.URL }}">'
         >
     </div>
+    {% endif %}
     <div id="articleMetaBox">
         <div id="articleMetaBoxBG"></div>
         <div id="articleTitle">
             <h1>{{ article.title }}</h1>
             <div id="articleDate">
-            Posted on {{ article.date_posted|date:"l, F jS" }} at {{ article.date_posted|date:"P" }}
+            Posted on {{ article.date_posted|date:"l, F jS Y" }} at {{ article.date_posted|date:"P" }}
             {% if updated %}
             <div class="articleUpdated">Updated: {{ article.list_date|date:"l, F jS" }} at {{ article.list_date|date:"P" }}</div>
             {% endif %}
@@ -98,9 +112,14 @@
         </div>
     </div>
     <div data-swiftype-index='false' class="row-fluid">
-        <div id="articleAuthorBox" class="span10 offset1 well">
+        <div id="articleAuthorBox" class="span12 well">
             <div class="articleAuthorCredit">
-                This article was written by <a href="/author/{{ article.author.username|lower }}">{{ article.author.staffprofile.displayName }}</a>
+                This article was written by
+                {% if article.author.staffprofile %}
+                    <a href="/author/{{ article.author.username|lower }}">{{ article.author.staffprofile.displayName }}</a>
+                {% else %}
+                    {{ article.author.username|lower }}
+                {% endif %}
             </div>
             <div class="shareLinks">
                 <div class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>

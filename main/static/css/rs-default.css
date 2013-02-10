@@ -94,8 +94,7 @@
 	width: 100%;
 	height: auto;
 	margin: 0 auto; 
-	background: #000;
-	background: rgba(0,0,0,0.55);
+	background: #111;
 	text-align: center;
 	line-height: 18px;
 	overflow: hidden;

@@ -13,7 +13,6 @@ import cloudfiles, time, hashlib, urllib
 from PIL import Image
 from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER, MEDIA_ROOT, BASE_URL, STATIC_URL
 
-
 GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
@@ -30,17 +29,62 @@ ARTICLE_TYPE = (
         ('standard','Standard'),
         ('sidebar','Sidebar')
 )
-# This is a function for testing. It creates thirty categories and the crop sizes.
-def setupcats():
-    i = 0
-    while i < 30:
-        cat = Category.objects.create()
-        cat.name = 'test-'+str(i)
-        cat.slug = cat.name
-        cat.save()
-        i = i+1
 
-    header = ArticleImageType.objects.create(name='header', editable=True, width=1500, height=400)
+CATEGORIES = {
+    'Games':'games',
+    'Xbox 360':'xbox',
+    'Playstation 3':'ps3',
+    'PC Gaming':'pc',
+    'Portable Gaming':'portable',
+    'Tabletop Gaming':'tabletop',
+    'Nintendo Wii':'wii',
+    'Reviews':'gamereviews',
+    'Upcoming':'upcoming',
+    'Multi-platform':'multi-platform',
+    'Industry':'industry',
+    'Technology':'technology',
+    'PC':'pctech',
+    'Mobile':'mobile',
+    'Apple':'apple',
+    'Gadgets':'gadgets',
+    'Internet':'web',
+    'Opinion':'opinion',
+    'Rants':'rants',
+    'Copyright':'copyright',
+    'Intellectual Property':'ip',
+    'Public Policy':'public',
+    'Speculation':'spec',
+    'Privacy':'privacy',
+    'Entertainment':'ent',
+    'Movies':'movies',
+    'Music':'music',
+    'Books':'books',
+    'Comics':'comix',
+    'Television':'tv',
+    'Web Comics':'web-comics',
+    'Things We Like':'things-we-like',
+    'Events':'events',
+    'Conventions':'cons',
+    'Releases':'releases',
+    'Random':'random',
+    'Meetup':'meetup',
+    'Side Note':'side-note',
+    'Information':'information',
+    'Fun':'fun',
+    'Basic':'basic',
+    'Typography':'typography'
+}
+
+# This is a function for testing.
+def setupcats():
+   for name,slug in CATEGORIES.items():
+       cat = Category.objects.create()
+       cat.name = name
+       cat.slug = slug
+       cat.save()
+
+def setupImages():
+    header = ArticleImage.objects.create(name='header', editable=True, width=1500, height=400)
     header.related = None
     header.save()
 
@@ -67,15 +111,17 @@ def setupcats():
 
 
 def CDNUpload(file):
-    conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
+    conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY, timeout=60)
     cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
     obj = cont.create_object(file.name)
     obj.load_from_filename(file.path)
-    cdn_url = obj.public_uri()
+    try: cdn_url = obj.public_uri()
+    except:
+        cdn_url = obj.public_uri()
     return cdn_url
 
 def CDNDelete(file):
-    conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY)
+    conn = cloudfiles.Connection(RACKSPACE_USER,RACKSPACE_API_KEY, timeout=60)
     cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
     cont.delete_object(file)
 
@@ -142,6 +188,9 @@ def connectCrops(article_id,image_id):
     article.image = image
     article.save()
 
+class URLRedirect(models.Model):
+    oldid = models.IntegerField(max_length=10)
+    newid = models.IntegerField(max_length=10)
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
@@ -267,7 +316,7 @@ class ArticleImageForm(ModelForm):
             w, h = get_image_dimensions(image)
             if w < 1500:
                 raise forms.ValidationError("The image is %i pixel wide. It's supposed to be 1500px" % w)
-            if h < 600:
+            if h < 400:
                 raise forms.ValidationError("The image is %i pixel high. It's supposed to be 600px" % h)
         return image
 
@@ -420,6 +469,9 @@ class StaffProfile(models.Model):
     purl_name = models.CharField(max_length=30, null=True,  blank=True)
     purl = models.URLField(null=True,  blank=True)
     bio = models.TextField(null=True, blank=True)
+
+    def __unicode__(self):
+        return self.displayName
 
     def save(self, *args, **kwargs):
         print 'Saving Profile Model'

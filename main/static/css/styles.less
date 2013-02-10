@@ -138,6 +138,10 @@ blockquote p {
   padding-left: 1%;
 }
 
+.clickable {
+  height:  35px;
+}
+
 .navSection {
   position: relative;
   display: inline-block;
@@ -183,13 +187,21 @@ blockquote p {
   position: relative;
 }
 
+#topicsButton {
+  position: absolute;
+  width: 160px;
+  display: inline-block;
+  height: 50px;
+  z-index: 1;
+}
+
 #topicsMenu {
   display: none;
   position: absolute;
   top: 50px;
   left: 0;
   background: @accent2;
-  height: 175px;
+  height: 250px;
   width: 100%;
   border: 2px;
   float: left;
@@ -205,6 +217,15 @@ blockquote p {
   border-right-color: @accent2;
   border-right-style: solid;
 }
+
+#userButton {
+  position: absolute;
+  width: 42px;
+  display: inline-block;
+  height: 50px;
+  z-index: 1;
+}
+
 #userNav {
   position: relative;
   width: 21px;
@@ -235,8 +256,8 @@ blockquote p {
 
 .menuItem {
   color: @accent;
-  padding-top: 7px;
-  padding-bottom: 6px;
+  padding-top: 8px;
+  padding-bottom: 8px;
   padding-left: 9px;
   width: 250px;
   float: left;
@@ -251,13 +272,13 @@ blockquote p {
   display: none;
   background: @lightAccent2;
   text-transform: none;
-  height: 165px;
-  width: 120px;
+  height: 240px;
+  width: 140px;
   float: right;
   font-size: .75em;
   font-weight: normal;
-  padding: 5px;
-  padding-left: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   position: absolute;
   left: 200%;
   top: 0;
@@ -265,10 +286,22 @@ blockquote p {
 
 .subMenu a {
   color: @base;
+  line-height: 21px;
 }
 
 .subMenu a:hover {
   color: darken(@complement2, 25%);
+}
+
+.menuLink {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  padding-left: 10px;
+  font-size: 1.3em;
+}
+
+.menuLinkHighlight {
+  background: @offWhite;
 }
 
 #shareNav {
@@ -283,36 +316,36 @@ blockquote p {
   border-left-color: @lighten4;
   width: 20px;
 }
-#searchBtn {
-  display: none;
-  position: absolute;
-  right: 0px;
-  cursor: pointer;
-  height: 35px;
-  padding-left: 2%;
-  padding-right: 2%;
-  margin-right: -8px;
-  padding-top: 15px;
-  text-align: center;
-  width: 30px;
-  z-index: 100;
+
+#searchButton {
+  width: 0;
+  z-index: 10;
 }
-#navSearchFull {
-  display: inline-block;
+
+#search i {
   float: right;
-  top: 0px;
-  position: relative;
-  right: 0px;
+  position: absolute;
+  right: 10px;
+  top: 15px;
+  height: 50px;
+  z-index: 1;
+}
+
+#navSearch {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-block;
   background: darken(@offWhite, 5%);
   height: 100%;
-  width: 18%;
+  width: 20%;
   max-width: 400px;
   border-left: 1px;
   border-left-style: solid;
   border-left-color: #CCC;
 }
 
-#navSearchFull input {
+#navSearch input {
   font-size: 1.1em;
   font-weight: 200;
   border: 0px;
@@ -323,9 +356,14 @@ blockquote p {
   background: darken(@offWhite, 5%);
 }
 
-#navSearchFull a {
+#navSearch a {
   font-size: 1.3em;
 }
+
+#navSearch .btn {
+  display: none;
+}
+
 
 #navSearchMobile {
   display: none;
@@ -347,7 +385,7 @@ blockquote p {
 
 //search stuff
 
-#navSearchFull form input.st-search-input {
+#navSearch form input.st-search-input {
   padding: 0px 0px 0px 5px;
 }
 
@@ -421,11 +459,10 @@ blockquote p {
 
 .contentWrap {
   .readableText();
-  max-width: 1425px;
+  max-width: 1500px;
   margin: 0 auto;
   background: darken(@offWhite, 2%);
-  padding-left: 2%;
-  padding-right: 2%;
+  padding-left: 1px;
 }
 
 #navgap {
@@ -452,7 +489,9 @@ blockquote p {
   padding-top: 8px;
 }
 
-
+.mobileHomeFeatured {
+  display: none;
+}
 
 .featuredArticles {
   top: 0;
@@ -483,7 +522,7 @@ blockquote p {
 }
 
 .featuredListTitle {
-  .readableText(1.75em, 1.1em, @titleColor)
+  .readableText(1.75em, 1.1em, darken(@offWhite, 2%))
 }
 
 .featuredListDesc {
@@ -491,18 +530,19 @@ blockquote p {
   top: 12%;
   left: 3%;
   width: 30%;
-  .readableText(1.1em, 1.2em, @titleColor);
+  .readableText(1.1em, 1.2em, darken(@offWhite, 2%));
 }
 
 .featuredListDesc p {
-  .readableText();
+  .readableText(1em, 1.15em, darken(@offWhite, 2%));
+  margin-top: 5px;
 }
 
 .featuredListDescTransbox {
-  background: #FFFFFF;
-  min-height: 378px;
+  background: #111;
+  min-height: 377px;
   width: 35%;
-  opacity:0.65;
+  opacity:0.75;
   filter:alpha(opacity=40); /* For IE8 and earlier */
   position: relative;
   top: 0;
@@ -512,13 +552,18 @@ blockquote p {
 
 #notesbar {
   width: 100%;
+  max-width: 1500px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 10px;
   padding-bottom: 5px;
   .accentText(.85em, 1.1em);
   background: @lightAccent2;
   color: @base;
-  border-bottom: 8px;
-  border-bottom-style: solid;
-  border-bottom-color: @accent2;
+  border-top: 8px;
+  border-top-style: solid;
+  border-top-color: @accent2;
+  text-align: center;
 }
 
 .notesbarList {
@@ -538,7 +583,7 @@ blockquote p {
 
 .notesbarItem {
   display: inline-table;
-  width: 24.55%;
+  width: 22.5%;
   padding-left: 1%;
   text-align: left;
   text-transform: none;
@@ -580,30 +625,33 @@ blockquote p {
 }
 
 .promotedListTitle {
-  .readableText(1.75em, 1.1em, @titleColor)
+  .readableText(1.75em, 1.1em, @offWhite)
 }
 
 .promotedListDesc {
   position: absolute;
-  width: 65%;
+  width: 63%;
   bottom: 10px;
   left: 2%;
-  .readableText(1.1em, 1.2em, @titleColor);
+  .readableText(1.1em, 1.2em, @offWhite);
+  z-index: 1;
 }
 
 .promotedListDesc p {
-  .readableText(1.1em, 1.2em);
+  .readableText(1.1em, 1.2em, @offWhite);
 }
 
 .promotedListDescTransbox {
-  background: #ffffff;
+  background: #111;
   min-height: 165px;
-  width: 67%;
-  opacity:0.475;
+  height: 115%;
+  width: 105%;
+  opacity:0.85;
   filter:alpha(opacity=475); /* For IE8 and earlier */
   position: absolute;
-  bottom: 0;
-  left: 0;
+  bottom: -10px;
+  left: -4%;
+  z-index: -1;
 }
 
 .articleListBorder {
@@ -643,7 +691,7 @@ blockquote p {
 }
 
 .articleListTitle{
-  .readableText(1.2em, .9em, @titleColor);
+  .readableText(1.2em, .9em, @offWhite);
 }
 .articleListDate {
   .accentText(.65em, 1em);
@@ -656,6 +704,7 @@ blockquote p {
   .readableText();
   min-height: 180px;
   word-wrap: break-word;
+  padding-top: 10px;
 }
 
 .articleListMetaData{
@@ -726,15 +775,14 @@ blockquote p {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  .readableText(1.1em, 1.2em, @titleColor);
-  color: @base;
+  .readableText(1.1em, 1.2em, @offWhite);
 }
 
 .archiveFeaturedDescTransbox {
-  background: #ffffff;
+  background: #111;
   min-height: 125px;
   width: 100%;
-  opacity:0.4;
+  opacity:0.65;
   filter:alpha(opacity=40); /* For IE8 and earlier */
   position: absolute;
   top: 0;
@@ -754,29 +802,35 @@ blockquote p {
   margin-left: auto;
   margin-right: auto;
   width: 100%;
-  height: 400px;
+  height: 392px;
 }
 
 #articleImage {
-  position: relative;
+  position: fixed;
   width: 200%;
   height: 400px;
   margin-left: auto;
   margin-right: auto;
-  top: 0;
-  left: -50%;
+  top: 50px;
+  left: -49.999%;
+  z-index: -1;
 }
 
 #articleImage img {
   display: block;
-  height: 400px;
+  max-height: 400px;
   max-width: 1500px;
   margin-left: auto;
   margin-right: auto;
 }
 
+#articleRow.articleNoImage {
+  max-height: 100px;
+}
+
 #articleMetaBox {
   position: absolute;
+  left: 0;
   bottom: 0;
   width: 100%;
   padding-top: 30px;
@@ -784,10 +838,11 @@ blockquote p {
 
 #articleMetaBoxBG {
   position: absolute;
+  left: 0;
   bottom: 0;
-  background: @offWhite;
+  background: #111;
   width: 100%;
-  opacity: .5;
+  opacity: .75;
   height: 100%;
 }
 
@@ -801,6 +856,7 @@ blockquote p {
 #articleTitle h1 {
   margin-bottom: 0;
   line-height: 1.1em;
+  color: @offWhite;
 }
 
 #articleDate {
@@ -829,9 +885,9 @@ blockquote p {
 }
 
 #articleBody  {
-  .readableText(1.15em, 1.55em);
-  padding-left: 5%;
-  padding-right: 5%;
+  .readableText(1.08em, 1.5em);
+  padding-left: 7%;
+  padding-right: 7%;
   padding-top: 10px;
   padding-bottom: 15px;
 }
@@ -844,8 +900,24 @@ blockquote p {
   margin-bottom: 0px;
 }
 
+#articleBody ul {
+  margin: 0 0px 0px 50px;
+  margin-bottom: 20px;
+}
+
+#articleBody li {
+  line-height: 1.25em;
+}
+
+#articleBody ul+p {
+  margin-top: -20px;
+}
+
 #articleAuthorBox{
   .readableText();
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 90%;
 }
 
 .articleAuthorCredit{
@@ -1432,6 +1504,15 @@ blockquote p {
     top: 0;
   }
 
+  .mobileHomeFeatured .featuredArticles .featuredListDesc {
+    font-size: .9em;
+  }
+
+  .promotedListDesc {
+    font-size: .9em;
+  }
+
+
   .row-fluid #articleBody {
     font-size: .95em;
     line-height: 1.38em;
@@ -1452,6 +1533,12 @@ blockquote p {
     border-right-style: none;
     border-right-color: none;
   }
+
+  #userButton {
+    right: 100px;
+    width: 45px;
+  }
+
   #userNav {
     position: absolute;
     right: 100px;
@@ -1466,6 +1553,11 @@ blockquote p {
     padding-right: 0;
     margin-right: 0;
     margin-left: 2%;
+  }
+
+  #topicsButton {
+    right: 0;
+    width: 60px;
   }
 
   #topicsMenu {
@@ -1487,8 +1579,34 @@ blockquote p {
     right: 80px;
   }
 
-  #lgodnav #searchBtn {
-    right: 60px;
+  .menuLink{
+    .menuLink {
+      font-size: 1.5em;
+      line-height: 1.3em;
+    }
+  }
+
+  #lgodnav #searchButton {
+    position: absolute;
+    right: 55px;
+  }
+  
+  #lgodnav #search {
+    right: 55px;
+  }
+
+  #lgodnav #search i {
+    text-align: center;
+    right: 17px;
+    z-index: 0;
+  }
+
+  .mobileHomeFeatured {
+    display: inline;
+  }
+
+  .rsDefault {
+    display: none;
   }
 
   .notesbarList .notesbarItem {
@@ -1503,8 +1621,7 @@ blockquote p {
   }
 
   .row-fluid .featuredArticles .featuredListDesc {
-    width: 80%;
-    left: 10%;
+    top: 15px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -1527,6 +1644,7 @@ blockquote p {
 
   .shareLinks {
     float: none;
+    margin-left: 8%;
   }
 
   .row-fluid #articleAuthorBox {
@@ -1646,14 +1764,23 @@ blockquote p {
     font-size: 1.1em;
   }
 
-  #navSearchMobile {
+  #searchBtn #navSearch {
     border-top: 5px;
     border-top-style: solid;
-    border-top-color: #A9D0F5;
+    border-top-color: @accent2;
   }
+
 
   #navgap {
     height: 5px;
+  }
+
+
+  #articleImage {
+    position: absolute;
+    top: 0;
+    margin-top: -2%;
+    z-index: 0;
   }
 
   .contentWrap {
@@ -1687,35 +1814,6 @@ blockquote p {
 
   .featuredListImg img {
     height: auto;
-  }
-
-  .featuredArticles .featuredListDesc {
-    width: 90%;
-    top: 15%;
-    left: 5%;
-    margin-right: 10%;
-    text-align: center;
-    padding-left: 0;
-  }
-
-  .featuredArticles .featuredListDescTransbox {
-    width: 100%;
-    min-height: 400px;
-    opacity: .55;
-  }
-
-  .promotedArticles .promotedListDescTransbox {
-    height: 100%;
-    width: 100%;
-  }
-
-  .promotedArticles .promotedListDesc {
-    width: 90%;
-    height: 80%;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-    padding-left: 5%;
   }
 
   .span8 #id_title {
@@ -1784,22 +1882,33 @@ blockquote p {
 
 @media (max-width: 800px) {
 
-  .row-fluid .articleListBorder .articleListImage img {
-    height: 200px;
-    width: 750px;
-    top: 0;
+  body #st-results-container {
+    left: 0;
+    width: 100%;
   }
 
-  #articleImage {
-    margin-top: -2%;
-    z-index: 0;
+  body #st-results-container .swiftype .st-result-listing .st-results {
+    width: 95%;
+  }
+
+  body #st-results-container .swiftype .st-search-bar input[type="text"] {
+    width: 70%;
+    margin-left: 5%;
+  }
+
+
+  .row-fluid .articleListBorder .articleListImage img {
+    width: 750px;
+    top: 0;
   }
 
   #articleTitle {
     left: 0;
     bottom: 25px;
-    width: 100%;
+    width: 95%;
     text-align: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .articleWrap {
@@ -1812,6 +1921,8 @@ blockquote p {
     line-height: 1.35em;
     width: 100%;
     margin-left: 0;
+    padding-left: 1%;
+    padding-right: 1%;
   }
 
   #articleAuthorBox {
@@ -1925,16 +2036,67 @@ blockquote p {
 }
 
 @media (max-width: 977px) {
-  #searchBtn {
-    display: inline-block;
+  #search{
+    right: 0;
+    height: 50px;
+    width: 50px;
+    position: absolute;
+    top: 0;
   }
 
-  #navSearchFull {
+  #searchButton {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  #navSearch {
     display: none;
+    top: 50px;
+    right: 0;
+    position: absolute;
+    width: 275px;
+    height: 100px;
+    text-align: center;
+    background: @offWhite;
+    border-top: 8px;
+    border-top-style: solid;
+    border-top-color: @accent2;
+    border: 1px solid;
+    border-color: #cccccc;
+    z-index: 100;
+  }
+
+  #navSearch input {
+    border: 1px solid #ccc;
+    width: 245px;
+    margin-top: 10px;
+  }
+
+  #navSearch .btn {
+    display: inline;
+  }
+
+  .featuredArticles .featuredListDesc {
+    width: 90%;
+    top: 15%;
+    left: 5%;
+    margin-right: 10%;
+    text-align: center;
+    padding-left: 0;
+  }
+
+  .featuredArticles .featuredListDescTransbox {
+    width: 100%;
+    min-height: 400px;
+    opacity: .55;
   }
 
   .notesbarItem {
-    width: 49%;
+    width: 47%;
   }
 
   .row-fluid .span6 {
@@ -1945,7 +2107,6 @@ blockquote p {
   .contentWrap .homePad {
     width: 85%;
   }
-
 
   .featuredListDesc {
     width: 40%;
@@ -1969,11 +2130,20 @@ blockquote p {
   }
 
   .promotedListDesc {
-    margin-right: 1%;
+    width: 90%;
+    height: 100%;
+    bottom: auto;
+    left: auto;
+    text-align: center;
+    margin-top: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 5%;
+    padding-right: 5%;
   }
 
   .promotedListDescTransbox {
-    min-height: 165px;
+    opacity: .6;
   }
 
   #Features .span9 {

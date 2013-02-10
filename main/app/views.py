@@ -5,7 +5,7 @@ from django.shortcuts import render_to_response, get_object_or_404, get_list_or_
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template import RequestContext
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponsePermanentRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
@@ -14,13 +14,14 @@ import feedparser
 from time import mktime
 from datetime import datetime
 
+
 from app.models import *
 
 logger = logging.getLogger(__name__)
 
 def article_edit_rights(user, article):
     #determines if a user has rights to edit an article
-    if user.groups.filter(name='Editor').count() > 0:
+    if user.groups.filter(name='editors').count() > 0:
         return True
     if article.author == user:
         return True
@@ -51,6 +52,13 @@ def latestComments():
         result = {'title':title.replace('Re: ','').replace(' - Live Geek or Die',''),'comment':comment,'time':clean_time,'author':author, 'link':link}
         results.append(result)
     return results
+
+def urlRedirect(request, subcat, oldid):
+    print('URLRedirect got '+oldid)
+    newid = get_object_or_404(URLRedirect, oldid=oldid)
+    article = get_object_or_404(Article, id=newid.newid)
+    return HttpResponseRedirect('/article/'+article.title_slug)
+
 
 def home(request):
     user = request.user
@@ -84,7 +92,7 @@ def archive(request):
 def category(request, jslug):
     user = request.user
     articles = get_list_or_404(Article.objects.filter(categories__slug=jslug, is_posted=True).order_by("-list_date"))
-    paginator = Paginator(articles, 8)
+    paginator = Paginator(articles, 18)
 
     try: page = int(request.GET.get("page", '1'))
     except ValueError: page = 1
@@ -152,7 +160,7 @@ def articleEditor(request, article_id):
     if article_id:
         article = get_object_or_404(Article, pk=article_id)
         if not article_edit_rights(user, article):
-            return HttpResponseRedirect('/errors/403')
+            return HttpResponseForbidden()
         status, errors = article.post_status()
 
     else:
@@ -199,7 +207,9 @@ def articleEditor(request, article_id):
                     article.list_date = now.strftime("%Y-%m-%dT%H:%M:%S")
                 elif "unpost_article" in request.POST:
                     article.is_posted = False
-                article.author = request.user
+                if not article.author:
+                    article.author = request.user
+                article.edit_user = request.user
                 article.save()
                 form.save_m2m()
                 if "pick_photo" in request.POST:
@@ -255,6 +265,11 @@ def articleAutosave(request, article_id):
         summary = None
 
     try:
+        type = data['type']
+    except:
+        type = None
+
+    try:
         categories = data['categories']
     except:
         categories = None
@@ -270,6 +285,10 @@ def articleAutosave(request, article_id):
     if categories:
         article.categories = categories
         status.append({'categories':'saved'})
+    if type:
+        article.type = type
+        status.append({'type':'saved'})
+    print status
     article.save()
     return HttpResponse(json.dumps(status), mimetype="application/json")
 

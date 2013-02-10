@@ -5,6 +5,7 @@
     {% for article in articles %}
         {% if article.type = 'standard' %}
             <div class="span6 articleListBorder">
+                {% if article.image %}
                 <div class="articleListImage">
                     <a
                             href="/article/{{ article.title_slug }}"
@@ -13,10 +14,16 @@
                             data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
                             ></a>
                 </div>
+                {% endif %}
                 <div class="articleListBody">
                     <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                     <div class="articleListDate">
-                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
+                        {% if article.date_posted != article.list_date %}
+                            <div class="articleUpdateDate">
+                                Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
+                            </div>
+                        {% endif %}
                     </div>
                     <p>
                         {{ article.summary }}
@@ -39,7 +46,7 @@
                 <div class="sidebarArticleListBody">
                     <span class="sidebarArticleListTitle">{{ article.title }}</span>
                     <div class="articleListDate">
-                        {{ article.date_posted|date:" M jS" }} {{ article.date_posted|date:"P" }}
+                        {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
                     </div>
                     <p>
                         {{ article.body|safe }}
@@ -79,10 +86,10 @@
 {% block footer %}
     <div class="paginationWrap">
         <ul class="pager">
-            {% if articles.previous_page_number %}
+            {% if articles.has_previous %}
                 <li><a href="?page={{ articles.previous_page_number }}">Prev</a></li>
             {% endif %}
-            {% if articles.next_page_number %}
+            {% if articles.has_next %}
                 <li><a href="?page={{ articles.next_page_number }}">Next</a></li>
             {% endif %}
         </ul>
@@ -92,7 +99,7 @@
     <script type="text/javascript">
         $(document).ready(function($) {
             function loadImages (){
-                $("img.lazy").lazyload();
+                $("img.lazy").lazyload({ threshold : 200 });
             }
             Response.action(loadImages);
         });

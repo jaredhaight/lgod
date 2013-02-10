@@ -1,5 +1,5 @@
 from django.contrib import admin
-from app.models import Article, Category, ContentImage, ArticleImage ,ArticleImageCrop, ArticleImageType, StaffProfile
+from app.models import Article, Category, ContentImage, ArticleImage ,ArticleImageCrop, ArticleImageType, StaffProfile, URLRedirect
 
 class ArticleAdmin(admin.ModelAdmin):
     list_display = ('title','is_posted','date_posted', 'author')
@@ -7,6 +7,7 @@ class ArticleAdmin(admin.ModelAdmin):
     pass
 
 class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name','slug')
     pass
 
 class FileAdmin(admin.ModelAdmin):
@@ -25,6 +26,10 @@ class ArticleImageTypeAdmin(admin.ModelAdmin):
 class StaffProfileAdmin(admin.ModelAdmin):
     pass
 
+class URLRedirectAdmin(admin.ModelAdmin):
+    list_display = ('oldid','newid')
+    pass
+
 admin.site.register(Article, ArticleAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(ContentImage, FileAdmin)
@@ -32,4 +37,5 @@ admin.site.register(ArticleImage, ArticleImageAdmin)
 admin.site.register(ArticleImageCrop, ArticleImageCropAdmin)
 admin.site.register(ArticleImageType, ArticleImageTypeAdmin)
 admin.site.register(StaffProfile, StaffProfileAdmin)
+admin.site.register(URLRedirect, URLRedirectAdmin)
 

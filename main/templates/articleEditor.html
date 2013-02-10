@@ -39,7 +39,7 @@ $(document).ready(
                 var type = $('#id_type').val();
                 var body = $('#editorBody').getCode();
                 console.log(body);
-                var dataString = {'title':title, 'summary':summary,'categories':categories,'body':body};
+                var dataString = {'title':title, 'summary':summary,'categories':categories,'body':body, 'type':type};
                 var jsonText = JSON.stringify(dataString);
                 $.ajax({
                     type: 'POST',
@@ -215,9 +215,13 @@ $(document).ready(
                 if (type == 'sidebar') {
                     $('#sidebarCheckList').show();
                     $('#standardCheckList').hide();
+                    $('#editorSummary').prop('disabled',true);
+                    $('#editorCategories').prop('disabled',true);
                 } else {
                     $('#sidebarCheckList').hide();
                     $('#standardCheckList').show();
+                    $('#editorSummary').prop('disabled',false);
+                    $('#editorCategories').prop('disabled',false);
                 }
 
                 if (title) {
