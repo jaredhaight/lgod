@@ -132,7 +132,7 @@ $(document).ready(
                     {{ form.type }}<p>
                     <div id="editorImage">
                         {% if article.image %}
-                            <img src="{{ article.image.thumbnail.URL }}">
+                            <img src="{{ article.image.thumbnail.CDN_URL }}">
                         {% else %}
                             <div class="nothumb">
                                 <p>No Image Selected</p>
@@ -217,11 +217,13 @@ $(document).ready(
                     $('#standardCheckList').hide();
                     $('#editorSummary').prop('disabled',true);
                     $('#editorCategories').prop('disabled',true);
+                    $('#editorImage .btn').prop('disabled',true);
                 } else {
                     $('#sidebarCheckList').hide();
                     $('#standardCheckList').show();
                     $('#editorSummary').prop('disabled',false);
                     $('#editorCategories').prop('disabled',false);
+                    $('#editorImage .btn').prop('disabled',false);
                 }
 
                 if (title) {

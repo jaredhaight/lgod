@@ -1,87 +1,91 @@
 {% block head %}
-    <script src="{{ STATIC_URL }}js/jquery.lazyload.min.js"></script>
+    <!-- <script src="{{ STATIC_URL }}js/jquery.lazyload.min.js"></script> -->
 {% endblock %}
 <div class="row-fluid homePad">
-    {% for article in articles %}
-        {% if article.type = 'standard' %}
-            <div class="span6 articleListBorder">
-                {% if article.image %}
-                <div class="articleListImage">
-                    <a
+    {% if articles %}
+        {% for article in articles %}
+            {% if article.type = 'standard' %}
+                <div class="span6 articleListBorder">
+                    {% if article.image %}
+                    <div class="articleListImage">
+                        <a
+                                href="/article/{{ article.title_slug }}"
+                                data-r0='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
+                                data-r801='<img class="lazy" data-original="{{ article.image.medium_header.CDN_URL }}" src="/static/img/grey.png">'
+                                data-r978='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
+                                ></a>
+                    </div>
+                    {% endif %}
+                    <div class="articleListBody">
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
+                            {% if article.date_posted != article.list_date %}
+                                <div class="articleUpdateDate">
+                                    Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <p>
+                            {{ article.summary }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <a href="/article/{{ article.title_slug }}">Read More..</a> |
+                        <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                        <div class="articleListTags margintop1" >Tagged:
+                            {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
+                            {% for category in article.categories.all %}
+                                <span class="label label-info">{{ category.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if article.type = 'sidebar' %}
+                <div class="span6 sidebarArticleListBorder">
+                    <div class="sidebarArticleListBody">
+                        <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                        <div class="articleListDate">
+                            {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
+                        </div>
+                        <p>
+                            {{ article.body|safe }}
+                        </p>
+                    </div>
+                    <div class="articleListMetaData fright">
+                        <div class="articleListTags margintop1" >
+                            <span class="label label-info">Side Notes</span>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if article.type = 'featured' %}
+                <div class="span6 archiveFeaturedListBorder">
+                    <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedArticleImage">
+                        <a
                             href="/article/{{ article.title_slug }}"
-                            data-r0='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
-                            data-r801='<img class="lazy" data-original="{{ article.image.medium_header.URL }}" src="/static/img/grey.png">'
-                            data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
-                            ></a>
-                </div>
-                {% endif %}
-                <div class="articleListBody">
-                    <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
-                    <div class="articleListDate">
-                        {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
-                        {% if article.date_posted != article.list_date %}
-                            <div class="articleUpdateDate">
-                                Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
-                            </div>
-                        {% endif %}
+                            data-r0='<img class="lazy" data-original="{{ article.image.thumbnail.CDN_URL }}" src="/static/img/grey.png">'
+                            data-r320='<img class="lazy" data-original="{{ article.image.small_featured.CDN_URL }}" src="/static/img/grey.png">'
+                            data-r641='<img class="lazy" data-original="{{ article.image.medium_featured.CDN_URL }}" src="/static/img/grey.png">'
+                        ></a>
                     </div>
-                    <p>
-                        {{ article.summary }}
-                    </p>
-                </div>
-                <div class="articleListMetaData fright">
-                    <a href="/article/{{ article.title_slug }}">Read More..</a> |
-                    <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
-                    <div class="articleListTags margintop1" >Tagged:
-                        {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
-                        {% for category in article.categories.all %}
-                            <span class="label label-info">{{ category.name }}</span>
-                        {% endfor %}
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-        {% if article.type = 'sidebar' %}
-            <div class="span6 sidebarArticleListBorder">
-                <div class="sidebarArticleListBody">
-                    <span class="sidebarArticleListTitle">{{ article.title }}</span>
-                    <div class="articleListDate">
-                        {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
-                    </div>
-                    <p>
-                        {{ article.body|safe }}
-                    </p>
-                </div>
-                <div class="articleListMetaData fright">
-                    <div class="articleListTags margintop1" >
-                        <span class="label label-info">Side Notes</span>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
-        {% if article.type = 'featured' %}
-            <div class="span6 archiveFeaturedListBorder">
-                <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedArticleImage">
-                    <a
-                        href="/article/{{ article.title_slug }}"
-                        data-r0='<img class="lazy" data-original="{{ article.image.thumbnail.URL }}" src="/static/img/grey.png">'
-                        data-r320='<img class="lazy" data-original="{{ article.image.small_featured.URL }}" src="/static/img/grey.png">'
-                        data-r641='<img class="lazy" data-original="{{ article.image.medium_featured.URL }}" src="/static/img/grey.png">'
-                    ></a>
-                </div>
-                <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedDescTransbox"></div>
-                <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedListDesc">
-                    <span class="articleListTitle"><b>{{ article.title }}</b></span>
-                    <p>{{ article.summary }}</p>
+                    <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedDescTransbox"></div>
+                    <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedListDesc">
+                        <span class="articleListTitle"><b>{{ article.title }}</b></span>
+                        <p>{{ article.summary }}</p>
 
+                    </div>
                 </div>
-            </div>
-        {% endif %}
-        {% if forloop.counter|divisibleby:2 %}
-            </div>
-            <div class="row-fluid homePad">
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+            {% if forloop.counter|divisibleby:2 %}
+                </div>
+                <div class="row-fluid homePad">
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="center">No articles to display.</div>
+    {% endif %}
     </div>
 {% block footer %}
     <div class="paginationWrap">
@@ -104,10 +108,8 @@
             Response.action(loadImages);
         });
 
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'livegeekortest'; // required: replace example with your forum shortname
+        var disqus_shortname = 'lgod'; // required: replace example with your forum shortname
 
-        /* * * DON'T EDIT BELOW THIS LINE * * */
         (function () {
             var s = document.createElement('script'); s.async = true;
             s.type = 'text/javascript';

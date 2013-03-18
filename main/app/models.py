@@ -11,7 +11,7 @@ from django.template.defaultfilters import slugify
 from django.db.models import get_model
 import cloudfiles, time, hashlib, urllib
 from PIL import Image
-from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER, MEDIA_ROOT, BASE_URL, STATIC_URL
+from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER, RACKSPACE_MEDIA_URL, MEDIA_ROOT, BASE_URL, STATIC_URL
 
 GENDER_CHOICES = (
         ('M', 'Male'),
@@ -115,9 +115,9 @@ def CDNUpload(file):
     cont = conn.get_container(RACKSPACE_MEDIA_CONTAINER)
     obj = cont.create_object(file.name)
     obj.load_from_filename(file.path)
-    try: cdn_url = obj.public_uri()
+    try: cdn_url = RACKSPACE_MEDIA_URL + str(file.name)
     except:
-        cdn_url = obj.public_uri()
+        cdn_url = RACKSPACE_MEDIA_URL + str(file.name)
     return cdn_url
 
 def CDNDelete(file):
@@ -265,6 +265,10 @@ class ArticleForm(ModelForm):
             'categories': SelectMultiple(attrs={'id':'editorCategories'})
         }
 
+    def __init__(self, *args, **kwargs):
+        super(ArticleForm, self).__init__(*args, **kwargs)
+        self.fields['categories'].queryset = Category.objects.order_by('name')
+
 class ArticleSocialStats(models.Model):
     pageviews = models.BigIntegerField(max_length=10, null=True, blank=True)
     pv_date_updated = models.DateTimeField(null=True, blank=True)
@@ -332,6 +336,9 @@ class ArticleImageCrop(models.Model):
 
     def __unicode__(self):
         return str(self.id)
+
+    def CDN_URL(self):
+        return RACKSPACE_MEDIA_URL + str(self.cropped_file)
 
     def save(self, *args, **kwargs):
         super(ArticleImageCrop, self).save(*args, **kwargs)

@@ -5,8 +5,8 @@
 {% for article in unposted %}
     <div class="span4 draftsListItem">
         <div class="draftsListImage">
-            {% if article.image.thumbnail.URL %}
-                <img src={{ article.image.thumbnail.URL }}>
+            {% if article.image.thumbnail.CDN_URL %}
+                <img src={{ article.image.thumbnail.CDN_URL }}>
             {% else %}
                 <div class="draftsNoThumb">
                     No Thumbnail

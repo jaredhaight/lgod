@@ -23,6 +23,14 @@
 
         $('#topicsButton').bind('touchstart',
             function(){
+                if (($('#searchButton').width() > 10) && ($('#navSearch').is(':visible'))) {
+                    $('#navSearch').hide();
+                    $('#search').removeClass('navSectionHighlight')
+                }
+                if ($('#userMenu').is(':visible')) {
+                    $('#userMenu').hide();
+                    $('#userNav').removeClass('navSectionHighlight');
+                }
                 $('#topicsMenu').toggle();
                 $('#topics').toggleClass('navSectionHighlight');
             }
@@ -50,6 +58,14 @@
 
         $('#userButton').bind('touchstart',
             function(){
+                if (($('#searchButton').width() > 10) && ($('#navSearch').is(':visible'))) {
+                    $('#navSearch').hide();
+                    $('#search').removeClass('navSectionHighlight');
+                }
+                if ($('#topicsMenu').is(':visible')) {
+                    $('#topicsMenu').hide();
+                    $('#topics').removeClass('navSectionHighlight')
+                }
                 $('#userMenu').toggle();
                 $('#userNav').toggleClass('navSectionHighlight');
                 return false;
@@ -74,23 +90,30 @@
 
         $("#searchButton").bind('touchstart',
             function(){
+                if ($('#userMenu').is(':visible')) {
+                    $('#userMenu').hide();
+                    $('#userNav').removeClass('navSectionHighlight');
+                }
+                if ($('#topicsMenu').is(':visible')) {
+                    $('#topicsMenu').hide();
+                    $('#topics').removeClass('navSectionHighlight')
+                }
+                console.log('Search touched.')
                 $('#navSearch').toggle();
-                $('#search').toggleClass('navSectionHighlight')
-                return false;
-            }
-        );
+                $('#search').toggleClass('navSectionHighlight');
+            return false;
+        }
+);
 
         $('#navSearch').hover(
             function(){
                 if ($('#searchButton').width() > 10) {
-                    console.log('1')
                     $(this).show()
                     $('#search').addClass("navSectionHighlight")
                 }
             },
             function(){
                 if ($('#searchButton').width() > 10) {
-                    console.log('2')
                     $(this).hide()
                     $('#search').removeClass("navSectionHighlight")
                 }
@@ -126,7 +149,7 @@
 
     var Swiftype = window.Swiftype || {};
     (function() {
-        Swiftype.key = 'mKzrmYrDKkxhACurLqar';
+        Swiftype.key = 'gD8NRxJ1Tp8pNHanBAxe';
         Swiftype.inputElement = '.st-search-input';
         Swiftype.resultContainingElement = '#st-results-container';
         Swiftype.attachElement = '.st-search-input';
@@ -138,7 +161,8 @@
         script.src = "//swiftype.com/embed.js";
         var entry = document.getElementsByTagName('script')[0];
         entry.parentNode.insertBefore(script, entry);
-    }());
+    })();
+
 </script>
 
 {% endblock %}
@@ -146,11 +170,11 @@
     <a href="/"><img src="/static/img/logo2.png"></a>
     <div id="topicsButton"></div>
     <div id="topics" class="navSection">
-        <a
-            id="topicsLink" href="#" title="Topics"
+        <span
+            id="topicsLink" title="Topics"
             data-r0='<i class="icon-reorder"></i>'
             data-r641='Topics'
-        ></a>
+        ></span>
         <div id="topicsMenu" class="menu">
             <div id="mainMenu">
                 <div id="1" class="menuItem">Games
@@ -217,6 +241,11 @@
             Hi {{ user.first_name }}!<br>
             <a href="/staff">Staff Dashboard</a><br>
             <a href="#createArticle" data-toggle="modal" data-target="#createArticle">Create an Article</a><br>
+            {% for group in user.groups.all %}
+                {% if group.name == 'editors' %}
+                    <span id="navStaffArticleImagesLink"><a href="/staff/images/">Edit Article Images</a><br></span>
+                {% endif %}
+            {% endfor %}
             {% if pagetype == 'article' %}
                 <a href="/editor/{{ article.id }}">Edit this article</a><br>
             {% endif %}
@@ -231,7 +260,7 @@
         <i class="icon-search"></i>
         <div id="navSearch">
             <form>
-                <input type="text" id="st-search-input" class="st-search-input" />
+                <input type="text" id="st-search-input" class="st-search-input" placeholder="Search..." />
                 <!-- <input type="text" placeholder="Search" name="q" ><br>-->
                 <button class="btn btn-primary">Search</button>
             </form>

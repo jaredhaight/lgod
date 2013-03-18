@@ -2,6 +2,7 @@
 from django.db.models import Q
 from django.contrib.auth import logout
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template import RequestContext
@@ -12,12 +13,21 @@ import json
 import logging
 import feedparser
 from time import mktime
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 from app.models import *
 
 logger = logging.getLogger(__name__)
+
+def set_cookie(response, key, value, days_expire = 7):
+    if days_expire is None:
+        max_age = 365 * 24 * 60 * 60  #one year
+    else:
+        max_age = days_expire * 24 * 60 * 60
+    expires = datetime.strftime(datetime.utcnow() + timedelta(seconds=max_age), "%a, %d-%b-%Y %H:%M:%S GMT")
+    response.set_cookie(key, value, max_age=max_age, expires=expires)
+
 
 def article_edit_rights(user, article):
     #determines if a user has rights to edit an article
@@ -57,7 +67,11 @@ def urlRedirect(request, subcat, oldid):
     print('URLRedirect got '+oldid)
     newid = get_object_or_404(URLRedirect, oldid=oldid)
     article = get_object_or_404(Article, id=newid.newid)
-    return HttpResponseRedirect('/article/'+article.title_slug)
+    return HttpResponsePermanentRedirect('/article/'+article.title_slug)
+
+def legacyArticleImageRedirect(request, imageString, article_id):
+    print imageString
+    return HttpResponsePermanentRedirect('/media/lgod_old/'+imageString)
 
 
 def home(request):
@@ -66,12 +80,14 @@ def home(request):
 
     features = articles.filter(type='featured')[:3]
     articlelist= articles.filter(type='standard')[:18]
-    sidebarlist = articles.filter(type='sidebar')[:4]
+    sidebarlist = articles.filter(type='sidebar')[:12]
     row1 = articlelist[:6]
     row2 = articlelist[6:12]
     row3 = articlelist[12:18]
-
-    d = dict(features=features, articlelist=articlelist, row1=row1, row2=row2, row3=row3, user=user, sidebarlist=sidebarlist)
+    notespage1 = sidebarlist[:4]
+    notespage2 = sidebarlist[4:8]
+    notespage3 = sidebarlist[8:12]
+    d = dict(features=features, articlelist=articlelist, row1=row1, row2=row2, row3=row3, user=user, notespage1=notespage1, notespage2=notespage2, notespage3=notespage3)
     return render_to_response("home.html", d, context_instance=RequestContext(request))
 
 def archive(request):
@@ -91,7 +107,7 @@ def archive(request):
 
 def category(request, jslug):
     user = request.user
-    articles = get_list_or_404(Article.objects.filter(categories__slug=jslug, is_posted=True).order_by("-list_date"))
+    articles = Article.objects.filter(categories__slug=jslug, is_posted=True).order_by("-list_date")
     paginator = Paginator(articles, 18)
 
     try: page = int(request.GET.get("page", '1'))
@@ -375,8 +391,9 @@ def imageUpload(request):
 
 @login_required
 def imagePicker(request, article_id):
+
     article = get_object_or_404(Article, id=article_id)
-    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='thumbnail')), URL__isnull=False)
+    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='thumbnail')), URL__isnull=False).order_by("-id")
 
     paginator = Paginator(imagelist, 16)
 
@@ -479,24 +496,27 @@ def staffDrafts(request):
 
 @login_required
 def staffImages(request):
-    imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='thumbnail')), URL__isnull=False).order_by("-id")
+    user = request.user
+    if user.groups.filter(name='editors').count() == 0:
+        return HttpResponseForbidden()
+    else:
+        imagelist = ArticleImageCrop.objects.filter(type=(ArticleImageType.objects.get(name='thumbnail')), URL__isnull=False).order_by("-id")
+        paginator = Paginator(imagelist, 16)
 
-    paginator = Paginator(imagelist, 16)
+        try: page = int(request.GET.get("page", '1'))
+        except ValueError: page = 1
 
-    try: page = int(request.GET.get("page", '1'))
-    except ValueError: page = 1
+        try: imagelist = paginator.page(page)
+        except (InvalidPage, EmptyPage):
+            imagelist = paginator.page(paginator.num_pages)
 
-    try: imagelist = paginator.page(page)
-    except (InvalidPage, EmptyPage):
-        imagelist = paginator.page(paginator.num_pages)
+        if request.method == "POST":
+            image = ArticleImage.objects.get(pk=request.POST['image'])
+            connectCrops(article_id,image.id)
+            return HttpResponseRedirect('/editor/'+str(article_id))
 
-    if request.method == "POST":
-        image = ArticleImage.objects.get(pk=request.POST['image'])
-        connectCrops(article_id,image.id)
-        return HttpResponseRedirect('/editor/'+str(article_id))
-
-    d = dict(imagelist=imagelist, article=article)
-    return render_to_response("imageList.html", d, context_instance=RequestContext(request))
+        d = dict(imagelist=imagelist, article=article)
+        return render_to_response("imageList.html", d, context_instance=RequestContext(request))
 
 @login_required    
 def profilePage(request):
@@ -535,6 +555,41 @@ def profilePage(request):
         'source':source},
         context_instance=RequestContext(request))
 
+def about(request):
+    return render_to_response("about.html", context_instance=RequestContext(request))
+
+def login_view(request):
+    username = password = ''
+    state = 'Please enter your username and password'
+    try:
+        next = request.GET.get('next')
+    except:
+        next = '/'
+
+    if request.POST:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                response = HttpResponseRedirect(next)
+                set_cookie(response, 'PassCache', 'True', days_expire=None)
+                return response
+        else:
+            state = "Your username and/or password were incorrect."
+
+    return render_to_response('login.html',{'state':state, 'next':next}, context_instance=RequestContext(request))
+
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect('/')
+    response = HttpResponseRedirect('/')
+    set_cookie(response, 'PassCache', 'False', days_expire=None)
+    return response
+
+def fourohfour(request):
+    return render_to_response('404.html')
+
+def fourohthree(request):
+    return render_to_response('403.html')

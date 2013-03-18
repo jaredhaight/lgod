@@ -1,10 +1,17 @@
 {% extends "base.html" %}
 {% block title %}<title>Images - Live Geek or Die </title>{% endblock %}
 {% block content %}
+<div class="row-fluid">
+    <div class="staffImageAlert">
+        <div class="alert alert-error">
+        <strong>Do not take this lightly!</strong> Editing an image here will affect EVERY article that uses that image.
+        </div>
+    </div>
+</div>
 <div class="row-fluid margintop1">
     {% for image in imagelist %}
         <div class="span3 imagePicker">
-            <a href="/staff/image/{{ image.src.id }}"><img data-id="{{ image.src }}" src="{{ image.URL }}"></a>
+            <a href="/staff/image/{{ image.src.id }}"><img data-id="{{ image.src }}" src="{{ image.CDN_URL }}"></a>
         </div>
         {% if forloop.counter|divisibleby:4 %}
             </div>

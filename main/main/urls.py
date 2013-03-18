@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r"^article/(?P<article_id>[\-\d\w]+)/$", "app.views.article", {'type':'articleView'}),
     url(r"^author/(?P<jslug>[\-\d\w]+)/$", "app.views.authorPage"),
     url(r"^feed/", lgodFeed()),
+    url(r"^about/$", "app.views.about"),
     url(r"^staff/$", "app.views.staffHome"),
     url(r"^staff/drafts/$", "app.views.staffDrafts"),
     url(r"^staff/profile/$", "app.views.profilePage"),
@@ -30,7 +31,7 @@ urlpatterns = patterns('',
     url(r"^editor/(?P<article_id>\d+)/preview", "app.views.article", {'type':'editorPreview'}),
     url(r"^editor/upload/$", "app.views.fileUpload", name="fileUpload"),
     url(r"^editor/upload/recent/$", "app.views.recentFiles", name="recentFiles"),
-    url(r"^login/$", 'django.contrib.auth.views.login', {'template_name': 'login.html'}),
+    url(r"^login/$", 'app.views.login_view'),
     url(r"^logout/$", 'app.views.logout_view'),
     # Legacy URLs
     url(r'^games/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
@@ -38,12 +39,16 @@ urlpatterns = patterns('',
     url(r'^entertainment/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
     url(r'^events/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
     url(r'^opinion/(?P<subcat>[\-\d\w]*)/(?P<oldid>\d*)',"app.views.urlRedirect"),
+    url(r"^article/(?P<article_id>[\-\d\w]+)/images/stories/(?P<imageString>.*$)", "app.views.legacyArticleImageRedirect"),
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 )
+handler404 = 'app.views.fourohfour'
+handler403 = 'app.views.fourohthree'
+
 if ENVIRONMENT == 'DEV':
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
     urlpatterns += staticfiles_urlpatterns()

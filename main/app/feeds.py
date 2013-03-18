@@ -18,11 +18,19 @@ class lgodFeed(Feed):
         return item.title
 
     def item_author_name(self,item):
-        return item.author.staffprofile.displayName
+        try:
+            author =  item.author.staffprofile.displayName
+        except:
+            author = item.author.username
+        return author
 
     def item_author_link(self, item):
         username = item.author.username
         return BASE_URL+'/author/'+username.lower()
 
     def item_description(self, item):
-        return '<img src='+item.image.thumbnail.URL+'><p>'+linebreaks(item.summary)+'</p><p>You can read the article <a href="%s">here</a>.' % item.get_absolute_url()
+        try:
+            image = item.image.thumbnail.URL
+        except:
+            image = ''
+        return '<img src='+image+'><p>'+item.body+'</p>'

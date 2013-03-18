@@ -1,22 +1,16 @@
 {% extends "base.html" %}
+{% load jtimesince %}
 {%  block head %}
-    <!-- basic stylesheet -->
-    <link href="{{ STATIC_URL }}css/royalslider.css" rel="stylesheet" xmlns="http://www.w3.org/1999/html">
-
-    <!-- skin stylesheet (change it if you use another) -->
-    <link href="{{ STATIC_URL }}css/rs-default.css" rel="stylesheet">
-
-    <!-- Main slider JS script file -->
-    <!-- Create it with slider online build tool for better performance. -->
+    <link href="{{ STATIC_URL }}css/lgod-rs.css" rel="stylesheet">
     <script src="{{ STATIC_URL }}js/jquery.royalslider.custom.min.js"></script>
-    <script src="{{ STATIC_URL }}js/jquery.lazyload.min.js"></script>
+
 {% endblock %}
 {% block featured %}
-    <div class="row-fluid">
+    <div class="row-fluid homeOffset">
         <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="mobileHomeFeatured">
             <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredArticles">
                 <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListImg">
-                    <a href="/article/{{ features.0.title_slug }}"><img src="{{ features.0.image.small_featured.URL }}"></a>
+                    <a href="/article/{{ features.0.title_slug }}"><img src="{{ features.0.image.small_featured.CDN_URL }}"></a>
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
@@ -25,14 +19,14 @@
                 </div>
             </div>
         </div>
-        <div class="royalSlider rsDefault">
+        <div id="lgodSlider" class="royalSlider rsDefault">
             <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredArticles">
                 <div onclick="location.href='/article/{{ features.0.title_slug }}';" class="featuredListImg">
                     <a
                             href="/article/{{ features.0.title_slug }}"
-                            data-r0='<img class="rsimg" src="{{ features.0.image.small_featured.URL }}">'
-                            data-r641='<img src="{{ features.0.image.medium_featured.URL }}">'
-                            data-r801='<img src="{{ features.0.image.header.URL }}">'
+                            data-r0='<img class="rsimg" src="{{ features.0.image.small_featured.CDN_URL }}">'
+                            data-r641='<img src="{{ features.0.image.medium_featured.CDN_URL }}">'
+                            data-r801='<img src="{{ features.0.image.header.CDN_URL }}">'
                             ></a>
                 </div>
                 <div class="featuredListDescTransbox"></div>
@@ -45,9 +39,9 @@
                 <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="featuredListImg">
                     <a
                             href="/article/{{ features.1.title_slug }}"
-                            data-r0='<img class="rsimg" src="{{ features.1.image.small_featured.URL }}">'
-                            data-r641='<img src="{{ features.1.image.medium_featured.URL }}">'
-                            data-r801='<img src="{{ features.1.image.header.URL }}">'
+                            data-r0='<img class="rsimg" src="{{ features.1.image.small_featured.CDN_URL }}">'
+                            data-r641='<img src="{{ features.1.image.medium_featured.CDN_URL }}">'
+                            data-r801='<img src="{{ features.1.image.header.CDN_URL }}">'
                             ></a>
                 </div>
                 <div class="featuredListDescTransbox"></div>
@@ -60,9 +54,9 @@
                 <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="featuredListImg">
                     <a
                             href="/article/{{ features.2.title_slug }}"
-                            data-r0='<img class="rsimg" src="{{ features.2.image.small_featured.URL }}">'
-                            data-r641='<img src="{{ features.2.image.medium_featured.URL }}">'
-                            data-r801='<img src="{{ features.2.image.header.URL }}">'
+                            data-r0='<img class="rsimg" src="{{ features.2.image.small_featured.CDN_URL }}">'
+                            data-r641='<img src="{{ features.2.image.medium_featured.CDN_URL }}">'
+                            data-r801='<img src="{{ features.2.image.header.CDN_URL }}">'
                             ></a>
                 </div>
                 <div class="featuredListDescTransbox"></div>
@@ -74,13 +68,46 @@
         </div>
     </div>
     <div id="notesbar">
-        <div class="notesbarList">
-            {% for article in sidebarlist %}
-                <div class="notesbarItem">
-                    <h1>{{ article.title }}</h1>
-                    {{ article.body|safe }}
-                </div>
-            {% endfor %}
+        <div class="notesbarList royalSlider contentSlider rsUni">
+            <div id="notespage1">
+                {% for article in notespage1 %}
+                    <div id="{{ article.list_date|date:"YmdHis"  }}" class="notesbarItem">
+                        <h1>{{ article.title }}</h1>
+                        {{ article.body|safe }}
+                        <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
+                    </div>
+                    {% if forloop.counter == 2 %}
+                    </div>
+                    <div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div id="notespage2">
+                {% for article in notespage2 %}
+                    <div id="{{ article.list_date|date:"YmdHis" }}" class="notesbarItem">
+                        <h1>{{ article.title }}</h1>
+                        {{ article.body|safe }}
+                        <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
+                    </div>
+                    {% if forloop.counter == 2 %}
+                        </div>
+                        <div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div id="notespage3">
+                {% for article in notespage3 %}
+                    <div id="{{ article.list_date|date:"YmdHis"  }}" class="notesbarItem">
+                        <h1>{{ article.title }}</h1>
+                        {{ article.body|safe }}
+                        <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
+                    </div>
+                    {% if forloop.counter == 2 %}
+                        </div>
+                        <div>
+                    {% endif %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -93,16 +120,16 @@
                     <div class="articleListImage">
                         <a
                         href="/article/{{ article.title_slug }}"
-                        data-r0='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
-                        data-r801='<img class="lazy" data-original="{{ article.image.medium_header.URL }}" src="/static/img/grey.png">'
-                        data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                        data-r0='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
+                        data-r801='<img class="lazy" data-original="{{ article.image.medium_header.CDN_URL }}" src="/static/img/grey.png">'
+                        data-r978='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
                         ></a>
                     </div>
                     {% endif %}
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS Y" }} {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
                             <div class="articleUpdateDate">
                                 Updated on {{ article.list_date|date:"M jS Y"}} {{ article.list_date|date:"P" }}
@@ -119,18 +146,18 @@
                         <div class="articleListTags margintop1" >Tagged:
                             {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
                             {% for category in article.categories.all %}
-                                <span class="label label-info">{{ category.name }}</span>
+                                <a href="/category/{{ category.slug }}" class="label label-info">{{ category.name }}</a>
                             {% endfor %}
                         </div>
                     </div>
                 </div>
             {% endif %}
-            {% if article.type = 'sidebar' %}
+            {% if article.type == 'sidebar' %}
                 <div class="span6 sidebarArticleListBorder">
                     <div class="sidebarArticleListBody">
                         <span class="sidebarArticleListTitle">{{ article.title }}</span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
                                 <div class="articleUpdateDate">
                                     Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
@@ -160,9 +187,9 @@
                 <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListImg">
                     <a
                             href="/article/{{ features.1.title_slug }}"
-                            data-r0='<img src="{{ features.1.image.small_featured.URL }}">'
-                            data-r481='<img src="{{ features.1.image.medium_featured.URL }}">'
-                            data-r641='<img src="{{ features.1.image.header.URL }}">'
+                            data-r0='<img src="{{ features.1.image.small_featured.CDN_URL }}">'
+                            data-r481='<img src="{{ features.1.image.medium_featured.CDN_URL }}">'
+                            data-r641='<img src="{{ features.1.image.header.CDN_URL }}">'
                             ></a>
                 </div>
                 <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDesc">
@@ -181,16 +208,16 @@
                     <div class="articleListImage">
                         <a
                                 href="/article/{{ article.title_slug }}"
-                                data-r0='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
-                                data-r801='<img class="lazy" data-original="{{ article.image.medium_header.URL }}" src="/static/img/grey.png">'
-                                data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                                data-r0='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
+                                data-r801='<img class="lazy" data-original="{{ article.image.medium_header.CDN_URL }}" src="/static/img/grey.png">'
+                                data-r978='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
                                 ></a>
                     </div>
                     {% endif %}
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
                                 <div class="articleUpdateDate">
                                     Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
@@ -207,7 +234,7 @@
                         <div class="articleListTags margintop1" >Tagged:
                             {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
                             {% for category in article.categories.all %}
-                                <span class="label label-info">{{ category.name }}</span>
+                                <a href="/category/{{ category.slug }}" class="label label-info">{{ category.name }}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -225,9 +252,9 @@
                 <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListImg">
                     <a
                             href="/article/{{ features.2.title_slug }}"
-                            data-r0='<img src="{{ features.2.image.small_featured.URL }}">'
-                            data-r481='<img src="{{ features.2.image.medium_featured.URL }}">'
-                            data-r641='<img src="{{ features.2.image.header.URL }}">'
+                            data-r0='<img src="{{ features.2.image.small_featured.CDN_URL }}">'
+                            data-r481='<img src="{{ features.2.image.medium_featured.CDN_URL }}">'
+                            data-r641='<img src="{{ features.2.image.header.CDN_URL }}">'
                             ></a>
                 </div>
                 <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDesc">
@@ -246,16 +273,16 @@
                     <div class="articleListImage">
                         <a
                                 href="/article/{{ article.title_slug }}"
-                                data-r0='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
-                                data-r801='<img class="lazy" data-original="{{ article.image.medium_header.URL }}" src="/static/img/grey.png">'
-                                data-r978='<img class="lazy" data-original="{{ article.image.small_header.URL }}" src="/static/img/grey.png">'
+                                data-r0='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
+                                data-r801='<img class="lazy" data-original="{{ article.image.medium_header.CDN_URL }}" src="/static/img/grey.png">'
+                                data-r978='<img class="lazy" data-original="{{ article.image.small_header.CDN_URL }}" src="/static/img/grey.png">'
                                 ></a>
                     </div>
                     {% endif %}
                     <div class="articleListBody">
                         <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
                         <div class="articleListDate">
-                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
+                            Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by  {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
                                 <div class="articleUpdateDate">
                                     Updated on {{ article.list_date|date:"M jS Y"}} at {{ article.list_date|date:"P" }}
@@ -272,7 +299,7 @@
                         <div class="articleListTags margintop1" >Tagged:
                             {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
                             {% for category in article.categories.all %}
-                                <span class="label label-info">{{ category.name }}</span>
+                                <a href="/category/{{ category.slug }}" class="label label-info">{{ category.name }}</a>
                             {% endfor %}
                         </div>
                     </div>
@@ -300,34 +327,90 @@
     <script type="text/javascript">
 
         $(document).ready(function($) {
-            function loadImages (){
+            function homeTriggers (){
                 $("img.lazy").lazyload({ threshold : 200 });
+                insertSlides();
             }
-            Response.action(loadImages);
+            Response.action(homeTriggers);
 
-            $(".royalSlider").royalSlider({
-                imgHeight: '400px',
+            function compareName(a, b)
+            {
+
+                if (a.id < b.id) return 1;
+                if (a.id > b.id) return -1;
+                return 0;
+            }
+
+            function insertSlides() {
+                var slider = $('.notesbarList').data('royalSlider');
+                if (Response.band(0,767)) {
+                    if (slider.slides.length < 6) {
+                        var slides = $('.notesbarList .notesbarItem');
+                        slides.sort(compareName);
+                        slider.appendSlide(slides.slice(2,4),1);
+                        slider.appendSlide(slides.slice(6,8),3);
+                        slider.appendSlide(slides.slice(10,12),5);
+                        slider.updateSliderSize();
+                    }
+                }
+                else if (Response.band(768)) {
+                    if (slider.slides.length > 3) {
+                        var slides = $('.notesbarList .notesbarItem');
+                        slides.sort(compareName);
+                        $('#notespage1').append(slides.slice(2,4));
+                        slider.removeSlide(1);
+                        $('#notespage2').append(slides.slice(6,8));
+                        slider.removeSlide(2);
+                        $('#notespage3').append(slides.slice(10,12));
+                        slider.removeSlide(3);
+                        slider.updateSliderSize();
+                    }
+                }
+                slider.updateSliderSize();
+            }
+
+            $("#lgodSlider").royalSlider({
                 transitionType: 'fade',
                 loop: true,
                 navigateByClick: false,
+                list: 'test',
                 autoPlay: {
                     enabled: true,
                     pauseOnHover: true,
                     stopAtAction: false,
-                    delay: 4500
+                    delay: 6000
                 }
             });
+
+            $(".notesbarList").royalSlider({
+                arrowsNav: true,
+                arrowsNavAutoHide: false,
+                controlNavigation: 'bullets',
+                sliderDrag: false,
+                autoHeight: true,
+                autoScaleSlider:false,
+                imageScaleMode:'none',
+                imageAlignCenter: 'none',
+                numImagesToPreload: 6
+            });
+
         });
+
+        $(window).load(function() {
+            var slider = $('.notesbarList').data('royalSlider');
+            slider.updateSliderSize();
+            console.log('Load Update Slides Run');
+        });
+
     </script>
     <script type="text/javascript">
-        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-        var disqus_shortname = 'livegeekortest'; // required: replace example with your forum shortname
+        var disqus_shortname = 'lgod'; // required: replace example with your forum shortname
 
-        /* * * DON'T EDIT BELOW THIS LINE * * */
+
         (function () {
             var s = document.createElement('script'); s.async = true;
             s.type = 'text/javascript';
-            s.src = 'http://' + disqus_shortname + '.disqus.com/count.js';
+            s.src = '//' + disqus_shortname + '.disqus.com/count.js';
             (document.getElementsByTagName('HEAD')[0] || document.getElementsByTagName('BODY')[0]).appendChild(s);
         }());
     </script>

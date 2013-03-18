@@ -11,7 +11,7 @@
     <div class="row-fluid margintop1">
         {% for image in imagelist %}
             <div class="span3 imagePicker">
-                <img data-id="{{ image.src }}" src="{{ image.URL }}">
+                <img data-id="{{ image.src }}" src="{{ image.CDN_URL }}">
             </div>
             {% if forloop.counter|divisibleby:4 %}
                 </div>

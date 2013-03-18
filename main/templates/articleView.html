@@ -1,16 +1,7 @@
 {% extends "base.html" %}
 {% block head %}
 <script type="text/javascript">
-    function checkHeight () {
-        h = $('#articleImage img').height();
-        if (h) {
-            $('#articleRow').height(h-8);
-        }
-        console.log('Check Height Run. H = '+h);
-    }
-
     $(document).ready(function () {
-        checkHeight();
         $(function($){
             $('#articleBody img').each(function(index) {
                 $(this).load(function(){
@@ -51,7 +42,7 @@
 {% endblock %}
 {% block title %}<title>{{ article.title }}</title>{% endblock %}
 {% block meta %}
-    <meta property="og:url" content="http://lgod.photosandtext.com/article/{{ article.title_slug }}/"
+    <meta property="og:url" content="http://lgod.photosandtext.com/article/{{ article.title_slug }}/">
     <meta name="title" content="{{ article.title }}" />
     <meta property="og:site_name" content="Live Geek or Die" />
     <meta property="og:title" content="{{ article.title }}" />
@@ -60,35 +51,35 @@
     <meta property="og:description" content="{{ article.summary|safe }}" />
     <meta property="og:type" content="website" />
 
-    <link rel="image_src" href="{{ article.image.thumbnail.URL }}" />
-    <meta property="og:image" content="{{ article.image.thumbnail.URL }}" />
-    <meta property='st:image' content="{{ article.image.thumbnail.URL }}" />
+    <link rel="image_src" href="{{ article.image.thumbnail.CDN_URL }}" />
+    <meta property="og:image" content="{{ article.image.thumbnail.CDN_URL }}" />
+    <meta property='st:image' content="{{ article.image.thumbnail.CDN_URL }}" />
 {% endblock %}
 {% block notice %}
 
 {% endblock %}
 
 {% block featured %}
-<div id="articleRow" {% if not article.image %}class="articleNoImage"{% endif %}>
+<div id="articleRow" {% if not article.image %}class="articleNoImage"{% endif %} data-swiftype-index='false'>
     {% if article.image %}
     <div id="articleImage" class="span12"
-         data-r0='<img src="{{ article.image.small_featured.URL }}">'
-         data-r641='<img src="{{ article.image.medium_featured.URL }}">'
-         data-r801='<img src="{{ article.image.header.URL }}">'
+         data-r0='<img src="{{ article.image.small_featured.CDN_URL }}">'
+         data-r641='<img src="{{ article.image.medium_featured.CDN_URL }}">'
+         data-r801='<img src="{{ article.image.header.CDN_URL }}">'
         >
     </div>
     {% endif %}
-    <div id="articleMetaBox">
-        <div id="articleMetaBoxBG"></div>
-        <div id="articleTitle">
-            <h1>{{ article.title }}</h1>
-            <div id="articleDate">
+</div>
+<div id="articleMetaBox" {% if not article.image %}class="articleNoImage"{% endif %}>
+    <div id="articleMetaBoxBG"></div>
+    <div id="articleTitle" {% if not article.image %}class="articleNoImage"{% endif %}>
+        <h1>{{ article.title }}</h1>
+        <div id="articleDate">
             Posted on {{ article.date_posted|date:"l, F jS Y" }} at {{ article.date_posted|date:"P" }}
             {% if updated %}
-            <div class="articleUpdated">Updated: {{ article.list_date|date:"l, F jS" }} at {{ article.list_date|date:"P" }}</div>
+                <div class="articleUpdated">Updated: {{ article.list_date|date:"l, F jS" }} at {{ article.list_date|date:"P" }}</div>
             {% endif %}
-             {% if article.type == 'featured' %}<br><span class="label label-important">Featured Article</span>{% endif %}
-            </div>
+            {% if article.type == 'featured' %}<br><span class="label label-important">Featured Article</span>{% endif %}
         </div>
     </div>
 </div>
@@ -118,28 +109,19 @@
                 {% if article.author.staffprofile %}
                     <a href="/author/{{ article.author.username|lower }}">{{ article.author.staffprofile.displayName }}</a>
                 {% else %}
-                    {{ article.author.username|lower }}
+                    {{ article.author.username|capfirst }}
                 {% endif %}
             </div>
             <div class="shareLinks">
                 <div class="fb-like" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false"></div>
                 <div class="g-plus" data-action="share" data-annotation="bubble"></div>
-                <a href="https://twitter.com/share" class="twitter-share-button">Tweet</a>
+                <a href="https://twitter.com/share" class="twitter-share-button"></a>
             </div>
         </div>
     </div>
     <div data-swiftype-index='false' class="row-fluid">
         <div class="span12">
             <div id="disqus_thread"></div>
-            <script type="text/javascript">
-                var disqus_shortname = 'livegeekortest';
-                /* * * DON'T EDIT BELOW THIS LINE * * */
-                (function() {
-                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-                    dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-                })();
-            </script>
             <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
             <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
         </div>
@@ -151,24 +133,30 @@
 {% block javascript %}
 
     <script type="text/javascript">
+        var disqus_shortname = 'lgod'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+
         (function() {
             var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
             po.src = 'https://apis.google.com/js/plusone.js';
             var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
         })();
-    </script>
 
-    <div id="fb-root"></div>
-    <script>(function(d, s, id) {
-        var js, fjs = d.getElementsByTagName(s)[0];
-        if (d.getElementById(id)) return;
-        js = d.createElement(s); js.id = id;
-        js.async=true;
-        js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
-        fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));</script>
+            (function(d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) return;
+            js = d.createElement(s); js.id = id;
+            js.async=true;
+            js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
 
-    <script>
         !function(d,s,id){
             var js,fjs=d.getElementsByTagName(s)[0];
             if(!d.getElementById(id)){
