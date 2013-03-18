@@ -1,0 +1,232 @@
+# Django settings for app project.
+
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
+ADMINS = (
+    ('Jared', 'jared@photosandtext.com'),
+)
+
+MANAGERS = ADMINS
+
+RACKSPACE_USER = 'photosandtext'
+RACKSPACE_API_KEY = 'cadadea73cafc876a4c74fe68678b14a'
+RACKSPACE_MEDIA_CONTAINER = 'lgod_media'
+
+RACKSPACE_STATIC_CONTAINER = 'lgod_static'
+RACKSPACE_STATIC_URL = 'http://files.livegeekordie.com/'
+RACKSPACE_MEDIA_URL = 'http://media.livegeekordie.com/'
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+
+ENVIRONMENT = 'PROD'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'lgod_db',                      # Or path to database file if using sqlite3.
+        'USER': 'dbjango',                      # Not used with sqlite3.
+        'PASSWORD': 'lyvIgnmukZMYc7eObW62',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# In a Windows environment this must be set to your system time zone.
+TIME_ZONE = 'America/New_York'
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'en-us'
+
+SITE_ID = 1
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# If you set this to False, Django will not format dates, numbers and
+# calendars according to the current locale.
+USE_L10N = True
+
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = '/opt/lgod/main/media/'
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = '/media/'
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = ''
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
+STATIC_URL = 'https://bc4fe0b2cccc07d94a35-2b334246b9b35e4c2de9424cd61cfe99.ssl.cf2.rackcdn.com/'
+NONSECURE_STATIC_URL = 'http://files.livegeekordie.com/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    '/opt/lgod/main/static/',
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '42ur$rz3#$x-dhc@&amp;dkgyw)#1za2(-&amp;$1h$mq6t=j-&amp;0beji$9'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+#     'django.template.loaders.eggs.Loader',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+     "django.core.context_processors.debug",
+     "django.core.context_processors.i18n",
+     "django.core.context_processors.media",
+     "django.core.context_processors.static",
+     "django.core.context_processors.tz",
+     "django.contrib.messages.context_processors.messages",
+    'django.core.context_processors.request',
+    "app.lgod_context_processors.manage_static_url",
+    "app.lgod_context_processors.jared_css"
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    # Uncomment the next line for simple clickjacking protection:
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+ROOT_URLCONF = 'main.urls'
+
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'main.wsgi.application'
+
+TEMPLATE_DIRS = (
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    '/opt/lgod/main/templates/'
+)
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    # Uncomment the next line to enable the admin:
+     'django.contrib.admin',
+    # Uncomment the next line to enable admin documentation:
+     'django.contrib.admindocs',
+     'haystack',
+     'app',
+     'bootstrapform',
+     'cumulus'
+)
+
+CUMULUS = {
+    'USERNAME': RACKSPACE_USER,
+    'API_KEY': RACKSPACE_API_KEY,
+    'STATIC_CONTAINER': RACKSPACE_STATIC_CONTAINER,
+    'TIMEOUT':30
+}
+
+STATICFILES_STORAGE = 'cumulus.storage.CloudFilesStaticStorage'
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+    },    
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        },
+        
+        'default' : {
+            'level': 'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': '/opt/lgod/var/log/app.log',
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5,
+            'formatter':'standard',
+        },  
+        
+    },
+    'loggers': {
+        '': {
+            'handlers': ['default'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
+
+LOGIN_URL='https://www.livegeekordie.com/login'
+LOGIN_REDIRECT_URL='/'
+AUTH_PROFILE_MODULE = "app.StaffProfile"
+
+CLIENT_SECRETS = '/opt/lgod/main/app/client_secrets.json'
+BASE_URL = 'http://lgod.photosandtext.com/'
+GA_PROFILE_ID = '66330309'
+LOGGING_DIR = '/opt/lgod/var/log/'
+DBROOTPWD = 'pxONj3QYfGvmHAjOWGG9'
+
+SESSION_COOKIE_SECURE = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
+CSRF_COOKIE_SECURE = True
