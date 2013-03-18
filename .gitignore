@@ -2,6 +2,8 @@ main/analytics.dat
 client_secrets.json
 main/media
 settings.py
+settings.py.save
+settings.py.save.1
 *.log
 *.pot
 *.pyc
