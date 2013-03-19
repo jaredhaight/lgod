@@ -8,6 +8,7 @@ Stuff I did on the front end that I think is cool
 
 * Responsive design using Bootstrap and Response.js to swap in photos sized appropriately for the viewport.
 * Notes slider on the home page will switch between 4 notes on 3 cards to 2 notes on 6 cards depending on viewport. The slider is handled by royalslider.js.
+* Article Editor with autosaving.
 
 Stuff I did on the back end that I think is cool
 ------------------------------------------------
