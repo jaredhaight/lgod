@@ -19,5 +19,3 @@ Stuff I did on the back end that I think is cool
 * A cron job pulls in Google Analytics Pageviews, Twitter Shares and Facebook likes every 15 minutes. This is displayed on a staff dashboard
 * Data from the MySQL DB from the old Drupal site was imported into the new site.
 * Links from the old site redirect to the appropriate article.
-
-Testing testing branch.
