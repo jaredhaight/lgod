@@ -15,7 +15,7 @@ Stuff I did on the back end that I think is cool
 
 * The crop for Article images is handled with jCrop. When a crop is selected, thumbnails are automatically generated and uploaded to CloudFiles
 * There are three types of articles, and the WYSIWYG editor checks to make sure that the article is valid for it's type before allowing it to be posted (this is done with javascript on the frontend and then through python on the backend)
-* Roles are institued for editors and regular staff
+* Roles are instituted for editors and regular staff
 * A cron job pulls in Google Analytics Pageviews, Twitter Shares and Facebook likes every 15 minutes. This is displayed on a staff dashboard
 * Data from the MySQL DB from the old Drupal site was imported into the new site.
 * Links from the old site redirect to the appropriate article.
