@@ -142,7 +142,7 @@
                     </div>
                     <div class="articleListMetaData fright">
                         <a href="/article/{{ article.title_slug }}">Read More..</a> |
-                        <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                        <i class="icon-comment"></i> <a data-disqus-identifier="{{ article.id }}" href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
                         <div class="articleListTags margintop1" >Tagged:
                             {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
                             {% for category in article.categories.all %}
@@ -230,7 +230,7 @@
                     </div>
                     <div class="articleListMetaData fright">
                         <a href="/article/{{ article.title_slug }}">Read More..</a> |
-                        <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                        <i class="icon-comment"></i> <a data-disqus-identifier="{{ article.id }}" href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
                         <div class="articleListTags margintop1" >Tagged:
                             {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
                             {% for category in article.categories.all %}
@@ -295,7 +295,7 @@
                     </div>
                     <div class="articleListMetaData fright">
                         <a href="/article/{{ article.title_slug }}">Read More..</a> |
-                        <i class="icon-comment"></i> <a href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
+                        <i class="icon-comment"></i> <a data-disqus-identifier="{{ article.id }}" href="/article/{{ article.title_slug }}/#disqus_thread">Count</a><p>
                         <div class="articleListTags margintop1" >Tagged:
                             {% if article.type == 'featured' %}<span class="label label-important">Featured</span>{% endif %}
                             {% for category in article.categories.all %}
