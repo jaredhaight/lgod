@@ -9,7 +9,7 @@
             <div class="row-fluid staffArticleItem">
                 <div class="span12 staffSidebarItemContents">
                     <a href="/article/{{ article.title_slug }}">{{ article.title }}</a></br>
-                    <p>Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }}</p>
+                    <p>Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }} by {{ article.author }}</p>
                     <a href="/editor/{{ article.id }}"class="btn btn-warning draftsbtn"><i class="icon-edit"></i> Edit Article</a>
 
                 </div>
@@ -21,7 +21,7 @@
                         <img src={{ article.image.thumbnail.CDN_URL }}>
                     {% endif %}
                     <a href="/article/{{ article.title_slug }}">{{ article.title }}</a></br>
-                    <p>Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }}</p>
+                    <p>Posted:{{ article.date_posted|date:" M jS"}} at {{ article.date_posted|date:"P" }} by {{ article.author }}</p>
                     <a href="/article/{{ article.title_slug }}/"class="btn btn-primary draftsbtn"><i class="icon-eye-open"></i>  View Article</a>
                     <a href="/editor/{{ article.id }}"class="btn btn-warning draftsbtn"><i class="icon-edit"></i> Edit Article</a>
 
