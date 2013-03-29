@@ -1,7 +1,7 @@
 Live Geek or Die 
 ================
 Live Geek or Die (http://www.livegeekordie.com) is a news and opinion site about technology. I designed the backend and the layout and responsive design of the frontend.
-The stack consists of Varnish, Nginx, Django and MySQL. It is the second site that I have built.
+The stack consists of Varnish, Nginx, Django and MySQL. It is the second public website that I have built.
 
 Stuff I did on the front end that I think is cool
 -------------------------------------------------
