@@ -9,6 +9,8 @@ settings.py.save.1
 *.pyc
 local_settings.py
 *.py[cod]
+.idea/
+-old
 
 # C extensions
 *.so
@@ -47,3 +49,11 @@ nosetests.xml
 .dat
 .secret
 .json
+
+.DS_Store
+
+main/static/css/jquery.Jcrop.min.css-old
+
+main/static/js/jquery.Jcrop.min.js-old
+
+main/static/js/jquery.color.js
