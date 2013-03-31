@@ -38,7 +38,7 @@ def article_edit_rights(user, article):
     return False
 
 def latestComments():
-    url = 'http://livegeekortest.disqus.com/latest.rss'
+    url = 'http://lgod.disqus.com/latest.rss'
     comments = feedparser.parse(url)
     count = 0
     results = []
