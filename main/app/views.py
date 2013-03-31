@@ -64,10 +64,13 @@ def latestComments():
     return results
 
 def urlRedirect(request, subcat, oldid):
-    print('URLRedirect got '+oldid)
-    newid = get_object_or_404(URLRedirect, oldid=oldid)
-    article = get_object_or_404(Article, id=newid.newid)
-    return HttpResponsePermanentRedirect('/article/'+article.title_slug)
+    if not oldid:
+        return HttpResponsePermanentRedirect('/category/'+subcat)
+    else:
+        print('URLRedirect got '+oldid)
+        newid = get_object_or_404(URLRedirect, oldid=oldid)
+        article = get_object_or_404(Article, id=newid.newid)
+        return HttpResponsePermanentRedirect('/article/'+article.title_slug)
 
 def legacyArticleImageRedirect(request, imageString, article_id):
     print imageString
