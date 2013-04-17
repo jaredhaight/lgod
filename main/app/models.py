@@ -458,9 +458,6 @@ class ContentImage(models.Model):
         super(ContentImage, self).save(*args, **kwargs)
         if self.image.width > 800:
             self.image = resizeImage('ac', self.image, 800, 0)
-        if self.image.height > 800:
-            self.image = resizeImage('ac', self.image, 0, 800)
-
         self.cdn_url = CDNUpload(self.image)
         self.save_base()
 
