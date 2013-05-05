@@ -4,8 +4,8 @@ h2{font-family:"Helvetica Neue","Helvetica",sans-serif;font-size:1.1em;line-heig
 h3{font-family:"Helvetica Neue","Helvetica",sans-serif;font-size:1em;line-height:1.1em;color:#333333;font-weight:700;}
 .container-fluid{overflow:hidden;padding-left:0;padding-right:0;}
 a:hover{text-decoration:none;}
-blockquote{font-size:.9em;line-height:1.1em;font-style:italic;color:#888;margin-top:1%;margin-bottom:1%;margin-left:3%;padding-left:1%;border-left:3px solid #ccc;}
-blockquote p{font-size:.9em;line-height:1.35em;}
+blockquote{font-size:.9em;line-height:1.1em;font-style:italic;color:#888;margin-top:1%;margin-bottom:20px;margin-left:3%;padding-left:1%;border-left:3px solid #ccc;}
+blockquote p{font-size:1em;line-height:1.35em;}
 .fright{float:right;text-align:right;}
 .fleft{float:left;}
 .center{text-align:center;}
@@ -129,7 +129,6 @@ blockquote p{font-size:.9em;line-height:1.35em;}
 .articleWrap{margin-left:10%;margin-right:10%;}
 #articleBody{font-family:Georgia, serif;font-size:1.15em;line-height:1.5525em;color:#333333;text-rendering:optimizelegibility;padding-left:7%;padding-right:7%;padding-top:10px;padding-bottom:15px;}
 #articleBody p{margin-bottom:20px;}
-#articleBody p:last-child{margin-bottom:0px;}
 #articleBody ul{margin:0 0px 0px 30px;}
 #articleBody li>ul>li{color:#404040;line-height:1.5em;margin-bottom:0px;}
 #articleBody li>ul>li:last-child{margin-bottom:-10px;}
