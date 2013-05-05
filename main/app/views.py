@@ -4,6 +4,8 @@ from django.contrib.auth import logout
 from django.shortcuts import render_to_response, get_object_or_404, get_list_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import password_change, password_change_done
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.template import RequestContext
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, HttpResponsePermanentRedirect
@@ -14,6 +16,7 @@ import logging
 import feedparser
 from time import mktime
 from datetime import datetime, timedelta
+
 
 
 from app.models import *
@@ -561,12 +564,19 @@ def profilePage(request):
 def about(request):
     return render_to_response("about.html", context_instance=RequestContext(request))
 
+def change_password(request,template_name="staffPassword.html"):
+    return password_change(request,template_name=template_name, post_change_redirect=reverse('app.views.password_change_done'))
+
+@login_required
+def password_change_done(request, template_name="staffPasswordDone.html"):
+    return render_to_response(template_name,(),context_instance= RequestContext(request))
+
 def login_view(request):
     username = password = ''
     state = 'Please enter your username and password'
-    try:
+    if request.GET.get('next'):
         next = request.GET.get('next')
-    except:
+    else:
         next = '/'
 
     if request.POST:
@@ -582,6 +592,11 @@ def login_view(request):
                 return response
         else:
             state = "Your username and/or password were incorrect."
+
+    if request.user.is_authenticated():
+        response = HttpResponseRedirect(next)
+        set_cookie(response, 'PassCache', 'True', days_expire=None)
+        return response
 
     return render_to_response('login.html',{'state':state, 'next':next}, context_instance=RequestContext(request))
 
