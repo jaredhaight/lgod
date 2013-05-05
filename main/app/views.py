@@ -569,8 +569,6 @@ def login_view(request):
     else:
         next = '/'
 
-    print('Got next: '+next)
-
     if request.POST:
         username = request.POST.get('username')
         password = request.POST.get('password')
