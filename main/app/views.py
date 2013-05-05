@@ -583,6 +583,11 @@ def login_view(request):
         else:
             state = "Your username and/or password were incorrect."
 
+    if request.user.is_authenticated():
+        response = HttpResponseRedirect(next)
+        set_cookie(response, 'PassCache', 'True', days_expire=None)
+        return response
+
     return render_to_response('login.html',{'state':state, 'next':next}, context_instance=RequestContext(request))
 
 def logout_view(request):
