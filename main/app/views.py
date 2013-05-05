@@ -567,6 +567,7 @@ def about(request):
 def change_password(request,template_name="staffPassword.html"):
     return password_change(request,template_name=template_name, post_change_redirect=reverse('app.views.password_change_done'))
 
+@login_required
 def password_change_done(request, template_name="staffPasswordDone.html"):
     return render_to_response(template_name,(),context_instance= RequestContext(request))
 
