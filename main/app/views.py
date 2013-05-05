@@ -564,10 +564,12 @@ def about(request):
 def login_view(request):
     username = password = ''
     state = 'Please enter your username and password'
-    try:
+    if request.GET.get('next'):
         next = request.GET.get('next')
-    except:
+    else:
         next = '/'
+
+    print('Got next: '+next)
 
     if request.POST:
         username = request.POST.get('username')
