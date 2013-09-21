@@ -16,9 +16,6 @@ import logging
 import feedparser
 from time import mktime
 from datetime import datetime, timedelta
-
-
-
 from app.models import *
 
 logger = logging.getLogger(__name__)
@@ -315,6 +312,23 @@ def articleAutosave(request, article_id):
     return HttpResponse(json.dumps(status), mimetype="application/json")
 
 @login_required
+def articleDelete(request, article_id):
+    article = Article.objects.get(pk=article_id)
+    user = request.user
+
+    if request.method == "POST":
+        if (article_edit_rights(user, article)):
+            article.delete()
+            message = "Article has been deleted."
+            deleted = True
+            return HttpResponseRedirect('/staff/drafts/?deleted=true')
+        else:
+            error = "There was a problem deleting this article. Perhaps you do not have permissions to do that."
+            deleted = False
+            return render_to_response("articleDelete.html", {"error":error, "delete":deleted}, context_instance=RequestContext(request))
+    return render_to_response("articleDelete.html", {"article":article}, context_instance=RequestContext(request))
+
+@login_required
 def imageEditor(request,image_id):
     articleImage = get_object_or_404(ArticleImage, id=image_id)
     headerType = ArticleImageType.objects.get(name='header')
@@ -480,6 +494,11 @@ def staffHome(request):
 
 @login_required()
 def staffDrafts(request):
+    try:
+        deleted = request.GET.get('deleted')
+    except:
+        deleted = None
+
     user = request.user
     if user.groups.filter(name='editors').count() > 0:
         editor = True
@@ -497,7 +516,7 @@ def staffDrafts(request):
     except (InvalidPage, EmptyPage):
         posted = paginator.page(paginator.num_pages)
 
-    d = dict(unposted=unposted, user=user, editor=editor)
+    d = dict(unposted=unposted, user=user, editor=editor, deleted=deleted)
     return render_to_response("staffDrafts.html", d, context_instance=RequestContext(request))
 
 @login_required
