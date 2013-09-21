@@ -315,9 +315,11 @@ def articleAutosave(request, article_id):
 def articleDelete(request, article_id):
     article = Article.objects.get(pk=article_id)
     user = request.user
-
+    edit_rights = article_edit_rights(user, article)
+    if not edit_rights:
+        return HttpResponseForbidden()
     if request.method == "POST":
-        if (article_edit_rights(user, article)):
+        if (edit_rights):
             article.delete()
             message = "Article has been deleted."
             deleted = True
@@ -326,7 +328,7 @@ def articleDelete(request, article_id):
             error = "There was a problem deleting this article. Perhaps you do not have permissions to do that."
             deleted = False
             return render_to_response("articleDelete.html", {"error":error, "delete":deleted}, context_instance=RequestContext(request))
-    return render_to_response("articleDelete.html", {"article":article}, context_instance=RequestContext(request))
+    return render_to_response("articleDelete.html", {"article":article, "edit_rights":edit_rights}, context_instance=RequestContext(request))
 
 @login_required
 def imageEditor(request,image_id):
