@@ -4,6 +4,8 @@ main/media
 settings.py
 settings.py.save
 settings.py.save.1
+env/
+venv/
 *.log
 *.pot
 *.pyc

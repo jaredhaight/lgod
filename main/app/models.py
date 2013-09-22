@@ -1,3 +1,4 @@
+import httplib
 from django.core.files.images import get_image_dimensions
 from django.db import models
 from django.db.models.signals import post_delete
@@ -188,6 +189,12 @@ def connectCrops(article_id,image_id):
     article.image = image
     article.save()
 
+def purgeCache():
+    conn = httplib.HTTPConnection('localhost')
+    conn.request('BAN','/')
+    resp = conn.getresponse()
+    return {'status':resp.status, 'response':resp.read()}
+
 class URLRedirect(models.Model):
     oldid = models.IntegerField(max_length=10)
     newid = models.IntegerField(max_length=10)
@@ -247,6 +254,9 @@ class Article(models.Model):
     def save(self, *args, **kwargs):
         if not self.is_posted:
             self.title_slug = uniqueSlug('Article',self.id,'title_slug',self.title)
+        else:
+            purge = purgeCache()
+            print str(purge)
         super(Article, self).save(*args, **kwargs)
         if not self.social:
             social = ArticleSocialStats.objects.create()

@@ -72,54 +72,6 @@
             }
         );
 
-        $("#searchButton").hover(
-            function(){
-                if ($('#searchButton').width() > 10) {
-                    $("#navSearch").show();
-                    $('#search').addClass("navSectionHighlight")
-                    }
-            },
-            function(){
-                if ($('#searchButton').width() > 10) {
-                    console.log('Hide it.')
-                    $("#navSearch").hide();
-                    $('#search').removeClass("navSectionHighlight")
-                    }
-            }
-        );
-
-        $("#searchButton").bind('touchstart',
-            function(){
-                if ($('#userMenu').is(':visible')) {
-                    $('#userMenu').hide();
-                    $('#userNav').removeClass('navSectionHighlight');
-                }
-                if ($('#topicsMenu').is(':visible')) {
-                    $('#topicsMenu').hide();
-                    $('#topics').removeClass('navSectionHighlight')
-                }
-                console.log('Search touched.')
-                $('#navSearch').toggle();
-                $('#search').toggleClass('navSectionHighlight');
-            return false;
-        }
-);
-
-        $('#navSearch').hover(
-            function(){
-                if ($('#searchButton').width() > 10) {
-                    $(this).show()
-                    $('#search').addClass("navSectionHighlight")
-                }
-            },
-            function(){
-                if ($('#searchButton').width() > 10) {
-                    $(this).hide()
-                    $('#search').removeClass("navSectionHighlight")
-                }
-            }
-        );
-
         $(".menuItem").hover(
             function () {
                 $(this).addClass("menuItemHighlight")
@@ -146,22 +98,6 @@
             }
         );
     });
-
-    var Swiftype = window.Swiftype || {};
-    (function() {
-        Swiftype.key = 'gD8NRxJ1Tp8pNHanBAxe';
-        Swiftype.inputElement = '.st-search-input';
-        Swiftype.resultContainingElement = '#st-results-container';
-        Swiftype.attachElement = '.st-search-input';
-        Swiftype.renderStyle = "overlay";
-
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.async = true;
-        script.src = "//swiftype.com/embed.js";
-        var entry = document.getElementsByTagName('script')[0];
-        entry.parentNode.insertBefore(script, entry);
-    })();
 
 </script>
 
@@ -256,17 +192,6 @@
     </div>
         <!-- Modal Window for Article -->
     {% endif %}
-    <div id="searchButton"></div>
-    <div id="search">
-        <i class="icon-search"></i>
-        <div id="navSearch">
-            <form>
-                <input type="text" id="st-search-input" class="st-search-input" placeholder="Search..." />
-                <!-- <input type="text" placeholder="Search" name="q" ><br>-->
-                <button class="btn btn-primary">Search</button>
-            </form>
-        </div>
-    </div>
 </div>
 {% if user.is_authenticated %}
 <div class="modal editorText" id="createArticle" tabindex="-1" role="dialog" aria-labelledby="imgUploadLabel" aria-hidden="true">

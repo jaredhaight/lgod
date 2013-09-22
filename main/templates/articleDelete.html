@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="content staffProfile paddingtop1">
+    {% if error %}
+      <div class="alert alert-error accentText">
+        <a class="close" data-dismiss="alert" href="#">&times;</a>
+        {{ error }}
+      </div>
+    {% endif %}
+    {% if deleted %}
+      {{ message }}
+    {% else %}
+    <div class="row-fluid">
+        <div id="deleteArticleWarning">
+          <h2>Are you sure you want to delete<br>
+          "{{ article.title }}" by {{ article.author|capfirst }}?</h2>
+          <p>There is no undo. Like really. I don't mean like "You won't be able to undo this", I mean NO ONE will be able to undo this. This article will be gone, leaving behind only an empty spot in the database where it's primary key use to be..</p>
+          <form method="post" action=".">
+            {% csrf_token %}
+            <button class="btn btn-danger">Yes, delete this please</button>
+          </form>
+      </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

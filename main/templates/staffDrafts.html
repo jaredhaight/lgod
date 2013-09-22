@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block title %}<title xmlns="http://www.w3.org/1999/html">Drafts - Live Geek or Die </title>{% endblock %}
 {% block content %}
+{% if deleted %}
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="alert alert-warning accentText" style="text-align: center">
+                <a class="close" data-dismiss="alert" href="#">&times;</a>
+                Article was deleted
+            </div>
+        </div>
+    </div>
+{% endif %}
 <div class="row-fluid">
 {% for article in unposted %}
     <div class="span4 draftsListItem">
