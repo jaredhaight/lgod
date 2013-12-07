@@ -28,16 +28,16 @@ body {
   -moz-border-radius: @radius;
 }
 
-.readableText (@size: 1em, @color: @offBlack) {
-  font-family: Georgia, serif;
+.sanSerifText (@size: 1em, @height: 1em, @color: @offBlack) {
+  font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", sans-serif;
   font-size: @size;
   line-height: (@size * 1.3);
   color: @color;
   text-rendering: optimizelegibility;
 }
 
-.accentText (@size: .7em, @height:.9em, @color:@offWhite){
-  font-family: "Helvetica Neue", "Helvetica", sans-serif;
+.serifText (@size: .7em, @height:.9em, @color:@offWhite){
+  font-family: 'Bitter', Georgia, serif;
   font-size: @size;
   line-height: @height;
   color:  @color;
@@ -50,17 +50,17 @@ body {
 }
 
 h1 {
-  .accentText(1.85em, 1.5em, @offBlack);
+  .serifText(1.85em, 1.5em, @offBlack);
   font-weight: 700;
 }
 
 h2 {
-  .accentText(1.25em, 1.2em, @offBlack);
+  .serifText(1.25em, 1.1em, @offBlack);
   font-weight: 700;
 }
 
 h3 {
-  .accentText(1em, 1.1em, @offBlack);
+  .serifText(1em, 1.1em, @offBlack);
   font-weight: 700;
 }
 
@@ -121,7 +121,7 @@ blockquote p {
 }
 
 .navbar{
-  .accentText();
+  .sanSerifText();
 }
 
 .label {
@@ -138,7 +138,7 @@ blockquote p {
 }
 
 .articleListTags .label {
-  .accentText(.9em)
+  .sanSerifText(.9em, 1em, @offWhite)
 }
 
 #lgodnav {
@@ -148,7 +148,7 @@ blockquote p {
   top: 0;
   background: @offWhite;
   z-index: 100;
-  .accentText(.95em, 1.2em, @base);
+  .sanSerifText(.95em, 1.2em, @base);
   .box-shadow(0px, 1px, 10px, rgba(50,50,50,0.43));
 }
 
@@ -349,7 +349,7 @@ blockquote p {
 }
 
 .contentWrap {
-  .readableText();
+  .sanSerifText();
   max-width: 1500px;
   margin: 0 auto;
   background: #b8cad8;
@@ -412,7 +412,7 @@ blockquote p {
 }
 
 .featuredListTitle {
-  .accentText(1.75em, 1em, darken(@offWhite, 5%))
+  .serifText(1.75em, 1em, darken(@offWhite, 5%))
 }
 
 .featuredListDesc {
@@ -420,11 +420,11 @@ blockquote p {
   top: 12%;
   left: 3%;
   width: 30%;
-  .readableText(1.1em, darken(@offWhite, 5%));
+  .sanSerifText(1.1em, 1em, darken(@offWhite, 5%));
 }
 
 .featuredListDesc p {
-  .readableText(1em, darken(@offWhite, 20%));
+  .sanSerifText(1em, 1em, darken(@offWhite, 20%));
   margin-top: 5px;
   font-weight: 300;
 }
@@ -448,7 +448,7 @@ blockquote p {
   margin-right: auto;
   padding-top: 10px;
   padding-bottom: 5px;
-  .accentText(.85em, 1.1em);
+  .sanSerifText(.85em, 1.1em);
   background: #fefefe;
   color: @base;
   border-top: 8px;
@@ -547,7 +547,7 @@ blockquote p {
 }
 
 .promotedListTitle {
-  .accentText(1.75em, 1.1em, darken(@offWhite, 5%))
+  .serifText(1.75em, 1.1em, darken(@offWhite, 5%))
 }
 
 .promotedListDesc {
@@ -559,7 +559,7 @@ blockquote p {
 }
 
 .promotedListDesc p {
-  .readableText(1.1em, darken(@offWhite, 20%));
+  .sanSerifText(1.1em, 1em, darken(@offWhite, 20%));
   font-weight: 100;
 }
 
@@ -613,16 +613,16 @@ blockquote p {
 }
 
 .articleListTitle{
-  .accentText(1.2em, .9em, @offWhite);
+  .serifText(1.2em, .9em, @offWhite);
 }
 .articleListDate {
-  .accentText(.75em, 1em);
+  .sanSerifText(.75em, 1em);
   color: gray;
   margin-bottom: 10px;
 }
 
 .articleListBody{
-  .readableText(1.04em, @offBlack);
+  .sanSerifText(1.04em, 1em, @offBlack);
   min-height: 250px;
   word-wrap: break-word;
   padding-top: 10px;
@@ -630,19 +630,19 @@ blockquote p {
 
 
 .articleListMetaData{
-  .accentText(.7em);
+  .sanSerifText(.7em);
   color: gray;
   min-width: 110px;
 }
 
 .sidebarArticleListTitle{
-  .accentText(1.2em, .9em, @accent);
+  .serifText(1.2em, .9em, @accent);
   margin-top: 5%;
   margin-bottom: 1%;
 }
 
 .sidebarArticleAuthor {
-  .accentText(.65em, 1em);
+  .sanSerifText(.65em, 1em);
   color: gray;
 }
 .sidebarArticleListBody{
@@ -698,7 +698,7 @@ blockquote p {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  .readableText(1em, darken(@offWhite, 20%));
+  .sanSerifText(1em, 1em, darken(@offWhite, 20%));
   font-weight: 300;
 }
 
@@ -723,7 +723,7 @@ blockquote p {
 }
 
 #articleRow {
-  .readableText(1.1em, @titleColor);
+  .sanSerifText(1.1em, 1em, @titleColor);
   position: relative;
   max-width: 1500px;
   margin-left: auto;
@@ -783,7 +783,7 @@ blockquote p {
 }
 
 #articleTitle {
-  .accentText(1em, 1.2em, @offWhite);
+  .serifText(1em, 1.2em, @offWhite);
   position: relative;
   left: 17.5%;
   width: 75%;
@@ -801,7 +801,7 @@ blockquote p {
 }
 
 #articleDate {
-  .accentText(.82em, 1.2em);
+  .sanSerifText(.82em, 1.4em);
   color: #b1b1b1;
 }
 
@@ -826,7 +826,11 @@ blockquote p {
 }
 
 #articleBody  {
+<<<<<<< HEAD
   .readableText(1.16em);
+=======
+  .sanSerifText(1.13em);
+>>>>>>> testing
   padding-left: 7%;
   padding-right: 7%;
   padding-top: 10px;
@@ -874,7 +878,7 @@ blockquote p {
 }
 
 #articleAuthorBox{
-  .accentText(1em, 1em, @offBlack);
+  .sanSerifText(1em, 1em, @offBlack);
   margin-left: 5%;
   margin-right: 5%;
   width: 90%;
@@ -899,7 +903,7 @@ blockquote p {
   bottom: 0;
   text-align: center;
   width: 100%;
-  .accentText(.65em, .95em);
+  .sanSerifText(.65em, .95em);
   color: @offBlack;
   background: white;
   opacity: .75;
@@ -932,7 +936,8 @@ blockquote p {
 
 .draftsbtn {
   margin-top: 1%;
-  .accentText();
+  .sanSerifText(.8em);
+  color: white;
 }
 
 .draftsListItem {
@@ -995,7 +1000,7 @@ blockquote p {
 }
 
 #postingError p {
-  .accentText(1em, 1.5em);
+  .sanSerifText(1em, 1.5em);
   font-weight: bold;
   color: darken(@accent, 25%);
 }
@@ -1009,7 +1014,7 @@ blockquote p {
 }
 
 .articleCheckList {
-  .accentText(.9em);
+  .sanSerifText(.9em);
   color: #111;
   padding: 10px;
   margin-top: 10px;
@@ -1017,7 +1022,7 @@ blockquote p {
 }
 
 .editorArticleReady {
-  .accentText(1em, 1.5em);
+  .sanSerifText(1em, 1.5em);
   font-weight: bold;
   color: darken(@accent, 25%);
 }
@@ -1204,13 +1209,13 @@ blockquote p {
   padding-right: 10px;
   opacity: 1;
   z-index: 1001;
-  .accentText(1em, 2em);
+  .sanSerifText(1em, 2em);
   color: @offBlack;
 }
 
 
 #imageUploadForm {
-  .accentText();
+  .sanSerifText();
   color: @offBlack;
   width: 600px;
   margin-left: auto;
@@ -1269,12 +1274,12 @@ blockquote p {
 }
 
 .staffHome {
-  .accentText(1em);
+  .sanSerifText(1em);
   color:  @offBlack;
 }
 
 .staffComments {
-  .accentText(.8em, 1.1em);
+  .sanSerifText(.8em, 1.1em);
   color:  @offBlack;
   margin-bottom: 15px;
   margin-top: 15px;
@@ -1286,7 +1291,7 @@ blockquote p {
 }
 
 .staffCommentsTime{
-  .accentText(.8em);
+  .sanSerifText(.8em);
   color:gray;
 }
 
@@ -1313,7 +1318,7 @@ blockquote p {
 
 .staffArticleItemContents {
   height: 70px;
-  .accentText(1em);
+  .sanSerifText(1em);
 }
 
 .staffArticleItemContents p {
@@ -1325,7 +1330,7 @@ blockquote p {
 
 .staffSidebarItemContents {
   height: 70px;
-  .accentText(1em);
+  .sanSerifText(1em);
 }
 
 .staffSidebarItemContents p {
@@ -1338,7 +1343,7 @@ blockquote p {
 .staffStats {
   width: 52%;
   float: right;
-  margin-top: 1%;
+  margin-top: 4.5%;
   margin-right: 8%;
 
 }
@@ -1346,7 +1351,8 @@ blockquote p {
 .staffStatsNumber {
   width: 25%;
   float: left;
-  .accentText(1.5em,1.8em, @offBlack);
+  .sanSerifText(1.5em, 1em, @offBlack);
+  line-height: 1.5em;
   font-weight: 300;
   text-align: center;
   position: relative;
@@ -1365,7 +1371,7 @@ blockquote p {
   padding-bottom: 5px;
   text-align: center;
   display: none;
-  .accentText(.45em, 1em);
+  .sanSerifText(.45em, 1em);
   color: gray;
 }
 
@@ -1378,11 +1384,11 @@ blockquote p {
   margin-left: auto;
   margin-right: auto;
   text-align: center;
-  .accentText(1em);
+  .sanSerifText(1em);
 }
 
 .login{
-  .accentText;
+  .sanSerifText();
   color: @offBlack;
   width: 400px;
   margin-top: 10%;
@@ -1392,7 +1398,7 @@ blockquote p {
 }
 
 .staffProfile {
-  .accentText(.9em, 1.15em);
+  .sanSerifText(.9em, 1.15em);
   color: @offBlack;
 }
 
@@ -1812,9 +1818,15 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   }
 
   .articleWrap .row-fluid #articleBody {
+<<<<<<< HEAD
     .readableText(1.15em);
     padding-left: 0;
     padding-right: 0;
+=======
+    .sanSerifText(1em);
+    padding-left: 10px;
+    padding-right: 10px;
+>>>>>>> testing
   }
 
 }
@@ -2173,10 +2185,17 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
     padding-right: 3%;
   }
 
+<<<<<<< HEAD
   #articleBody {
     .readableText(1.2em);
+=======
+  .row-fluid #articleBody {
+    .sanSerifText(1.1em);
+>>>>>>> testing
     width: 100%;
     margin-left: 0;
+    padding-left: 3%;
+    padding-right: 3%;
   }
 
   #articleAuthorBox {
@@ -2392,7 +2411,7 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   }
   .staffArticleItem .staffStats {
     width: 100%;
-    margin-top: 2%;
+    margin-top: 6%;
     margin-right: 0;
   }
 
@@ -2434,7 +2453,7 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   }
 
   #articleTitle {
-    left: 8.5%;
+    left: 11.5%;
   }
 
   .articleWrap {
@@ -2442,5 +2461,9 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
     margin-right: 0;
   }
 
+  #articleBody {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
 
 }
