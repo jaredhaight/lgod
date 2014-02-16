@@ -10,7 +10,8 @@ $(document).ready(
             $('#editorBody').redactor({
                 fixed: true,
                 imageUpload: '{% url fileUpload %}',
-                imageGetJson: '{% url recentFiles %}'
+                imageGetJson: '{% url recentFiles %}',
+                formattingTags: ['p', 'blockquote', 'pre', 'h2']
             });
 
 
