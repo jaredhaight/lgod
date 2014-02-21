@@ -253,6 +253,7 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.is_posted:
+            self.is_posted = False
             self.title_slug = uniqueSlug('Article',self.id,'title_slug',self.title)
         else:
             purge = purgeCache()
