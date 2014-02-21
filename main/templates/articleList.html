@@ -1,3 +1,4 @@
+{% load typogrify_tags %}
 {% block head %}
     <!-- <script src="{{ STATIC_URL }}js/jquery.lazyload.min.js"></script> -->
 {% endblock %}
@@ -27,7 +28,7 @@
                             {% endif %}
                         </div>
                         <p>
-                            {{ article.summary }}
+                            {{ article.summary|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
@@ -50,7 +51,7 @@
                             {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }}
                         </div>
                         <p>
-                            {{ article.body|safe }}
+                            {{ article.body|safe|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
@@ -73,7 +74,7 @@
                     <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedDescTransbox"></div>
                     <div onclick="location.href='/article/{{ article.title_slug }}';" class="archiveFeaturedListDesc">
                         <span class="articleListTitle"><b>{{ article.title }}</b></span>
-                        <p>{{ article.summary }}</p>
+                        <p>{{ article.summary|typogrify }}</p>
 
                     </div>
                 </div>
