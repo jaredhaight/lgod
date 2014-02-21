@@ -1,10 +1,10 @@
 <div class="paginationWrap">
     <div class="pagination">
         <ul>
-            {% if imagelist.previous_page_number %}
+            {% if imagelist.has_previous %}
                 <li><a href="?page={{ imagelist.previous_page_number }}">Prev</a></li>
             {% endif %}
-            {% if imagelist.next_page_number %}
+            {% if imagelist.has_next %}
                 <li><a href="?page={{ imagelist.next_page_number }}">Next</a></li>
             {% endif %}
         </ul>
