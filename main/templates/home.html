@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load typogrify_tags %}
 {% load jtimesince %}
 {%  block head %}
     <link href="{{ STATIC_URL }}css/lgod-rs.css" rel="stylesheet">
@@ -14,8 +15,8 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.0.title }}</b></span>
-                    <p>{{ features.0.summary }}</p>
+                    <span class="featuredListTitle"><b>{{ features.0.title|typogrify }}</b></span>
+                    <p>{{ features.0.summary|typogrify }}</p>
                 </div>
             </div>
         </div>
@@ -31,8 +32,8 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.0.title }}</b></span>
-                    <p>{{ features.0.summary }}</p>
+                    <span class="featuredListTitle"><b>{{ features.0.title|typogrify }}</b></span>
+                    <p>{{ features.0.summary|typogrify }}</p>
                 </div>
             </div>
             <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="featuredArticles">
@@ -46,8 +47,8 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.1.title }}</b></span>
-                    <p>{{ features.1.summary }}</p>
+                    <span class="featuredListTitle"><b>{{ features.1.title|typogrify }}</b></span>
+                    <p>{{ features.1.summary|typogrify }}</p>
                 </div>
             </div>
             <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="featuredArticles">
@@ -61,8 +62,8 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.2.title }}</b></span>
-                    <p>{{ features.2.summary }}</p>
+                    <span class="featuredListTitle"><b>{{ features.2.title|typogrify }}</b></span>
+                    <p>{{ features.2.summary|typogrify }}</p>
                 </div>
             </div>
         </div>
@@ -72,8 +73,8 @@
             <div id="notespage1">
                 {% for article in notespage1 %}
                     <div id="{{ article.list_date|date:"YmdHis"  }}" class="notesbarItem">
-                        <h1>{{ article.title }}</h1>
-                        {{ article.body|safe }}
+                        <h1>{{ article.title|typogrify }}</h1>
+                        {{ article.body|safe|typogrify }}
                         <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
                     </div>
                     {% if forloop.counter == 2 %}
@@ -85,8 +86,8 @@
             <div id="notespage2">
                 {% for article in notespage2 %}
                     <div id="{{ article.list_date|date:"YmdHis" }}" class="notesbarItem">
-                        <h1>{{ article.title }}</h1>
-                        {{ article.body|safe }}
+                        <h1>{{ article.title|typogrify }}</h1>
+                        {{ article.body|safe|typogrify }}
                         <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
                     </div>
                     {% if forloop.counter == 2 %}
@@ -98,8 +99,8 @@
             <div id="notespage3">
                 {% for article in notespage3 %}
                     <div id="{{ article.list_date|date:"YmdHis"  }}" class="notesbarItem">
-                        <h1>{{ article.title }}</h1>
-                        {{ article.body|safe }}
+                        <h1>{{ article.title|typogrify }}</h1>
+                        {{ article.body|safe|typogrify }}
                         <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
                     </div>
                     {% if forloop.counter == 2 %}
@@ -127,7 +128,7 @@
                     </div>
                     {% endif %}
                     <div class="articleListBody">
-                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|typogrify }}</a></span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
@@ -137,7 +138,7 @@
                             {% endif %}
                         </div>
                         <p>
-                            {{ article.summary }}
+                            {{ article.summary|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
@@ -155,7 +156,7 @@
             {% if article.type == 'sidebar' %}
                 <div class="span6 sidebarArticleListBorder">
                     <div class="sidebarArticleListBody">
-                        <span class="sidebarArticleListTitle">{{ article.title }}</span>
+                        <span class="sidebarArticleListTitle">{{ article.title|typogrify }}</span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
@@ -193,8 +194,8 @@
                             ></a>
                 </div>
                 <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDesc">
-                    <span class="promotedListTitle"><b>{{ features.1.title }}</b></span>
-                    <p>{{ features.1.summary }}</p>
+                    <span class="promotedListTitle"><b>{{ features.1.title|typogrify }}</b></span>
+                    <p>{{ features.1.summary|typogrify }}</p>
                     <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
             </div>
@@ -215,7 +216,7 @@
                     </div>
                     {% endif %}
                     <div class="articleListBody">
-                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|typogrify }}</a></span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
@@ -225,7 +226,7 @@
                             {% endif %}
                         </div>
                         <p>
-                            {{ article.summary }}
+                            {{ article.summary|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
@@ -249,7 +250,7 @@
     <div class="row-fluid homePad">
         <div class="span12">
             <div class="promotedArticles">
-                <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListImg">
+                <div onclick="location.href='/article/{{ features.2.title_slug|typogrify }}';" class="promotedListImg">
                     <a
                             href="/article/{{ features.2.title_slug }}"
                             data-r0='<img src="{{ features.2.image.small_featured.CDN_URL }}">'
@@ -258,8 +259,8 @@
                             ></a>
                 </div>
                 <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDesc">
-                    <span class="promotedListTitle"><b>{{ features.2.title }}</b></span>
-                    <p>{{ features.2.summary }}</p>
+                    <span class="promotedListTitle"><b>{{ features.2.title|typogrify }}</b></span>
+                    <p>{{ features.2.summary|typogrify }}</p>
                     <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
             </div>
@@ -280,7 +281,7 @@
                     </div>
                     {% endif %}
                     <div class="articleListBody">
-                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title }}</a></span>
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|typogrify }}</a></span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by  {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
@@ -290,7 +291,7 @@
                             {% endif %}
                         </div>
                         <p>
-                            {{ article.summary }}
+                            {{ article.summary|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
