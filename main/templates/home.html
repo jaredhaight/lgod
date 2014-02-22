@@ -115,7 +115,7 @@
 {% block content %}
     <div class="row-fluid homePad">
         {% for article in row1 %}
-            {% if article.type = 'standard' %}
+            {% if article.type == 'standard' %}
                 <div class="span6 articleListBorder">
                     {% if article.image %}
                     <div class="articleListImage">
