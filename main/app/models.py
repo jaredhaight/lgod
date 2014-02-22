@@ -21,8 +21,7 @@ GENDER_CHOICES = (
 
 PROFILE_IMAGE_SOURCES = (
         ('gravatar', 'Gravatar'),
-        ('facebook','Facebook'),
-        ('twitter','Twitter')
+        ('facebook','Facebook')
 )
 
 ARTICLE_TYPE = (
