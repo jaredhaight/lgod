@@ -16,7 +16,7 @@
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
                     <span class="featuredListTitle"><b>{{ features.0.title|typogrify }}</b></span>
-                    <p>{{ features.0.summary|typogrify }}</p>
+                    <p>{{ features.0.summary|safe|typogrify }}</p>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
                     <span class="featuredListTitle"><b>{{ features.0.title|typogrify }}</b></span>
-                    <p>{{ features.0.summary|typogrify }}</p>
+                    <p>{{ features.0.summary|safe|typogrify }}</p>
                 </div>
             </div>
             <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="featuredArticles">
@@ -48,7 +48,7 @@
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
                     <span class="featuredListTitle"><b>{{ features.1.title|typogrify }}</b></span>
-                    <p>{{ features.1.summary|typogrify }}</p>
+                    <p>{{ features.1.summary|safe|typogrify }}</p>
                 </div>
             </div>
             <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="featuredArticles">
@@ -63,7 +63,7 @@
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
                     <span class="featuredListTitle"><b>{{ features.2.title|typogrify }}</b></span>
-                    <p>{{ features.2.summary|typogrify }}</p>
+                    <p>{{ features.2.summary|safe|typogrify }}</p>
                 </div>
             </div>
         </div>
@@ -138,7 +138,7 @@
                             {% endif %}
                         </div>
                         <p>
-                            {{ article.summary|typogrify }}
+                            {{ article.summary|safe|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
@@ -195,7 +195,7 @@
                 </div>
                 <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDesc">
                     <span class="promotedListTitle"><b>{{ features.1.title|typogrify }}</b></span>
-                    <p>{{ features.1.summary|typogrify }}</p>
+                    <p>{{ features.1.summary|safe|typogrify }}</p>
                     <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
             </div>
@@ -226,7 +226,7 @@
                             {% endif %}
                         </div>
                         <p>
-                            {{ article.summary|typogrify }}
+                            {{ article.summary|safe|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
@@ -260,7 +260,7 @@
                 </div>
                 <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDesc">
                     <span class="promotedListTitle"><b>{{ features.2.title|typogrify }}</b></span>
-                    <p>{{ features.2.summary|typogrify }}</p>
+                    <p>{{ features.2.summary|safe|typogrify }}</p>
                     <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
             </div>
@@ -291,7 +291,7 @@
                             {% endif %}
                         </div>
                         <p>
-                            {{ article.summary|typogrify }}
+                            {{ article.summary|safe|typogrify }}
                         </p>
                     </div>
                     <div class="articleListMetaData fright">
