@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load typogrify_tags %}
 {% block head %}
 <script type="text/javascript">
     $(document).ready(function () {
@@ -6,10 +7,10 @@
             $('#articleBody img').each(function(index) {
                 $(this).load(function(){
                     $alt = $(this).attr('alt');
-                    $float = $(this).css('float')
+                    $float = $(this).css('float');
                     if ($alt) {
-                        $image = new Image()
-                        $image.src = $(this).attr('src')
+                        $image = new Image();
+                        $image.src = $(this).attr('src');
                         $height = $image.height;
                         $width = $image.width;
                         $margin = $(this).css('margin');
@@ -40,7 +41,7 @@
 
 </script>
 {% endblock %}
-{% block title %}<title>{{ article.title }}</title>{% endblock %}
+{% block title %}<title>{{ article.title|typogrify }}</title>{% endblock %}
 {% block meta %}
     <meta property="og:url" content="http://www.livegeekordie.com/article/{{ article.title_slug }}/">
     <meta name="title" content="{{ article.title }}" />
@@ -99,7 +100,7 @@
 <div class="content articleWrap">
     <div class="row-fluid">
         <div id="articleBody" class="span12">
-        {{ article.body|safe }}
+        {{ article.body|safe|typogrify }}
         </div>
     </div>
     <div data-swiftype-index='false' class="row-fluid">

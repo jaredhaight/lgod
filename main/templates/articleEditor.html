@@ -9,8 +9,9 @@ $(document).ready(
         function(){
             $('#editorBody').redactor({
                 fixed: true,
-                imageUpload: '{% url fileUpload %}',
-                imageGetJson: '{% url recentFiles %}'
+                imageUpload: '{% url "fileUpload" %}',
+                imageGetJson: '{% url "recentFiles" %}',
+                formattingTags: ['p', 'blockquote', 'pre', 'h2']
             });
 
 
@@ -151,7 +152,7 @@ $(document).ready(
                         {% endfor %}
                     {% endif %}<br>
                     {{ form.categories  }}
-                    <p class="categoryHelpText">You can select multiple categories by holding the shift (or command) key while making your selections.</p>
+                    <p class="categoryHelpText">You can select multiple categories by holding the control (or command) key while making your selections.</p>
 
                 </div>
             </div>

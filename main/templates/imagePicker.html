@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}<title>Image Picker - Live Geek or Die </title>{% endblock %}
 {% block content %}
+  <div class="imagePickerWrap">
     <form action="." method=post>
     {% csrf_token %}
     <div id="savebar" class="row-fluid">
@@ -21,6 +22,7 @@
     </div>
     <input type="hidden" id="selectedimage" name="image" />
     </form>
+  </div>
 {% endblock %}
 {% block footer %}
     {% include "pagination.html" %}

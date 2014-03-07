@@ -10,7 +10,7 @@ from django import forms
 from django.forms.widgets import  TextInput, SelectMultiple, RadioSelect
 from django.template.defaultfilters import slugify
 from django.db.models import get_model
-import cloudfiles, time, hashlib, urllib
+import cloudfiles, time, hashlib, urllib, bleach
 from PIL import Image
 from main.settings import RACKSPACE_USER, RACKSPACE_API_KEY, RACKSPACE_MEDIA_CONTAINER, RACKSPACE_MEDIA_URL, MEDIA_ROOT, BASE_URL, STATIC_URL
 
@@ -21,8 +21,7 @@ GENDER_CHOICES = (
 
 PROFILE_IMAGE_SOURCES = (
         ('gravatar', 'Gravatar'),
-        ('facebook','Facebook'),
-        ('twitter','Twitter')
+        ('facebook','Facebook')
 )
 
 ARTICLE_TYPE = (
@@ -76,6 +75,18 @@ CATEGORIES = {
     'Typography':'typography'
 }
 
+BLEACH_BODY_ATTRIBUTES = {
+    '*': ['class'],
+    'a': ['href', 'rel'],
+    'img': ['src', 'alt', 'target', 'style'],
+    'iframe': ['src','width','height','allowfullscreen','frameborder'],
+}
+
+BLEACH_BODY_TAGS = ['a','h2','h3','p', 'em', 'strong','li','ul','ol','del','blockquote','iframe','img','hr']
+BLEACH_BODY_STYLE_ATTRIBUTES = ['float','margin']
+
+BLEACH_MISC_ATTRIBUTES = {}
+BLEACH_MISC_TAGS = []
 # This is a function for testing.
 def setupcats():
    for name,slug in CATEGORIES.items():
@@ -253,10 +264,14 @@ class Article(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.is_posted:
+            self.is_posted = False
             self.title_slug = uniqueSlug('Article',self.id,'title_slug',self.title)
         else:
             purge = purgeCache()
             print str(purge)
+        self.title = bleach.clean(self.title, BLEACH_MISC_TAGS, BLEACH_MISC_ATTRIBUTES, strip=True)
+        self.summary = bleach.clean(self.summary, BLEACH_MISC_TAGS, BLEACH_MISC_ATTRIBUTES, strip=True)
+        self.body = bleach.clean(self.body,BLEACH_BODY_TAGS,BLEACH_BODY_ATTRIBUTES,BLEACH_BODY_STYLE_ATTRIBUTES)
         super(Article, self).save(*args, **kwargs)
         if not self.social:
             social = ArticleSocialStats.objects.create()

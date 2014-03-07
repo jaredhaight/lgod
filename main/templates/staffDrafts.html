@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}<title xmlns="http://www.w3.org/1999/html">Drafts - Live Geek or Die </title>{% endblock %}
 {% block content %}
+<div class="draftsWrap">
 {% if deleted %}
     <div class="row-fluid">
         <div class="span12">
@@ -37,7 +38,8 @@
         </div>
         <div class="row-fluid">
     {% endif %}
-{% endfor %}
+  {% endfor %}
+  </div>
 </div>
 {% block footer %}
     {% include "pagination.html" %}

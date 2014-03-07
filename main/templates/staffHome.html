@@ -99,10 +99,10 @@
 {% block footer %}
     <div class="paginationWrap">
         <ul class="pager">
-            {% if posted.previous_page_number %}
+            {% if posted.has_previous %}
                 <li><a href="?page={{ posted.previous_page_number }}">Prev</a></li>
             {% endif %}
-            {% if posted.next_page_number %}
+            {% if posted.has_next %}
                 <li><a href="?page={{ posted.next_page_number }}">Next</a></li>
             {% endif %}
         </ul>

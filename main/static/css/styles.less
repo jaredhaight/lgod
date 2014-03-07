@@ -55,7 +55,7 @@ h1 {
 }
 
 h2 {
-  .serifText(1.25em, 1.1em, @offBlack);
+  .serifText(1.3em, 1.5em, @offBlack);
   font-weight: 700;
 }
 
@@ -338,8 +338,8 @@ blockquote p {
 
 .content {
   background: @offWhite;
-  padding-left: 2%;
-  padding-right: 2%;
+  padding-left: 6%;
+  padding-right: 6%;
 }
 
 .editorContent {
@@ -789,8 +789,8 @@ blockquote p {
 #articleTitle {
   .serifText(1em, 1.2em, @offWhite);
   position: relative;
-  left: 17.5%;
-  width: 75%;
+  left: 22.5%;
+  width: 57.5%;
   bottom: 20px;
 }
 
@@ -805,7 +805,8 @@ blockquote p {
 }
 
 #articleDate {
-  .sanSerifText(.82em, 1.4em);
+  .sanSerifText(.82em);
+  line-height: 1.4em;
   color: #b1b1b1;
 }
 
@@ -825,8 +826,8 @@ blockquote p {
 }
 
 .articleWrap {
-  margin-left: 10%;
-  margin-right: 10%;
+  margin-left: 12%;
+  margin-right: 12%;
 }
 
 #articleBody  {
@@ -903,7 +904,8 @@ blockquote p {
   bottom: 0;
   text-align: center;
   width: 100%;
-  .sanSerifText(.65em, .95em);
+  .sanSerifText(.65em);
+  line-height: .95em;
   color: @offBlack;
   background: white;
   opacity: .75;
@@ -934,6 +936,11 @@ blockquote p {
   margin: 0 auto;
 }
 
+.draftsWrap {
+  background: @offWhite;
+  padding: 20px;
+}
+
 .draftsbtn {
   margin-top: 1%;
   .sanSerifText(.8em);
@@ -943,7 +950,7 @@ blockquote p {
 .draftsListItem {
   margin-bottom: 1%;
   border: 1px solid;
-  border-color: oldLace;
+  border-color: #d8d8d8;
   padding: 10px;
   height: 100%;
   width: 98%;
@@ -1000,7 +1007,8 @@ blockquote p {
 }
 
 #postingError p {
-  .sanSerifText(1em, 1.5em);
+  .sanSerifText(1em);
+  line-height: 1.5em;
   font-weight: bold;
   color: darken(@accent, 25%);
 }
@@ -1022,7 +1030,8 @@ blockquote p {
 }
 
 .editorArticleReady {
-  .sanSerifText(1em, 1.5em);
+  .sanSerifText(1em);
+  line-height: 1.5em;
   font-weight: bold;
   color: darken(@accent, 25%);
 }
@@ -1209,7 +1218,8 @@ blockquote p {
   padding-right: 10px;
   opacity: 1;
   z-index: 1001;
-  .sanSerifText(1em, 2em);
+  .sanSerifText(1em);
+  line-height: 2em;
   color: @offBlack;
 }
 
@@ -1257,6 +1267,8 @@ blockquote p {
   bottom: 0;
   padding-top: 1%;
   padding-bottom: 1%;
+  padding-left: 10px;
+  margin-left: -20px;
 }
 
 .jcrop-holder{
@@ -1269,6 +1281,11 @@ blockquote p {
   margin-right: 1%;
 }
 
+.imagePickerWrap {
+  padding: 20px;
+  background: @offWhite;
+}
+
 .Home {
   margin-top: 3%;
 }
@@ -1279,7 +1296,8 @@ blockquote p {
 }
 
 .staffComments {
-  .sanSerifText(.8em, 1.1em);
+  .sanSerifText(.8em);
+  line-height: 1.1em;
   color:  @offBlack;
   margin-bottom: 15px;
   margin-top: 15px;
@@ -1304,9 +1322,10 @@ blockquote p {
 .staffArticleItem {
   margin-bottom: 1%;
   border: 1px solid;
-  border-color: oldLace;
+  border-color: #d8d8d8;
   padding: 10px;
   height: 100%;
+  min-height: 100px;
   width: 98%;
 }
 
@@ -2448,6 +2467,11 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   .articleWrap {
     margin-left: 0;
     margin-right: 0;
+  }
+
+  .content {
+    padding-left: 2%;
+    padding-right: 2%;
   }
 
   #articleBody {
