@@ -82,7 +82,7 @@ BLEACH_BODY_ATTRIBUTES = {
     'iframe': ['src','width','height','allowfullscreen','frameborder'],
 }
 
-BLEACH_BODY_TAGS = ['a','h2','h3','p', 'em', 'strong','li','ul','ol','del','blockquote','iframe','img']
+BLEACH_BODY_TAGS = ['a','h2','h3','p', 'em', 'strong','li','ul','ol','del','blockquote','iframe','img','hr']
 BLEACH_BODY_STYLE_ATTRIBUTES = ['float','margin']
 
 BLEACH_MISC_ATTRIBUTES = {}
