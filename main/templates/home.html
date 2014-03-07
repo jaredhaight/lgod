@@ -15,7 +15,7 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.0.title|typogrify }}</b></span>
+                    <span class="featuredListTitle"><b>{{ features.0.title|safe|typogrify }}</b></span>
                     <p>{{ features.0.summary|safe|typogrify }}</p>
                 </div>
             </div>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.0.title|typogrify }}</b></span>
+                    <span class="featuredListTitle"><b>{{ features.0.title|safe|typogrify }}</b></span>
                     <p>{{ features.0.summary|safe|typogrify }}</p>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.1.title|typogrify }}</b></span>
+                    <span class="featuredListTitle"><b>{{ features.1.title|safe|typogrify }}</b></span>
                     <p>{{ features.1.summary|safe|typogrify }}</p>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="featuredListDescTransbox"></div>
                 <div class="featuredListDesc">
-                    <span class="featuredListTitle"><b>{{ features.2.title|typogrify }}</b></span>
+                    <span class="featuredListTitle"><b>{{ features.2.title|safe|typogrify }}</b></span>
                     <p>{{ features.2.summary|safe|typogrify }}</p>
                 </div>
             </div>
@@ -73,7 +73,7 @@
             <div id="notespage1">
                 {% for article in notespage1 %}
                     <div id="{{ article.list_date|date:"YmdHis"  }}" class="notesbarItem">
-                        <h1>{{ article.title|typogrify }}</h1>
+                        <h1>{{ article.title|safe|typogrify }}</h1>
                         {{ article.body|safe|typogrify }}
                         <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
                     </div>
@@ -86,7 +86,7 @@
             <div id="notespage2">
                 {% for article in notespage2 %}
                     <div id="{{ article.list_date|date:"YmdHis" }}" class="notesbarItem">
-                        <h1>{{ article.title|typogrify }}</h1>
+                        <h1>{{ article.title|safe|typogrify }}</h1>
                         {{ article.body|safe|typogrify }}
                         <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
                     </div>
@@ -99,7 +99,7 @@
             <div id="notespage3">
                 {% for article in notespage3 %}
                     <div id="{{ article.list_date|date:"YmdHis"  }}" class="notesbarItem">
-                        <h1>{{ article.title|typogrify }}</h1>
+                        <h1>{{ article.title|safe|typogrify }}</h1>
                         {{ article.body|safe|typogrify }}
                         <div class="notesbarTime">Posted {{ article.list_date|age }} ago</div>
                     </div>
@@ -128,7 +128,7 @@
                     </div>
                     {% endif %}
                     <div class="articleListBody">
-                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|typogrify }}</a></span>
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|safe|typogrify }}</a></span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
@@ -156,7 +156,7 @@
             {% if article.type == 'sidebar' %}
                 <div class="span6 sidebarArticleListBorder">
                     <div class="sidebarArticleListBody">
-                        <span class="sidebarArticleListTitle">{{ article.title|typogrify }}</span>
+                        <span class="sidebarArticleListTitle">{{ article.title|safe|typogrify }}</span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
@@ -194,7 +194,7 @@
                             ></a>
                 </div>
                 <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDesc">
-                    <span class="promotedListTitle"><b>{{ features.1.title|typogrify }}</b></span>
+                    <span class="promotedListTitle"><b>{{ features.1.title|safe|typogrify }}</b></span>
                     <p>{{ features.1.summary|safe|typogrify }}</p>
                     <div onclick="location.href='/article/{{ features.1.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
@@ -216,7 +216,7 @@
                     </div>
                     {% endif %}
                     <div class="articleListBody">
-                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|typogrify }}</a></span>
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|safe|typogrify }}</a></span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
@@ -259,7 +259,7 @@
                             ></a>
                 </div>
                 <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDesc">
-                    <span class="promotedListTitle"><b>{{ features.2.title|typogrify }}</b></span>
+                    <span class="promotedListTitle"><b>{{ features.2.title|safe|typogrify }}</b></span>
                     <p>{{ features.2.summary|safe|typogrify }}</p>
                     <div onclick="location.href='/article/{{ features.2.title_slug }}';" class="promotedListDescTransbox"></div>
                 </div>
@@ -281,7 +281,7 @@
                     </div>
                     {% endif %}
                     <div class="articleListBody">
-                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|typogrify }}</a></span>
+                        <span class="articleListTitle"><a href="/article/{{ article.title_slug }}">{{ article.title|safe|typogrify }}</a></span>
                         <div class="articleListDate">
                             Posted on {{ article.date_posted|date:" M jS Y" }} at {{ article.date_posted|date:"P" }} by  {% if article.author.staffprofile %}{{ article.author.staffprofile.displayName }}{% else %}{{ article.author.username|capfirst }}{% endif %}
                             {% if article.date_posted != article.list_date %}
