@@ -77,8 +77,8 @@ CATEGORIES = {
 
 BLEACH_BODY_ATTRIBUTES = {
     '*': ['class'],
-    'a': ['href', 'rel'],
-    'img': ['src', 'alt', 'target', 'style'],
+    'a': ['href', 'rel','target'],
+    'img': ['src', 'alt', 'style'],
     'iframe': ['src','width','height','allowfullscreen','frameborder'],
 }
 
