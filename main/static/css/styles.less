@@ -147,7 +147,7 @@ blockquote p {
   position: fixed;
   top: 0;
   background: @offWhite;
-  z-index: 100;
+  z-index: 1000;
   .sanSerifText(.95em, 1.2em, @base);
   .box-shadow(0px, 1px, 10px, rgba(50,50,50,0.43));
 }
@@ -789,7 +789,7 @@ blockquote p {
 #articleTitle {
   .serifText(1em, 1.2em, @offWhite);
   position: relative;
-  left: 22.5%;
+  left: 25%;
   width: 57.5%;
   bottom: 20px;
 }
@@ -826,8 +826,8 @@ blockquote p {
 }
 
 .articleWrap {
-  margin-left: 12%;
-  margin-right: 12%;
+  margin-left: 15%;
+  margin-right: 15%;
 }
 
 #articleBody  {
@@ -836,6 +836,10 @@ blockquote p {
   padding-right: 7%;
   padding-top: 10px;
   padding-bottom: 15px;
+  max-width: 1000px;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #articleBody p {
@@ -932,7 +936,7 @@ blockquote p {
 }
 
 #disqus_thread {
-  width: 60%;
+  width: 90%;
   margin: 0 auto;
 }
 
@@ -2176,15 +2180,6 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
     top: 0;
   }
 
-  #articleMetaBox #articleTitle {
-    left: 0;
-    bottom: 25px;
-    width: 95%;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   #articleDate {
     width: 90%;
     margin-left: auto;
@@ -2310,7 +2305,7 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
     float: none;
   }
 
-  #disqus_thread {
+  .span12 #disqus_thread {
     width: 100%;
   }
 
@@ -2461,7 +2456,12 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   }
 
   #articleTitle {
-    left: 11.5%;
+    left: 0;
+    bottom: 25px;
+    width: 95%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .articleWrap {
@@ -2477,6 +2477,10 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   #articleBody {
     padding-left: 10%;
     padding-right: 10%;
+  }
+
+  #disqus_thread {
+    width: 60%;
   }
 
 }
