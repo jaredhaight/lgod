@@ -1,14 +1,15 @@
 {% extends "base.html" %}
 {% block head %}
-<link rel="stylesheet" href="/static/css/redactor.css" xmlns="http://www.w3.org/1999/html"
+<link rel="stylesheet" href="/static/css/redactor-92.css" xmlns="http://www.w3.org/1999/html"
       xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"/>
-<script src="/static/js/redactor.min.js"></script>
+<script src="/static/js/redactor-92.min.js"></script>
 <script src="/static/js/simplyCountable.js"></script>
 <script type="text/javascript">
 $(document).ready(
         function(){
             $('#editorBody').redactor({
-                fixed: true,
+                toolbarFixed: true,
+                toolbarFixedTopOffset: 50,
                 imageUpload: '{% url "fileUpload" %}',
                 imageGetJson: '{% url "recentFiles" %}',
                 formattingTags: ['p', 'blockquote', 'pre', 'h2']
