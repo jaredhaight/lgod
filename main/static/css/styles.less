@@ -86,7 +86,7 @@ blockquote {
   border-left: 3px solid #ccc;
 }
 
-blockquote p {
+blockquote {
   font-size: 1em;
   line-height: 1.35em;
 }
@@ -147,7 +147,7 @@ blockquote p {
   position: fixed;
   top: 0;
   background: @offWhite;
-  z-index: 100;
+  z-index: 1000;
   .sanSerifText(.95em, 1.2em, @base);
   .box-shadow(0px, 1px, 10px, rgba(50,50,50,0.43));
 }
@@ -346,6 +346,12 @@ blockquote p {
   background: #FFFFFF;
   padding-left: 20px;
   padding-right: 20px;
+}
+
+.editorBox {
+  width: 69%;
+  margin: 0 auto;
+  max-width: 1000px;
 }
 
 .contentWrap {
@@ -789,7 +795,7 @@ blockquote p {
 #articleTitle {
   .serifText(1em, 1.2em, @offWhite);
   position: relative;
-  left: 22.5%;
+  left: 24.5%;
   width: 57.5%;
   bottom: 20px;
 }
@@ -826,16 +832,20 @@ blockquote p {
 }
 
 .articleWrap {
-  margin-left: 12%;
-  margin-right: 12%;
+  margin-left: 15%;
+  margin-right: 15%;
 }
 
 #articleBody  {
   .sanSerifText(1.13em);
-  padding-left: 7%;
-  padding-right: 7%;
+  padding-left: 6%;
+  padding-right: 6%;
   padding-top: 10px;
   padding-bottom: 15px;
+  max-width: 1000px;
+  float: none;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #articleBody p {
@@ -932,7 +942,7 @@ blockquote p {
 }
 
 #disqus_thread {
-  width: 60%;
+  width: 90%;
   margin: 0 auto;
 }
 
@@ -1108,6 +1118,16 @@ blockquote p {
 }
 #editorImgTxt {
   display: inline;
+}
+
+.redactor_editor li {
+  line-height: 1.5em;
+  margin-bottom: 5px;
+}
+
+.redactor_editor ul > li > ul {
+  font-size: 1em;
+  margin-left: 0;
 }
 
 .editorButtons {
@@ -1509,6 +1529,11 @@ blockquote p {
 }
 #bioBody {
   min-height: 45%;
+}
+
+.about-box {
+  background: @offWhite;
+  height: 400px;
 }
 
 // Font Awesome
@@ -2176,15 +2201,6 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
     top: 0;
   }
 
-  #articleMetaBox #articleTitle {
-    left: 0;
-    bottom: 25px;
-    width: 95%;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   #articleDate {
     width: 90%;
     margin-left: auto;
@@ -2228,6 +2244,10 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
 
   #editorSummary {
     width: 95.5%;
+  }
+
+  fieldset .row-fluid .editorBox {
+    width: 98%;
   }
 
   #summaryCounter {
@@ -2310,7 +2330,7 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
     float: none;
   }
 
-  #disqus_thread {
+  .span12 #disqus_thread {
     width: 100%;
   }
 
@@ -2423,6 +2443,10 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
     margin-right: 0;
   }
 
+  .row-fluid .editorBox {
+    width: 90%;
+  }
+
 }
 
 @media (max-width: 1270px) {
@@ -2461,7 +2485,12 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   }
 
   #articleTitle {
-    left: 11.5%;
+    left: 0;
+    bottom: 25px;
+    width: 95%;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .articleWrap {
@@ -2477,6 +2506,14 @@ li[class^="icon-"].icon-large:before, li[class*=" icon-"].icon-large:before {
   #articleBody {
     padding-left: 10%;
     padding-right: 10%;
+  }
+
+  .editorBox {
+    width: 75%;
+  }
+
+  #disqus_thread {
+    width: 60%;
   }
 
 }
