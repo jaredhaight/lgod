@@ -211,7 +211,6 @@ body .redactor_box_fullscreen {
 .redactor_editor ol ol,
 .redactor_editor ul ol,
 .redactor_editor ol ul {
-  margin: 2px !important;
   padding: 0 !important;
   padding-left: 2em !important;
   border: none;
