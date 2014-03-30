@@ -83,7 +83,7 @@ BLEACH_BODY_ATTRIBUTES = {
 }
 
 BLEACH_BODY_TAGS = ['a','h2','h3','p', 'em', 'strong','li','ul','ol','del','blockquote','iframe','img','hr']
-BLEACH_BODY_STYLE_ATTRIBUTES = ['float','margin']
+BLEACH_BODY_STYLE_ATTRIBUTES = ['float','margin','width']
 
 BLEACH_MISC_ATTRIBUTES = {}
 BLEACH_MISC_TAGS = []
