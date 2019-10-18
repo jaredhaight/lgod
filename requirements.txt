@@ -14,5 +14,5 @@ python-cloudfiles==1.7.10
 python-gflags==2.0
 requests==0.14.2
 uWSGI==1.2.5
-urllib3==1.5
+urllib3==1.24.2
 wsgiref==0.1.2
