@@ -9,7 +9,7 @@ django-cumulus==1.0.5
 docutils==0.9.1
 feedparser==5.1.2
 gdata==2.0.17
-httplib2==0.7.7
+httplib2==0.19.0
 python-cloudfiles==1.7.10
 python-gflags==2.0
 requests==0.14.2
